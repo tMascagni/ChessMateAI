@@ -1,10 +1,13 @@
 package ai.mate.chess.main;
 
+import ai.mate.chess.model.piece.IPiece;
+import ai.mate.chess.model.piece.Pawn;
+
 public class Main {
 
     public static void main(String[] args) {
-
-        System.out.println("b♟     w♙ ");
+        IPiece pawn = new Pawn(IPiece.Color.BLACK);
+        System.out.println(pawn);
     }
 
 }
