@@ -26,7 +26,7 @@ public abstract class Piece implements IPiece {
 
     @Override
     public String toString() {
-        return "Piece [" + name + "]";
+        return name;
     }
 
 }

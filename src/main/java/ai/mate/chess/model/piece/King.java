@@ -1,5 +1,7 @@
 package ai.mate.chess.model.piece;
 
+import ai.mate.chess.handler.TextHandler;
+
 /*
  * Konge
  */
@@ -12,9 +14,9 @@ public final class King extends Piece {
     @Override
     protected void initName() {
         if (color.equals(Color.WHITE))
-            name = "White King";
+            name = TextHandler.WHITE_KING;
         else
-            name = "Black King";
+            name = TextHandler.BLACK_KING;
     }
 
 }

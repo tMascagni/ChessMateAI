@@ -1,18 +1,18 @@
 package ai.mate.chess.model;
 
-import ai.mate.chess.handler.TextHandler;
+import ai.mate.chess.model.piece.*;
 
 public final class Board {
 
-    private String[][] pos = {
-            {TextHandler.BLACK_ROOK, TextHandler.BLACK_KNIGHT, TextHandler.BLACK_BISHOP, TextHandler.BLACK_QUEEN, TextHandler.BLACK_KING, TextHandler.BLACK_BISHOP, TextHandler.BLACK_KNIGHT, TextHandler.BLACK_ROOK},
-            {TextHandler.BLACK_PAWN, TextHandler.BLACK_PAWN, TextHandler.BLACK_PAWN, TextHandler.BLACK_PAWN, TextHandler.BLACK_PAWN, TextHandler.BLACK_PAWN, TextHandler.BLACK_PAWN, TextHandler.BLACK_PAWN},
-            {TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY},
-            {TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY},
-            {TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY},
-            {TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY, TextHandler.EMPTY},
-            {TextHandler.WHITE_PAWN, TextHandler.WHITE_PAWN, TextHandler.WHITE_PAWN, TextHandler.WHITE_PAWN, TextHandler.WHITE_PAWN, TextHandler.WHITE_PAWN, TextHandler.WHITE_PAWN, TextHandler.WHITE_PAWN},
-            {TextHandler.WHITE_ROOK, TextHandler.WHITE_KNIGHT, TextHandler.WHITE_BISHOP, TextHandler.WHITE_QUEEN, TextHandler.WHITE_KING, TextHandler.WHITE_BISHOP, TextHandler.WHITE_KNIGHT, TextHandler.WHITE_ROOK}
+    private IPiece[][] pos = {
+            {new Rook(IPiece.Color.BLACK), new Knight(IPiece.Color.BLACK), new Bishop(IPiece.Color.BLACK), new Queen(IPiece.Color.BLACK), new King(IPiece.Color.BLACK), new Bishop(IPiece.Color.BLACK), new Knight(IPiece.Color.BLACK), new Rook(IPiece.Color.BLACK)},
+            {new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK)},
+            {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
+            {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
+            {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
+            {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
+            {new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE)},
+            {new Rook(IPiece.Color.WHITE), new Knight(IPiece.Color.WHITE), new Bishop(IPiece.Color.WHITE), new Queen(IPiece.Color.WHITE), new King(IPiece.Color.WHITE), new Bishop(IPiece.Color.WHITE), new Knight(IPiece.Color.WHITE), new Rook(IPiece.Color.WHITE)}
     };
 
     private final String[][] board = {
@@ -24,13 +24,13 @@ public final class Board {
             {"       ", "├─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┤        "},
             {"   7   ", "│ " + pos[1][0] + " │", " " + pos[1][1] + " │", " " + pos[1][2] + " │", " " + pos[1][3] + " │", " " + pos[1][4] + " │", " " + pos[1][5] + " │", " " + pos[1][6] + " │", " " + pos[1][7] + " │   7    "},
             {"       ", "├─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┤        "},
-            {"   6   ", "│     │", "     │", "     │", "     │", "     │", "     │", "     │", "     │   6    "},
+            {"   6   ", "│ " + pos[2][0] + " │", " " + pos[2][1] + " │", " " + pos[2][2] + " │", " " + pos[2][3] + " │", " " + pos[2][4] + " │", " " + pos[2][5] + " │", " " + pos[2][6] + " │", " " + pos[2][7] + " │   6    "},
             {"       ", "├─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┤        "},
-            {"   5   ", "│     │", "     │", "     │", "     │", "     │", "     │", "     │", "     │   5    "},
+            {"   5   ", "│ " + pos[3][0] + " │", " " + pos[3][1] + " │", " " + pos[3][2] + " │", " " + pos[3][3] + " │", " " + pos[3][4] + " │", " " + pos[3][5] + " │", " " + pos[3][6] + " │", " " + pos[3][7] + " │   5    "},
             {"       ", "├─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┤        "},
-            {"   4   ", "│     │", "     │", "     │", "     │", "     │", "     │", "     │", "     │   4    "},
+            {"   4   ", "│ " + pos[4][0] + " │", " " + pos[4][1] + " │", " " + pos[4][2] + " │", " " + pos[4][3] + " │", " " + pos[4][4] + " │", " " + pos[4][5] + " │", " " + pos[4][6] + " │", " " + pos[4][7] + " │   4    "},
             {"       ", "├─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┤        "},
-            {"   3   ", "│     │", "     │", "     │", "     │", "     │", "     │", "     │", "     │   3    "},
+            {"   3   ", "│ " + pos[5][0] + " │", " " + pos[5][1] + " │", " " + pos[5][2] + " │", " " + pos[5][3] + " │", " " + pos[5][4] + " │", " " + pos[5][5] + " │", " " + pos[5][6] + " │", " " + pos[5][7] + " │   3    "},
             {"       ", "├─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┤        "},
             {"   2   ", "│ " + pos[6][0] + " │", " " + pos[6][1] + " │", " " + pos[6][2] + " │", " " + pos[6][3] + " │", " " + pos[6][4] + " │", " " + pos[6][5] + " │", " " + pos[6][6] + " │", " " + pos[6][7] + " │   2    "},
             {"       ", "├─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┼", "─────┤      "},
@@ -59,7 +59,7 @@ public final class Board {
         return instance;
     }
 
-    public final String[][] getPositionMatrix() {
+    public final IPiece[][] getPositionMatrix() {
         return pos;
     }
 

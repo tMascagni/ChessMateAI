@@ -1,5 +1,7 @@
 package ai.mate.chess.model.piece;
 
+import ai.mate.chess.handler.TextHandler;
+
 /*
  * Dronning
  */
@@ -12,9 +14,9 @@ public final class Queen extends Piece {
     @Override
     protected void initName() {
         if (color.equals(Color.WHITE))
-            name = "White Queen";
+            name = TextHandler.WHITE_QUEEN;
         else
-            name = "Black Queen";
+            name = TextHandler.BLACK_QUEEN;
     }
 
 }

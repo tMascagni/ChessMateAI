@@ -1,5 +1,7 @@
 package ai.mate.chess.model.piece;
 
+import ai.mate.chess.handler.TextHandler;
+
 /*
  * Bonde
  */
@@ -12,9 +14,9 @@ public final class Pawn extends Piece {
     @Override
     protected void initName() {
         if (color.equals(Color.WHITE))
-            name = "White Pawn";
+            name = TextHandler.WHITE_PAWN;
         else
-            name = "Black Pawn";
+            name = TextHandler.BLACK_PAWN;
     }
 
 }
