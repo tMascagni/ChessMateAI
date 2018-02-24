@@ -2,7 +2,7 @@ package ai.mate.chess.tui;
 
 import ai.mate.chess.model.Board;
 
-public final class Tui {
+public final class Tui implements ITui {
 
     private static Tui instance;
 
@@ -22,6 +22,27 @@ public final class Tui {
         return instance;
     }
 
+    @Override
+    public void printStartScreen() {
+
+    }
+
+    @Override
+    public void printMenu() {
+
+    }
+
+    @Override
+    public void printWin() {
+
+    }
+
+    @Override
+    public void printLoss() {
+
+    }
+
+    @Override
     public final void printBoard(Board board) {
         StringBuilder sb = new StringBuilder();
         String[][] matrix = board.getBoardMatrix();
