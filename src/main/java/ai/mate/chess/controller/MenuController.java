@@ -1,13 +1,16 @@
 package ai.mate.chess.controller;
 
+import ai.mate.chess.controller.interfaces.IGameController;
 import ai.mate.chess.controller.interfaces.IMenuController;
-import ai.mate.chess.tui.Tui;
+import ai.mate.chess.ui.ITui;
+import ai.mate.chess.ui.Tui;
 
 public final class MenuController implements IMenuController {
 
-    private static IMenuController instance;
+    private final ITui tui = Tui.getInstance();
+    private final IGameController gameController = GameController.getInstance();
 
-    private final Tui tui = Tui.getInstance();
+    private static IMenuController instance;
 
     static {
         try {
@@ -27,8 +30,31 @@ public final class MenuController implements IMenuController {
 
     @Override
     public final void start() {
+        tui.printStartScreen();
+        tui.printPressEnter();
+
         while (true) {
-            System.out.println("INFINITE LOOP LAL");
+            tui.printMenu();
+            char command = tui.getUserInput();
+            executeCommand(command);
+        }
+
+    }
+
+    private void executeCommand(char command) {
+        switch (command) {
+            case '0':
+                System.exit(0);
+                break;
+            case '1':
+                gameController.start();
+                break;
+            case '2':
+                System.out.println("TWO!");
+                break;
+            default:
+                tui.printUnrecognizedCommand();
+                break;
         }
     }
 

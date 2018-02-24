@@ -3,17 +3,17 @@ package ai.mate.chess.model;
 public final class BoardPosition {
 
     public final char file;
-    public final int rank;
-    public final int x;
-    public final int y;
+    public final char rank;
+    public final int arrayX;
+    public final int arrayY;
 
     private final int X_OFFSET = 8;
 
-    public BoardPosition(char file, int rank) {
+    public BoardPosition(char file, char rank) {
         this.file = Character.toLowerCase(file);
         this.rank = rank;
-        this.x = calculateX(this.rank);
-        this.y = calculateY(this.file);
+        this.arrayX = calculateX(this.rank);
+        this.arrayY = calculateY(this.file);
     }
 
     private int calculateY(char file) {
@@ -39,8 +39,18 @@ public final class BoardPosition {
         }
     }
 
-    private int calculateX(int rank) {
-        return Math.abs(rank - X_OFFSET);
+    private int calculateX(char rank) {
+        return Math.abs(Character.getNumericValue(rank) - X_OFFSET);
+    }
+
+    @Override
+    public String toString() {
+        return "BoardPosition [" +
+                "file=" + file +
+                ", rank=" + rank +
+                ", arrayX=" + arrayX +
+                ", arrayY=" + arrayY +
+                ']';
     }
 
 }
