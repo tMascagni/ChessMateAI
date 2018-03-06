@@ -1,8 +1,7 @@
 package ai.mate.chess.model.piece;
 
 import ai.mate.chess.handler.TextHandler;
-
-import java.awt.*;
+import ai.mate.chess.model.BoardPosition;
 
 /*
  * Taarn
@@ -11,9 +10,11 @@ public final class Rook extends Piece {
 
     public Rook(Color color) {
         super(color);
+        this.score = 5;
     }
 
-    protected boolean isValidMove(Point from, Point to) {
+    @Override
+    public boolean isValidMove(BoardPosition from, BoardPosition to) {
         return false;
     }
 
@@ -23,6 +24,11 @@ public final class Rook extends Piece {
             name = TextHandler.WHITE_ROOK;
         else
             name = TextHandler.BLACK_ROOK;
+    }
+
+    @Override
+    public void populateMoves() {
+
     }
 
 }

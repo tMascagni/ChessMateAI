@@ -19,7 +19,48 @@ public final class Board {
 
     }
 
-    public boolean movePiece(BoardPosition from, BoardPosition to) {
+    public boolean movePiece(IPiece.Color playerColor, BoardPosition from, BoardPosition to) {
+        /* Get both pieces */
+        IPiece fromPiece = getPiece(from.arrayX, from.arrayY);
+        IPiece toPiece = getPiece(to.arrayX, to.arrayY);
+
+        if (!fromPiece.getColor().equals(playerColor)) {
+            System.out.println("Can't move opponents piece");
+            return false;
+        }
+
+
+        System.out.println("fromPiece: " + fromPiece.toString());
+        System.out.println("toPiece: " + toPiece.toString());
+        System.out.println("Player: " + playerColor);
+        System.out.println();
+
+
+        System.out.println("isValidMove: " + fromPiece.isValidMove(from, to));
+
+
+        if (fromPiece instanceof Empty) {
+            System.out.println("No piece at: " + fromPiece.toString());
+            return false;
+        }
+
+        if (toPiece instanceof Empty) {
+            /* Move fromPiece to to's x and y coordinates */
+            setPiece(fromPiece, to.arrayX, to.arrayY);
+        } else if (toPiece.getColor().equals(playerColor)) {
+            /* If the player is trying to move a piece onto one of his own, it is illegal
+             *  and false is returned. */
+            System.out.println("Illegal move: Cannot move to one's own piece.");
+            return false;
+        } else if (!toPiece.getColor().equals(playerColor)) {
+            /* kill piece :) */
+            // add the slain piece to a list / keep track of the slain piece
+            setPiece(fromPiece, to.arrayX, to.arrayY);
+        }
+
+        /* Put new empty piece at the previous position of from. Aka remove old from piece. */
+        setPiece(new Empty(), from.arrayX, from.arrayY);
+
         return true;
     }
 

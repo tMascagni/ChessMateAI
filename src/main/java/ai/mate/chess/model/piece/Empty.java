@@ -1,8 +1,7 @@
 package ai.mate.chess.model.piece;
 
 import ai.mate.chess.handler.TextHandler;
-
-import java.awt.*;
+import ai.mate.chess.model.BoardPosition;
 
 public final class Empty extends Piece {
 
@@ -10,13 +9,19 @@ public final class Empty extends Piece {
         super(Color.WHITE);
     }
 
-    protected boolean isValidMove(Point from, Point to) {
+    @Override
+    public boolean isValidMove(BoardPosition from, BoardPosition to) {
         return false;
     }
 
     @Override
     protected void initName() {
         name = TextHandler.EMPTY;
+    }
+
+    @Override
+    public void populateMoves() {
+
     }
 
 }

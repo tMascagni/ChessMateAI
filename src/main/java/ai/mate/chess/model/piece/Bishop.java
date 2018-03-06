@@ -1,6 +1,7 @@
 package ai.mate.chess.model.piece;
 
 import ai.mate.chess.handler.TextHandler;
+import ai.mate.chess.model.BoardPosition;
 
 import java.awt.*;
 
@@ -11,9 +12,11 @@ public final class Bishop extends Piece {
 
     public Bishop(Color color) {
         super(color);
+        this.score = 3;
     }
 
-    protected boolean isValidMove(Point from, Point to) {
+    @Override
+    public boolean isValidMove(BoardPosition from, BoardPosition to) {
         return false;
     }
 
@@ -23,6 +26,11 @@ public final class Bishop extends Piece {
             name = TextHandler.WHITE_BISHOP;
         else
             name = TextHandler.BLACK_BISHOP;
+    }
+
+    @Override
+    public void populateMoves() {
+
     }
 
 }

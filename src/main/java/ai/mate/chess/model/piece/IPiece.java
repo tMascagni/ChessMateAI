@@ -1,6 +1,6 @@
 package ai.mate.chess.model.piece;
 
-import java.awt.*;
+import ai.mate.chess.model.BoardPosition;
 
 /*
  * Interface for the general chess piece.
@@ -11,6 +11,7 @@ public interface IPiece {
     Color getColor();
     int getMoveCount();
     int getSlayCount();
+    boolean isValidMove(BoardPosition from, BoardPosition to);
 
     enum Color {
         WHITE, BLACK

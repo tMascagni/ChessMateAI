@@ -1,8 +1,7 @@
 package ai.mate.chess.model.piece;
 
 import ai.mate.chess.handler.TextHandler;
-
-import java.awt.*;
+import ai.mate.chess.model.BoardPosition;
 
 /*
  * Haest
@@ -11,9 +10,11 @@ public final class Knight extends Piece {
 
     public Knight(Color color) {
         super(color);
+        this.score = 3;
     }
 
-    protected boolean isValidMove(Point from, Point to) {
+    @Override
+    public boolean isValidMove(BoardPosition from, BoardPosition to) {
         return false;
     }
 
@@ -23,6 +24,11 @@ public final class Knight extends Piece {
             name = TextHandler.WHITE_KNIGHT;
         else
             name = TextHandler.BLACK_KNIGHT;
+    }
+
+    @Override
+    public void populateMoves() {
+
     }
 
 }
