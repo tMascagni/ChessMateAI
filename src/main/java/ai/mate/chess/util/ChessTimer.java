@@ -1,4 +1,4 @@
-package ai.mate.chess.model;
+package ai.mate.chess.util;
 
 import java.util.Timer;
 import java.util.TimerTask;
