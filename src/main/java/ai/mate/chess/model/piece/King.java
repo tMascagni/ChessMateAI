@@ -2,6 +2,7 @@ package ai.mate.chess.model.piece;
 
 import ai.mate.chess.handler.TextHandler;
 import ai.mate.chess.model.BoardPosition;
+import ai.mate.chess.util.Utils;
 
 /*
  * Konge
@@ -10,11 +11,11 @@ public final class King extends Piece {
 
     public King(Color color) {
         super(color);
-        this.score = 100;
+        this.score = Utils.KING_SCORE;
     }
 
     @Override
-    public boolean isValidMove(BoardPosition from, BoardPosition to) {
+    public boolean isValidMove(BoardPosition from, BoardPosition to, IPiece[][] board) {
         return false;
     }
 

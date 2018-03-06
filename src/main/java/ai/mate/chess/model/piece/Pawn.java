@@ -2,9 +2,9 @@ package ai.mate.chess.model.piece;
 
 import ai.mate.chess.handler.TextHandler;
 import ai.mate.chess.model.BoardPosition;
+import ai.mate.chess.util.Utils;
 
 import java.awt.*;
-
 
 /*
  * Bonde
@@ -13,16 +13,18 @@ public final class Pawn extends Piece {
 
     public Pawn(Color color) {
         super(color);
-        this.score = 1;
+        this.score = Utils.PAWN_SCORE;
     }
 
     @Override
-    public boolean isValidMove(BoardPosition from, BoardPosition to) {
-        int new_y = Math.abs(from.arrayY - to.arrayY);
-        int new_x = Math.abs(from.arrayX - to.arrayX);
+    public boolean isValidMove(BoardPosition from, BoardPosition to, IPiece[][] board) {
+        int deltaX = calculateDeltaX(from.arrayX, to.arrayX);
+        int deltaY = calculateDeltaY(from.arrayY, to.arrayY);
 
-        System.out.println("new_y: " + new_y);
-        System.out.println("new_x: " + new_x);
+        for (Point p : possibleMoves) {
+            if (p.x == deltaX && p.y == deltaY)
+                return true;
+        }
 
         return false;
     }

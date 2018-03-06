@@ -11,7 +11,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="ChessMateAI" target="1.6" />
+      <module name="ChessMateAI" target="1.7" />
       <module name="ChessMateAI0" target="1.5" />
     </bytecodeTargetLevel>
   </component>

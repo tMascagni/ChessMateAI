@@ -36,12 +36,8 @@ public final class Tui implements ITui {
 
     @Override
     public BoardPosition getBoardPositionInput() {
-        printArrow("File");
-        char file = getChar();
-
-        printArrow("Rank");
-        char rank = getChar();
-
+        char file = getAlphabeticChar("File");
+        char rank = getNumericChar("Rank");
         return new BoardPosition(file, rank);
     }
 
@@ -49,11 +45,7 @@ public final class Tui implements ITui {
     public void printPressEnter() {
         printArrow();
         printMessage("Press Enter...");
-        try {
-            scanner.nextLine();
-        } catch (IndexOutOfBoundsException ignored) {
-
-        }
+        scanner.nextLine();
     }
 
     @Override
@@ -168,6 +160,45 @@ public final class Tui implements ITui {
         } catch (IndexOutOfBoundsException e) {
             return ' ';
         }
+    }
+
+    private char getAlphabeticChar(String arrowMsg) {
+        char ch;
+        while (true) {
+            printArrow(arrowMsg);
+            try {
+                ch = scanner.nextLine().charAt(0);
+            } catch (Exception e) {
+                continue;
+            }
+
+            if (!Character.isAlphabetic(ch))
+                continue;
+
+            ch = Character.toLowerCase(ch);
+
+            if (ch == 'a' || ch == 'b' || ch == 'c' || ch == 'd' || ch == 'e' || ch == 'f' || ch == 'g' || ch == 'h')
+                return ch;
+        }
+    }
+
+    private char getNumericChar(String arrowMsg) {
+        char ch = 'X';
+        do {
+            printArrow(arrowMsg);
+            try {
+                String str = scanner.nextLine();
+
+                if (str.length() > 1)
+                    continue;
+
+                ch = str.charAt(0);
+
+            } catch (Exception e) {
+                continue;
+            }
+        } while (!Character.isDigit(ch));
+        return ch;
     }
 
 }

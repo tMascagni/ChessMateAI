@@ -1,7 +1,5 @@
 package ai.mate.chess.model.piece;
 
-import ai.mate.chess.model.BoardPosition;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +21,7 @@ public abstract class Piece implements IPiece {
     public Piece(Color color) {
         this.color = color;
         initName();
-        possibleMoves = new ArrayList<Point>();
+        possibleMoves = new ArrayList<>();
         populateMoves();
     }
 
@@ -31,18 +29,44 @@ public abstract class Piece implements IPiece {
 
     public abstract void populateMoves();
 
+    @Override
+    public void incMoveCount() {
+        moveCount++;
+    }
+
+    @Override
+    public void incSlayCount() {
+        slayCount++;
+    }
+
+    @Override
+    public int calculateDeltaX(int fromX, int toX) {
+        System.out.println("deltaX: " + Math.abs(fromX - toX));
+        return Math.abs(fromX - toX);
+    }
+
+    @Override
+    public int calculateDeltaY(int fromY, int toY) {
+        System.out.println("deltaY: " + Math.abs(fromY - toY));
+        return Math.abs(fromY - toY);
+    }
+
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public Color getColor() {
         return color;
     }
 
+    @Override
     public int getMoveCount() {
         return moveCount;
     }
 
+    @Override
     public int getSlayCount() {
         return slayCount;
     }
