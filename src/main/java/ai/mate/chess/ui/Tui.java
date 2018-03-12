@@ -146,6 +146,16 @@ public final class Tui implements ITui {
     }
 
     @Override
+    public void printExit() {
+        String winString = "┌────────────────────────┐\n" +
+                           "│          Exit          │\n" +
+                           "├────────────────────────┤\n" +
+                           "│          Bye!          │\n" +
+                           "└────────────────────────┘\n";
+        printMessage(winString);
+    }
+
+    @Override
     public final void printBoard(Board board) {
         printMessage(board.getBoard());
     }
@@ -184,6 +194,7 @@ public final class Tui implements ITui {
 
     private char getNumericChar(String arrowMsg) {
         char ch = 'X';
+
         do {
             printArrow(arrowMsg);
             try {
@@ -197,7 +208,7 @@ public final class Tui implements ITui {
             } catch (Exception e) {
                 continue;
             }
-        } while (!Character.isDigit(ch));
+        } while (!Character.isDigit(ch) || (Character.getNumericValue(ch) < 1 || Character.getNumericValue(ch) > 8));
         return ch;
     }
 

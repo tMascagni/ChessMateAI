@@ -1,6 +1,7 @@
 package ai.mate.chess.model.piece;
 
 import ai.mate.chess.handler.TextHandler;
+import ai.mate.chess.model.Board;
 import ai.mate.chess.model.BoardPosition;
 import ai.mate.chess.util.Utils;
 
@@ -15,11 +16,6 @@ public final class Rook extends Piece {
     }
 
     @Override
-    public boolean isValidMove(BoardPosition from, BoardPosition to, IPiece[][] board) {
-        return false;
-    }
-
-    @Override
     protected void initName() {
         if (color.equals(Color.WHITE))
             name = TextHandler.WHITE_ROOK;
@@ -28,7 +24,14 @@ public final class Rook extends Piece {
     }
 
     @Override
-    public void populateMoves() {
+    public boolean isValidMove(BoardPosition from, BoardPosition to, Board board) {
+        return false;
+    }
+
+    @Override
+    public void populateMoves(Board board) {
+        possibleMoves.clear();
+
 
     }
 

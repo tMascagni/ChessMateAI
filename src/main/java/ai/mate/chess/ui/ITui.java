@@ -14,5 +14,6 @@ public interface ITui {
     void printUnrecognizedCommand();
     void printWin();
     void printLoss();
+    void printExit();
     void printBoard(Board board);
 }

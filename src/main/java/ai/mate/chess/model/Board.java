@@ -4,7 +4,7 @@ import ai.mate.chess.model.piece.*;
 
 public final class Board {
 
-    private double moveCounter = 0;
+    private double globalMoveCount = 0;
 
     private IPiece.Color playerColor = IPiece.Color.WHITE;
     private IPiece[] whiteLossList, blackLossList;
@@ -17,61 +17,113 @@ public final class Board {
     }
 
     public boolean movePiece(BoardPosition from, BoardPosition to) {
-        /* Get both pieces */
+        /* Get both pieces 'to' and 'from' pieces. */
         IPiece fromPiece = getPiece(from.arrayX, from.arrayY);
         IPiece toPiece = getPiece(to.arrayX, to.arrayY);
 
-        if (!fromPiece.getColor().equals(playerColor)) {
-            System.out.println("Can't move opponents piece!");
+        /*
+         * If the 'from' piece is instance of a 'Empty' piece,
+         * then return false, since the player is not allowed to
+         * move an 'Empty' piece.
+         */
+        if (fromPiece instanceof Empty) {
+            System.out.println("Illegal move: No piece at position: [" + from.file + ", " + from.rank + "]!");
             return false;
         }
 
+        /*
+         * If the WHITE player tries to move a BLACK piece,
+         * then return false, and vice versa.
+         */
+        if (!fromPiece.getColor().equals(playerColor)) {
+            System.out.println("Illegal move: Can't move opponents piece!");
+            return false;
+        }
+
+        /*
+         * You are not allowed to move onto yourself.
+         */
+        if (to.rank == from.rank && to.file == from.file) {
+            System.out.println("Illegal move: Can't move onto the same piece!");
+            return false;
+        }
+
+        /*
+         * Populate moves to pieces every single move, so that they
+         * are always up to date with the their surroundings.
+         */
+        for (IPiece[] boardRow : board)
+            for (IPiece piece : boardRow)
+                piece.populateMoves(this);
+
+        /* Check to see whether this is a valid move for the fromPiece. */
+        boolean isValidMove = fromPiece.isValidMove(from, to, this);
+
+        // Debugging purposes
+        System.out.println();
         System.out.println("fromPiece: " + fromPiece.toString());
         System.out.println("toPiece: " + toPiece.toString());
         System.out.println("Player: " + playerColor);
+        System.out.println("isValidMove: " + isValidMove);
         System.out.println();
 
-        boolean isValidMove = fromPiece.isValidMove(from, to, board);
-
+        /* If the move is not valid, let the player know and then return false. */
         if (!isValidMove) {
-            System.out.println("Illegal move!");
+            System.out.println("Illegal move: isValidMove: " + isValidMove);
             return false;
         }
 
-        if (fromPiece instanceof Empty) {
-            System.out.println("No piece at position: [" + from.file + ", " + from.rank + "]!");
-            return false;
-        }
 
         if (toPiece instanceof Empty) {
-            /* Move fromPiece to to's x and y coordinates */
+            /*
+             * If the 'to' piece is instance of a 'Empty' piece,
+             * we then know that the toPiece is free to move there.
+             * (Since we are at this point in the code, we already know
+             * that it must be a valid move.)
+             *
+             * Move fromPiece to "to's" x and y coordinates
+             */
             setPiece(fromPiece, to.arrayX, to.arrayY);
         } else if (toPiece.getColor().equals(playerColor)) {
-            /* If the player is trying to move a piece onto one of his own, it is illegal
-             *  and false is returned. */
-            System.out.println("Illegal move: Cannot move to own piece!");
+            /*
+             * If the player is trying to move a piece onto one of its own,
+             * it is illegal and false is returned.
+             */
+            System.out.println("Illegal Move: Cannot move onto own piece!");
             return false;
         } else if (!toPiece.getColor().equals(playerColor)) {
-            /* kill piece :) */
-            /* add the slain piece to a list / keep track of the slain piece */
-            addPieceToLossList(toPiece);
+            /*
+             * Since we know that the 'to' piece is different from the player's own colour,
+             * and that its not instance of a 'Empty' piece, we know that a opponent piece must be there.
+             * Therefore we need to slay that piece, of which we do by adding it to a loss list.
+             * The piece will then we overwritten by the setPiece method, so all is good.
+             */
 
-            /* Increase piece's slay count */
+            /* Add the slain piece to the loss list */
+            addLossList(toPiece);
+
+            /* Increase 'from' piece's slay count */
             fromPiece.incSlayCount();
 
             setPiece(fromPiece, to.arrayX, to.arrayY);
         }
 
-        /* Increase move count for this piece */
-        toPiece.incMoveCount();
-        moveCounter += 0.5;
+        /* Increase move count for this 'from' piece */
+        fromPiece.incMoveCount();
 
-        /* Put new empty piece at the previous position of from. Aka remove old from piece. */
+        /* Increase global move count */
+        incGlobalMoveCount();
+
+        /*
+         * Put a new 'Empty' piece at the previous position
+         * of the 'from' piece.
+         */
         setPiece(new Empty(), from.arrayX, from.arrayY);
 
         /* Since the move have been a success, we shall switch the player. */
         switchPlayer();
 
+        /* Success move, yay! */
         return true;
     }
 
@@ -86,7 +138,7 @@ public final class Board {
                 {new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE)},
                 {new Rook(IPiece.Color.WHITE), new Knight(IPiece.Color.WHITE), new Bishop(IPiece.Color.WHITE), new Queen(IPiece.Color.WHITE), new King(IPiece.Color.WHITE), new Bishop(IPiece.Color.WHITE), new Knight(IPiece.Color.WHITE), new Rook(IPiece.Color.WHITE)}};
 
-        moveCounter = 0;
+        globalMoveCount = 0;
         playerColor = IPiece.Color.WHITE;
 
         for (int i = 0; i < whiteLossList.length; i++) {
@@ -99,7 +151,7 @@ public final class Board {
         return "\n┌───────────────────────────────────────────────────────────────┐    ┌────────────────────────────────────────────────────────────┐\n" +
                 "│          A     B     C     D     E     F     G     H          │    │ Player: " + playerColor + "           White Loss:    Black Loss:         │\n" +
                 "│                                                               │    │                             " + whiteLossList[0] + "            " + blackLossList[0] + "             │\n" +
-                "│       ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐       │    │ Move: " + moveCounter + "                     " + whiteLossList[1] + "            " + blackLossList[1] + "           │\n" +
+                "│       ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐       │    │ Move: " + globalMoveCount + "                     " + whiteLossList[1] + "            " + blackLossList[1] + "           │\n" +
                 "│   8   │ " + board[0][0] + " │ " + board[0][1] + " │ " + board[0][2] + " │ " + board[0][3] + " │ " + board[0][4] + " │ " + board[0][5] + " │ " + board[0][6] + " │ " + board[0][7] + " │   8   │    │                             " + whiteLossList[2] + "            " + blackLossList[2] + "             │\n" +
                 "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ White Clock:                " + whiteLossList[3] + "            " + blackLossList[3] + "             │\n" +
                 "│   7   │ " + board[1][0] + " │ " + board[1][1] + " │ " + board[1][2] + " │ " + board[1][3] + " │ " + board[1][4] + " │ " + board[1][5] + " │ " + board[1][6] + " │ " + board[1][7] + " │   7   │    │                             " + whiteLossList[4] + "            " + blackLossList[4] + "             │\n" +
@@ -121,12 +173,24 @@ public final class Board {
                 "└───────────────────────────────────────────────────────────────┘    └────────────────────────────────────────────────────────────┘\n";
     }
 
-    private IPiece getPiece(int x, int y) {
+    public IPiece getPiece(int x, int y) {
         return board[x][y];
+    }
+
+    public BoardPosition getPieceBoardPos(int id) {
+        for (int i = 0; i < board.length; i++)
+            for (int j = 0; j < board[0].length; j++)
+                if (board[i][j].getId() == id)
+                    return new BoardPosition(i, j);
+        return new BoardPosition(-1, -1);
     }
 
     private void setPiece(IPiece piece, int x, int y) {
         board[x][y] = piece;
+    }
+
+    private void incGlobalMoveCount() {
+        globalMoveCount += 0.5;
     }
 
     private void switchPlayer() {
@@ -136,11 +200,7 @@ public final class Board {
             playerColor = IPiece.Color.WHITE;
     }
 
-    public IPiece.Color getPlayerColor() {
-        return playerColor;
-    }
-
-    private void addPieceToLossList(IPiece piece) {
+    private void addLossList(IPiece piece) {
         if (piece.getColor().equals(IPiece.Color.WHITE)) {
             for (int i = 0; i < whiteLossList.length; i++)
                 if (whiteLossList[i] instanceof Empty) {

@@ -16,6 +16,47 @@ public final class BoardPosition {
         this.arrayY = calculateY(this.file);
     }
 
+    public BoardPosition(int arrayX, int arrayY) {
+        this.arrayX = arrayX;
+        this.arrayY = arrayY;
+        this.file = calculateFile(arrayY);
+        this.rank = calculateRank(arrayX);
+    }
+
+    private char calculateFile(int arrayY) {
+        switch (arrayY) {
+            case 0:
+                return 'a';
+            case 1:
+                return 'b';
+            case 2:
+                return 'c';
+            case 3:
+                return 'd';
+            case 4:
+                return 'e';
+            case 5:
+                return 'f';
+            case 6:
+                return 'g';
+            case 7:
+                return 'h';
+            default:
+                return 'X';
+        }
+    }
+
+    private char calculateRank(int arrayX) {
+        int decRank = (X_OFFSET - arrayX);
+        char rank = (char) (decRank + 48);
+
+        return rank;
+    }
+
+    private int calculateX(char rank) {
+        return Math.abs(Character.getNumericValue(rank) - X_OFFSET);
+    }
+
     private int calculateY(char file) {
         switch (file) {
             case 'a':
@@ -37,10 +78,6 @@ public final class BoardPosition {
             default:
                 return -1;
         }
-    }
-
-    private int calculateX(char rank) {
-        return Math.abs(Character.getNumericValue(rank) - X_OFFSET);
     }
 
     @Override

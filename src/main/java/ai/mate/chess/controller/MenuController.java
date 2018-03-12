@@ -44,6 +44,7 @@ public final class MenuController implements IMenuController {
     private void executeCommand(char command) {
         switch (command) {
             case '0':
+                tui.printExit();
                 System.exit(0);
                 break;
             case '1':
