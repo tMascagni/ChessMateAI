@@ -25,7 +25,7 @@ public final class King extends Piece {
 
     @Override
     public boolean isValidMove(BoardPosition from, BoardPosition to, Board board) {
-        return false;
+        return true;
     }
 
     @Override

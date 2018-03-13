@@ -51,11 +51,11 @@ public final class Pawn extends Piece {
         if (getColor().equals(Color.WHITE)) {
 
             /* First move (can walk 2 squares) */
-            if (getMoveCount() == 0 && isStandardMoveAllowed(-2, 0, board))
+            if (isFirstMoveAllowed(new Point(-2, 0), board))
                 possibleMoves.add(new Point(-2, 0));
 
             /* Standard move (only allowed if the square is empty of opponent) */
-            if (isStandardMoveAllowed(-1, 0, board))
+            if (isStandardMoveAllowed(new Point(-1, 0), board))
                 possibleMoves.add(new Point(-1, 0));
 
             /*
@@ -72,38 +72,38 @@ public final class Pawn extends Piece {
              */
 
             /* Slay opponents piece */
-            if (isSlayMoveAllowed(-1, 1, board))
+            if (isSlayMoveAllowed(new Point(-1, 1), board))
                 possibleMoves.add(new Point(-1, 1));
 
-            if (isSlayMoveAllowed(-1, -1, board))
+            if (isSlayMoveAllowed(new Point(-1, -1), board))
                 possibleMoves.add(new Point(-1, -1));
 
             /* Black moves */
         } else {
             /* First move (can walk 2 squares) */
-            if (getMoveCount() == 0 && isStandardMoveAllowed(2, 0, board))
+            if (isFirstMoveAllowed(new Point(2, 0), board))
                 possibleMoves.add(new Point(2, 0));
 
             /* Standard move (only allowed if the square is empty of opponent) */
-            if (isStandardMoveAllowed(1, 0, board))
+            if (isStandardMoveAllowed(new Point(1, 0), board))
                 possibleMoves.add(new Point(1, 0));
 
             /* Slay opponents piece */
-            if (isSlayMoveAllowed(1, 1, board))
+            if (isSlayMoveAllowed(new Point(1, 1), board))
                 possibleMoves.add(new Point(1, 1));
 
-            if (isSlayMoveAllowed(1, -1, board))
+            if (isSlayMoveAllowed(new Point(1, -1), board))
                 possibleMoves.add(new Point(1, -1));
         }
     }
 
-    private boolean isSlayMoveAllowed(int x, int y, Board board) {
+    private boolean isSlayMoveAllowed(Point p, Board board) {
         /* Firstly, we need to get this piece's board position */
         BoardPosition piecePos = board.getPieceBoardPos(this.ID);
 
         /* Now we need to create the new position where the piece would slay */
-        int xKill = piecePos.arrayX + x;
-        int yKill = piecePos.arrayY + y;
+        int xKill = piecePos.arrayX + p.x;
+        int yKill = piecePos.arrayY + p.y;
 
         /* If we go out of bounds, we know that its a bad move. */
         if ((xKill < 0 || xKill > 7) || (yKill < 0 || yKill > 7))
@@ -116,11 +116,11 @@ public final class Pawn extends Piece {
         return pieceToBeSlain.getColor().equals(getOpponentColor());
     }
 
-    private boolean isStandardMoveAllowed(int x, int y, Board board) {
+    private boolean isStandardMoveAllowed(Point p, Board board) {
         BoardPosition piecePos = board.getPieceBoardPos(ID);
 
-        int xRel = piecePos.arrayX + x;
-        int yRel = piecePos.arrayY + y;
+        int xRel = piecePos.arrayX + p.x;
+        int yRel = piecePos.arrayY + p.y;
 
         /* If we go out of bounds, we know that its a bad move. */
         if ((xRel < 0 || xRel > 7) || (yRel < 0 || yRel > 7))
@@ -132,6 +132,47 @@ public final class Pawn extends Piece {
             return false;
 
         if (pieceAtRelPosition.getColor().equals(getColor()))
+            return false;
+
+        return true;
+    }
+
+    private boolean isFirstMoveAllowed(Point p, Board board) {
+        if (Math.abs(p.x) != 2) // Is it really the first move?
+            return false;
+
+        if (getMoveCount() != 0)
+            return false;
+
+        BoardPosition piecePos = board.getPieceBoardPos(ID);
+
+        int xRel = piecePos.arrayX + p.x;
+        int yRel = piecePos.arrayY + p.y;
+
+        /* If we go out of bounds, we know that its a bad move. */
+        if ((xRel < 0 || xRel > 7) || (yRel < 0 || yRel > 7))
+            return false;
+
+        IPiece pieceAtRelPosition = board.getPiece(xRel, yRel);
+
+        if (!(pieceAtRelPosition instanceof Empty))
+            return false;
+
+        int dec = -1;
+
+        if (getColor().equals(Color.WHITE))
+            dec = 1;
+
+        xRel = piecePos.arrayX + p.x + dec;
+        yRel = piecePos.arrayY + p.y;
+
+        /* If we go out of bounds, we know that its a bad move. */
+        if ((xRel < 0 || xRel > 7) || (yRel < 0 || yRel > 7))
+            return false;
+
+        pieceAtRelPosition = board.getPiece(xRel, yRel);
+
+        if (!(pieceAtRelPosition instanceof Empty))
             return false;
 
         return true;
