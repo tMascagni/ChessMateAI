@@ -10,8 +10,6 @@ public final class Board {
     private int whitePieceCount = PLAYER_PIECE_COUNT;
     private int blackPieceCount = PLAYER_PIECE_COUNT;
 
-    private String whiteStrength, blackStrength;
-
     private IPiece.Color playerColor = IPiece.Color.WHITE;
     private IPiece[] whiteLossList, blackLossList;
     private IPiece[][] board;
@@ -91,7 +89,6 @@ public final class Board {
             return false;
         }
 
-
         if (toPiece instanceof Empty) {
             /*
              * If the 'to' piece is instance of a 'Empty' piece,
@@ -124,9 +121,6 @@ public final class Board {
             fromPiece.incSlayCount();
 
             setPiece(fromPiece, to.arrayX, to.arrayY);
-
-            /* Calculate strengths */
-            calculateStrengths();
         }
 
         /* Increase move count for this 'from' piece */
@@ -169,9 +163,6 @@ public final class Board {
 
         whitePieceCount = PLAYER_PIECE_COUNT;
         blackPieceCount = PLAYER_PIECE_COUNT;
-
-        /* Calculate strengths */
-        calculateStrengths();
     }
 
     public final String getBoard() {
@@ -184,13 +175,13 @@ public final class Board {
                 "│   7   │ " + board[1][0] + " │ " + board[1][1] + " │ " + board[1][2] + " │ " + board[1][3] + " │ " + board[1][4] + " │ " + board[1][5] + " │ " + board[1][6] + " │ " + board[1][7] + " │   7   │    │                            " + getLossPieceText(IPiece.Color.WHITE, 4) + "         " + getLossPieceText(IPiece.Color.BLACK, 4) + "           │\n" +
                 "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ Black Clock:               " + getLossPieceText(IPiece.Color.WHITE, 5) + "         " + getLossPieceText(IPiece.Color.BLACK, 5) + "           │\n" +
                 "│   6   │ " + board[2][0] + " │ " + board[2][1] + " │ " + board[2][2] + " │ " + board[2][3] + " │ " + board[2][4] + " │ " + board[2][5] + " │ " + board[2][6] + " │ " + board[2][7] + " │   6   │    │                            " + getLossPieceText(IPiece.Color.WHITE, 6) + "         " + getLossPieceText(IPiece.Color.BLACK, 6) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ White Strength: " + whiteStrength + "        " + getLossPieceText(IPiece.Color.WHITE, 7) + "         " + getLossPieceText(IPiece.Color.BLACK, 7) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ White Pieces: " + getPieceCount(IPiece.Color.WHITE) + "           " + getLossPieceText(IPiece.Color.WHITE, 7) + "         " + getLossPieceText(IPiece.Color.BLACK, 7) + "           │\n" +
                 "│   5   │ " + board[3][0] + " │ " + board[3][1] + " │ " + board[3][2] + " │ " + board[3][3] + " │ " + board[3][4] + " │ " + board[3][5] + " │ " + board[3][6] + " │ " + board[3][7] + " │   5   │    │                            " + getLossPieceText(IPiece.Color.WHITE, 8) + "         " + getLossPieceText(IPiece.Color.BLACK, 8) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ Black Strength: " + blackStrength + "       " + getLossPieceText(IPiece.Color.WHITE, 9) + "        " + getLossPieceText(IPiece.Color.BLACK, 9) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ Black Pieces: " + getPieceCount(IPiece.Color.BLACK) + "          " + getLossPieceText(IPiece.Color.WHITE, 9) + "        " + getLossPieceText(IPiece.Color.BLACK, 9) + "           │\n" +
                 "│   4   │ " + board[4][0] + " │ " + board[4][1] + " │ " + board[4][2] + " │ " + board[4][3] + " │ " + board[4][4] + " │ " + board[4][5] + " │ " + board[4][6] + " │ " + board[4][7] + " │   4   │    │                           " + getLossPieceText(IPiece.Color.WHITE, 10) + "        " + getLossPieceText(IPiece.Color.BLACK, 10) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ White Pieces: " + getPieceCount(IPiece.Color.WHITE) + "          " + getLossPieceText(IPiece.Color.WHITE, 11) + "        " + getLossPieceText(IPiece.Color.BLACK, 11) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                           " + getLossPieceText(IPiece.Color.WHITE, 11) + "        " + getLossPieceText(IPiece.Color.BLACK, 11) + "           │\n" +
                 "│   3   │ " + board[5][0] + " │ " + board[5][1] + " │ " + board[5][2] + " │ " + board[5][3] + " │ " + board[5][4] + " │ " + board[5][5] + " │ " + board[5][6] + " │ " + board[5][7] + " │   3   │    │                           " + getLossPieceText(IPiece.Color.WHITE, 12) + "        " + getLossPieceText(IPiece.Color.BLACK, 12) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ Black Pieces: " + getPieceCount(IPiece.Color.BLACK) + "          " + getLossPieceText(IPiece.Color.WHITE, 13) + "        " + getLossPieceText(IPiece.Color.BLACK, 13) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                           " + getLossPieceText(IPiece.Color.WHITE, 13) + "        " + getLossPieceText(IPiece.Color.BLACK, 13) + "           │\n" +
                 "│   2   │ " + board[6][0] + " │ " + board[6][1] + " │ " + board[6][2] + " │ " + board[6][3] + " │ " + board[6][4] + " │ " + board[6][5] + " │ " + board[6][6] + " │ " + board[6][7] + " │   2   │    │                           " + getLossPieceText(IPiece.Color.WHITE, 14) + "        " + getLossPieceText(IPiece.Color.BLACK, 14) + "           │\n" +
                 "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                           " + getLossPieceText(IPiece.Color.WHITE, 15) + "        " + getLossPieceText(IPiece.Color.BLACK, 15) + "           │\n" +
                 "│   1   │ " + board[7][0] + " │ " + board[7][1] + " │ " + board[7][2] + " │ " + board[7][3] + " │ " + board[7][4] + " │ " + board[7][5] + " │ " + board[7][6] + " │ " + board[7][7] + " │   1   │    │                                                            │\n" +
@@ -270,33 +261,6 @@ public final class Board {
             return "      ";
         else
             return "       ";
-    }
-
-    private void calculateStrengths() {
-        int whiteStrength = 0;
-        int blackStrength = 0;
-        for (IPiece[] boardRow : board) {
-            for (IPiece piece : boardRow) {
-                if (piece.getColor().equals(IPiece.Color.WHITE))
-                    whiteStrength += piece.getScore();
-                else if (piece.getColor().equals(IPiece.Color.BLACK))
-                    blackStrength += piece.getScore();
-            }
-        }
-
-        if (whiteStrength < 10)
-            this.whiteStrength = "  " + whiteStrength;
-        else if (whiteStrength < 100)
-            this.whiteStrength = " " + whiteStrength;
-        else if (whiteStrength < 1000)
-            this.whiteStrength = String.valueOf(whiteStrength);
-
-        if (blackStrength < 10)
-            this.blackStrength = "  " + blackStrength;
-        else if (blackStrength < 100)
-            this.blackStrength = " " + blackStrength;
-        else if (blackStrength < 1000)
-            this.blackStrength = String.valueOf(blackStrength);
     }
 
 }

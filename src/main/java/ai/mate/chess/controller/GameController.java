@@ -3,6 +3,7 @@ package ai.mate.chess.controller;
 import ai.mate.chess.controller.interfaces.IGameController;
 import ai.mate.chess.model.Board;
 import ai.mate.chess.model.BoardPosition;
+import ai.mate.chess.model.piece.IPiece;
 import ai.mate.chess.ui.ITui;
 import ai.mate.chess.ui.Tui;
 
@@ -33,6 +34,11 @@ public class GameController implements IGameController {
     @Override
     public void start() {
         board.reset();
+
+        tui.printChoosePlayer();
+        IPiece.Color playerColor = tui.getPlayerColorInput();
+
+        tui.printHumanPlayer(playerColor);
 
         while (true) {
             tui.printBoard(board);

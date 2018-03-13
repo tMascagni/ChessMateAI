@@ -2,6 +2,7 @@ package ai.mate.chess.ui;
 
 import ai.mate.chess.model.Board;
 import ai.mate.chess.model.BoardPosition;
+import ai.mate.chess.model.piece.IPiece;
 import ai.mate.chess.util.Utils;
 
 import java.util.Scanner;
@@ -110,6 +111,41 @@ public final class Tui implements ITui {
     }
 
     @Override
+    public void printHumanPlayer(IPiece.Color playerColor) {
+        String winString = "\n┌────────────────────────┐\n" +
+                "│      Human Player      │\n" +
+                "├────────────────────────┤\n" +
+                "│         " + playerColor + "          │\n" +
+                "│  is the human player!  │\n" +
+                "└────────────────────────┘\n";
+        printMessage(winString);
+    }
+
+    @Override
+    public void printChoosePlayer() {
+        String winString = "\n┌────────────────────────┐\n" +
+                "│  Choose Human Player   │\n" +
+                "├────────────────────────┤\n" +
+                "│ (1)              WHITE │\n" +
+                "│ (2)              BLACK │\n" +
+                "└────────────────────────┘\n";
+        printMessage(winString);
+    }
+
+    @Override
+    public IPiece.Color getPlayerColorInput() {
+        char input;
+        do {
+            input = getUserInput();
+        } while (input != '1' && input != '2');
+
+        if (input == '1')
+            return IPiece.Color.WHITE;
+        else
+            return IPiece.Color.BLACK;
+    }
+
+    @Override
     public void printUnrecognizedCommand() {
         String winString = "\n┌────────────────────────┐\n" +
                 "│          Oops!         │\n" +
@@ -148,12 +184,13 @@ public final class Tui implements ITui {
     @Override
     public void printExit() {
         String winString = "┌────────────────────────┐\n" +
-                           "│          Exit          │\n" +
-                           "├────────────────────────┤\n" +
-                           "│          Bye!          │\n" +
-                           "└────────────────────────┘\n";
+                "│          Exit          │\n" +
+                "├────────────────────────┤\n" +
+                "│          Bye!          │\n" +
+                "└────────────────────────┘\n";
         printMessage(winString);
     }
+
 
     @Override
     public final void printBoard(Board board) {
