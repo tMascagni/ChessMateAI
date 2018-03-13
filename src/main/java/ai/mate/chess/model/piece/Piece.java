@@ -81,6 +81,11 @@ public abstract class Piece implements IPiece {
     }
 
     @Override
+    public int getScore() {
+        return score;
+    }
+
+    @Override
     public Color getColor() {
         return color;
     }

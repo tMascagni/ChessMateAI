@@ -24,6 +24,7 @@ public interface IPiece {
     int getSlayCount();
 
     String getName();
+    int getScore();
     Color getColor();
     Color getOpponentColor();
     int getId();
