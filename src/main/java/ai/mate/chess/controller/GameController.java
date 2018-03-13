@@ -6,12 +6,16 @@ import ai.mate.chess.model.BoardPosition;
 import ai.mate.chess.model.piece.IPiece;
 import ai.mate.chess.ui.ITui;
 import ai.mate.chess.ui.Tui;
+import ai.mate.chess.util.ChessTimer;
 
-public class GameController implements IGameController {
+import java.awt.event.ActionEvent;
+
+public class GameController implements IGameController, ChessTimer.EndOfTurnListener {
 
     private final ITui tui = Tui.getInstance();
 
     private Board board;
+    private ChessTimer timer;
 
     private static IGameController instance;
 
@@ -25,6 +29,8 @@ public class GameController implements IGameController {
 
     private GameController() {
         board = new Board();
+        timer = new ChessTimer(15000, this);
+        //timer.start();
     }
 
     public static synchronized IGameController getInstance() {
@@ -48,6 +54,11 @@ public class GameController implements IGameController {
 
             board.movePiece(fromPos, toPos);
         }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        System.out.println("15 seconds has passed!");
     }
 
 }

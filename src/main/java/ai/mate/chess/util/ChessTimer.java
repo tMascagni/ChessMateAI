@@ -1,32 +1,26 @@
 package ai.mate.chess.util;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import javax.swing.*;
+import java.awt.event.ActionListener;
 
 public final class ChessTimer {
 
     private final Timer timer;
-    private final TimerTask task;
-    private final long timeMillis;
 
+    public interface EndOfTurnListener extends ActionListener {
 
-    public ChessTimer(long timeMillis) {
-        this.timeMillis = timeMillis;
-        timer = new Timer();
-        task = new TimerTask() {
-            @Override
-            public void run() {
-                System.out.println("omfg!");
-            }
-        };
+    }
+
+    public ChessTimer(int timeMillis, EndOfTurnListener endOfTurnListener) {
+        timer = new Timer(timeMillis, endOfTurnListener);
     }
 
     public void start() {
-        timer.scheduleAtFixedRate(task, 0, timeMillis);
+        timer.start();
     }
 
     public void stop() {
-        timer.cancel();
+        timer.stop();
     }
 
 }
