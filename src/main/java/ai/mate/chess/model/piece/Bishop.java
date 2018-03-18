@@ -26,102 +26,141 @@ public final class Bishop extends Piece {
     }
 
     @Override
-    public boolean isValidMove(BoardPosition from, BoardPosition to, Board board) {
-        return true;
-    }
-
-    @Override
     public void populateMoves(Board board) {
         possibleMoves.clear();
 
+        /* Firstly, we need to get this piece's board position */
+        BoardPosition pieceBoardPos = board.getPieceBoardPos(this.ID);
+        Point piecePos = new Point(pieceBoardPos.arrayX, pieceBoardPos.arrayY);
 
+        populateNorthEastMoves(piecePos, board);
+        populateSouthEastMoves(piecePos, board);
+        populateSouthWestMoves(piecePos, board);
+        populateNorthWestMoves(piecePos, board);
     }
 
+    private void populateNorthEastMoves(Point piecePos, Board board) {
+        // x-, y+
+        int xPiece = piecePos.x;
+        int yPiece = piecePos.y;
 
-    public void moveNorthWest(Point point, Board board) {
-        int y = point.y - 1;
+        int x = xPiece;
 
-        System.out.print(getColor() + ": North West - ");
-        for (int i = point.x - 1; i >= 0; i--) {
+        for (int y = (yPiece + 1); y <= 7; y++) {
+            x--;
+            if (x < 0) break;
 
+            Point move = calculateDeltaMove(piecePos, new Point(x, y));
+            Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
 
-            if (y < 0) break;
-
-            if (board.getPiece(i, y) instanceof Empty) {
-                System.out.print(new Point(i, y) + ", ");
-
-                possibleMoves.add(new Point(i, y));
-                y--;
+            if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
+                /* legal move! */
+                possibleMoves.add(move);
+            } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
+                /* legal slay move! */
+                possibleMoves.add(move);
+                /* but nothing more */
+                break;
             } else {
+                /* Can't walk onto own pieces! */
                 break;
             }
 
+            //System.out.println("NORTH EAST: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
         }
-        System.out.println();
     }
 
-    public void moveSouthWest(Point point, Board board) {
-        int y = point.y - 1;
+    private void populateSouthEastMoves(Point piecePos, Board board) {
+        // x+, y+
+        int xPiece = piecePos.x;
+        int yPiece = piecePos.y;
 
-        System.out.print(getColor() + ": South West - ");
-        for (int i = point.x + 1; i <= 7; i++) {
+        int x = xPiece;
 
+        for (int y = (yPiece + 1); y <= 7; y++) {
+            x++;
+            if (x > 7) break;
 
-            if (y < 0) break;
+            Point move = calculateDeltaMove(piecePos, new Point(x, y));
+            Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
 
-            if (board.getPiece(i, y) instanceof Empty) {
-                System.out.print(new Point(i, y) + ", ");
-
-                possibleMoves.add(new Point(i, y));
-                y--;
-            } else {
+            if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
+                /* legal move! */
+                possibleMoves.add(move);
+            } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
+                /* legal slay move! */
+                possibleMoves.add(move);
+                /* but nothing more */
                 break;
-            }
-        }
-        System.out.println();
-    }
-
-    public void moveSouthEast(Point point, Board board) {
-        int y = point.y + 1;
-
-        System.out.print(getColor() + ": South East - ");
-        for (int i = point.x + 1; i <= 7; i++) {
-
-
-            if (y > 7) break;
-
-            if (board.getPiece(i, y) instanceof Empty) {
-                System.out.print(new Point(i, y) + ", ");
-
-                possibleMoves.add(new Point(i, y));
-                y++;
             } else {
+                /* Can't walk onto own pieces! */
                 break;
             }
 
+            //System.out.println("SOUTH EAST: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
         }
-        System.out.println();
     }
 
-    public void moveNorthEast(Point point, Board board) {
-        int y = point.y + 1;
+    private void populateSouthWestMoves(Point piecePos, Board board) {
+        // x+, y-
+        int xPiece = piecePos.x;
+        int yPiece = piecePos.y;
 
-        System.out.print(getColor() + ": North East - ");
-        for (int i = point.x - 1; i >= 0; i--) {
+        int x = xPiece;
 
+        for (int y = (yPiece - 1); y >= 0; y--) {
+            x++;
+            if (x > 7) break;
 
-            if (y > 7) break;
+            Point move = calculateDeltaMove(piecePos, new Point(x, y));
+            Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
 
-            if (board.getPiece(i, y) instanceof Empty) {
-                System.out.print(new Point(i, y) + ", ");
-
-                possibleMoves.add(new Point(i, y));
-                y++;
+            if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
+                /* legal move! */
+                possibleMoves.add(move);
+            } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
+                /* legal slay move! */
+                possibleMoves.add(move);
+                /* but nothing more */
+                break;
             } else {
+                /* Can't walk onto own pieces! */
                 break;
             }
 
+            //System.out.println("SOUTH WEST: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
         }
-        System.out.println();
     }
+
+    private void populateNorthWestMoves(Point piecePos, Board board) {
+        // x-, y-
+        int xPiece = piecePos.x;
+        int yPiece = piecePos.y;
+
+        int x = xPiece;
+
+        for (int y = (yPiece - 1); y >= 0; y--) {
+            x--;
+            if (x < 0) break;
+
+            Point move = calculateDeltaMove(piecePos, new Point(x, y));
+            Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
+
+            if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
+                /* legal move! */
+                possibleMoves.add(move);
+            } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
+                /* legal slay move! */
+                possibleMoves.add(move);
+                /* but nothing more */
+                break;
+            } else {
+                /* Can't walk onto own pieces! */
+                break;
+            }
+
+            //System.out.println("NORTH WEST: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
+        }
+    }
+
 }

@@ -37,22 +37,39 @@ public abstract class Piece implements IPiece {
 
     protected abstract void initName();
 
-    public abstract boolean isValidMove(BoardPosition from, BoardPosition to, Board board);
-
     public abstract void populateMoves(Board board);
+
+    @Override
+    public boolean isValidMove(BoardPosition from, BoardPosition to, Board board) {
+        int deltaX = calculateDeltaX(from.arrayX, to.arrayX);
+        int deltaY = calculateDeltaY(from.arrayY, to.arrayY);
+
+        for (Point p : possibleMoves)
+            if (p.x == deltaX && p.y == deltaY)
+                return true;
+
+        return false;
+    }
 
     @Override
     public int calculateDeltaX(int fromX, int toX) {
         int deltaX = toX - fromX;
-        System.out.println("deltaX: " + deltaX);
+        //System.out.println("deltaX: " + deltaX);
         return deltaX;
     }
 
     @Override
     public int calculateDeltaY(int fromY, int toY) {
         int deltaY = toY - fromY;
-        System.out.println("deltaY: " + deltaY);
+        //System.out.println("deltaY: " + deltaY);
         return deltaY;
+    }
+
+    @Override
+    public Point calculateDeltaMove(Point piecePos, Point move) {
+        int x = calculateDeltaX(piecePos.x, move.x);
+        int y = calculateDeltaY(piecePos.y, move.y);
+        return new Point(x, y);
     }
 
     @Override

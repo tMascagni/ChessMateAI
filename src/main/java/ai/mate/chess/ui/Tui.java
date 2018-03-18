@@ -133,6 +133,16 @@ public final class Tui implements ITui {
     }
 
     @Override
+    public void printIllegalAction(String msg) {
+        String winString = "\n┌────────────────────────┐\n" +
+                "│     Illegal Action     │\n" +
+                "├────────────────────────┤\n" +
+                "│        " + msg + "     │\n" +
+                "└────────────────────────┘\n\n";
+        printMessage(winString);
+    }
+
+    @Override
     public IPiece.Color getPlayerColorInput() {
         char input;
         do {

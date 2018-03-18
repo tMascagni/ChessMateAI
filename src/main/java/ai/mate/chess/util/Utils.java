@@ -10,7 +10,7 @@ public final class Utils {
     public static final int PAWN_SCORE = 1;
     public static final int KNIGHT_SCORE = 3;
     public static final int KING_SCORE = 100;
-    public static final int EMPTY_SCORE = Integer.MAX_VALUE;
+    public static final int EMPTY_SCORE = 0;
 
     private static Utils instance;
 

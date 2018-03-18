@@ -1,6 +1,8 @@
 package ai.mate.chess.model;
 
 import ai.mate.chess.model.piece.*;
+import ai.mate.chess.ui.ITui;
+import ai.mate.chess.ui.Tui;
 
 public final class Board {
 
@@ -13,6 +15,10 @@ public final class Board {
     private IPiece.Color playerColor = IPiece.Color.WHITE;
     private IPiece[] whiteLossList, blackLossList;
     private IPiece[][] board;
+
+    private final ITui tui = Tui.getInstance();
+
+    private String latestMove = "                      ";
 
     /* Normal constructor */
     public Board() {
@@ -43,7 +49,7 @@ public final class Board {
          * move an 'Empty' piece.
          */
         if (fromPiece instanceof Empty) {
-            System.out.println("Illegal move: No piece at position: [" + from.file + ", " + from.rank + "]!");
+            tui.printIllegalAction("No piece at position: [" + from.file + ", " + from.rank + "]!");
             return false;
         }
 
@@ -52,7 +58,7 @@ public final class Board {
          * then return false, and vice versa.
          */
         if (!fromPiece.getColor().equals(playerColor)) {
-            System.out.println("Illegal move: Can't move opponents piece!");
+            tui.printIllegalAction("Can't move opponents piece!");
             return false;
         }
 
@@ -60,7 +66,7 @@ public final class Board {
          * You are not allowed to move onto yourself.
          */
         if (to.rank == from.rank && to.file == from.file) {
-            System.out.println("Illegal move: Can't move onto the same piece!");
+            tui.printIllegalAction("Can't move onto the same piece!");
             return false;
         }
 
@@ -76,16 +82,18 @@ public final class Board {
         boolean isValidMove = fromPiece.isValidMove(from, to, this);
 
         // Debugging purposes
+        /*
         System.out.println();
         System.out.println("fromPiece: " + fromPiece.toString());
         System.out.println("toPiece: " + toPiece.toString());
         System.out.println("Player: " + playerColor);
         System.out.println("isValidMove: " + isValidMove);
         System.out.println();
+        */
 
         /* If the move is not valid, let the player know and then return false. */
         if (!isValidMove) {
-            System.out.println("Illegal move: isValidMove: " + isValidMove);
+            tui.printIllegalAction("Illegal move!");
             return false;
         }
 
@@ -104,7 +112,7 @@ public final class Board {
              * If the player is trying to move a piece onto one of its own,
              * it is illegal and false is returned.
              */
-            System.out.println("Illegal Move: Cannot move onto own piece!");
+            tui.printIllegalAction("Can't move onto own piece!");
             return false;
         } else if (!toPiece.getColor().equals(playerColor)) {
             /*
@@ -135,6 +143,9 @@ public final class Board {
          */
         setPiece(new Empty(), from.arrayX, from.arrayY);
 
+        /* Set latest move String */
+        latestMove = playerColor.name() + ": [" + from.file + ", " + from.rank + "] → [" + to.file + ", " + to.rank + "]";
+
         /* Since the move have been a success, we shall switch the player. */
         switchPlayer();
 
@@ -143,6 +154,17 @@ public final class Board {
     }
 
     public final void reset() {
+        /*
+        board = new IPiece[][]{
+                {new Bishop(IPiece.Color.BLACK), new Bishop(IPiece.Color.WHITE), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
+                {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
+                {new Empty(), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.BLACK), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
+                {new Empty(), new Empty(), new Rook(IPiece.Color.WHITE), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
+                {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
+                {new Empty(), new Empty(), new Empty(), new Queen(IPiece.Color.WHITE), new Empty(), new Empty(), new Empty(), new Empty()},
+                {new Empty(), new Rook(IPiece.Color.BLACK), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
+                {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()}};
+*/
         board = new IPiece[][]{
                 {new Rook(IPiece.Color.BLACK), new Knight(IPiece.Color.BLACK), new Bishop(IPiece.Color.BLACK), new Queen(IPiece.Color.BLACK), new King(IPiece.Color.BLACK), new Bishop(IPiece.Color.BLACK), new Knight(IPiece.Color.BLACK), new Rook(IPiece.Color.BLACK)},
                 {new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK)},
@@ -171,28 +193,32 @@ public final class Board {
                 "│                                                               │    │                            " + getLossPieceText(IPiece.Color.WHITE, 0) + "         " + getLossPieceText(IPiece.Color.BLACK, 0) + "           │\n" +
                 "│       ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐       │    │ Move: " + globalMoveCount + "                  " + getLossPieceText(IPiece.Color.WHITE, 1) + "         " + getLossPieceText(IPiece.Color.BLACK, 1) + "           │\n" +
                 "│   8   │ " + board[0][0] + " │ " + board[0][1] + " │ " + board[0][2] + " │ " + board[0][3] + " │ " + board[0][4] + " │ " + board[0][5] + " │ " + board[0][6] + " │ " + board[0][7] + " │   8   │    │                            " + getLossPieceText(IPiece.Color.WHITE, 2) + "         " + getLossPieceText(IPiece.Color.BLACK, 2) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ White Clock:               " + getLossPieceText(IPiece.Color.WHITE, 3) + "         " + getLossPieceText(IPiece.Color.BLACK, 3) + "           │\n" +
-                "│   7   │ " + board[1][0] + " │ " + board[1][1] + " │ " + board[1][2] + " │ " + board[1][3] + " │ " + board[1][4] + " │ " + board[1][5] + " │ " + board[1][6] + " │ " + board[1][7] + " │   7   │    │                            " + getLossPieceText(IPiece.Color.WHITE, 4) + "         " + getLossPieceText(IPiece.Color.BLACK, 4) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ Black Clock:               " + getLossPieceText(IPiece.Color.WHITE, 5) + "         " + getLossPieceText(IPiece.Color.BLACK, 5) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ Latest Move:               " + getLossPieceText(IPiece.Color.WHITE, 3) + "         " + getLossPieceText(IPiece.Color.BLACK, 3) + "           │\n" +
+                "│   7   │ " + board[1][0] + " │ " + board[1][1] + " │ " + board[1][2] + " │ " + board[1][3] + " │ " + board[1][4] + " │ " + board[1][5] + " │ " + board[1][6] + " │ " + board[1][7] + " │   7   │    │ " + latestMove + "     " + getLossPieceText(IPiece.Color.WHITE, 4) + "         " + getLossPieceText(IPiece.Color.BLACK, 4) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                            " + getLossPieceText(IPiece.Color.WHITE, 5) + "         " + getLossPieceText(IPiece.Color.BLACK, 5) + "           │\n" +
                 "│   6   │ " + board[2][0] + " │ " + board[2][1] + " │ " + board[2][2] + " │ " + board[2][3] + " │ " + board[2][4] + " │ " + board[2][5] + " │ " + board[2][6] + " │ " + board[2][7] + " │   6   │    │                            " + getLossPieceText(IPiece.Color.WHITE, 6) + "         " + getLossPieceText(IPiece.Color.BLACK, 6) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ White Pieces: " + getPieceCount(IPiece.Color.WHITE) + "           " + getLossPieceText(IPiece.Color.WHITE, 7) + "         " + getLossPieceText(IPiece.Color.BLACK, 7) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                            " + getLossPieceText(IPiece.Color.WHITE, 7) + "         " + getLossPieceText(IPiece.Color.BLACK, 7) + "           │\n" +
                 "│   5   │ " + board[3][0] + " │ " + board[3][1] + " │ " + board[3][2] + " │ " + board[3][3] + " │ " + board[3][4] + " │ " + board[3][5] + " │ " + board[3][6] + " │ " + board[3][7] + " │   5   │    │                            " + getLossPieceText(IPiece.Color.WHITE, 8) + "         " + getLossPieceText(IPiece.Color.BLACK, 8) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ Black Pieces: " + getPieceCount(IPiece.Color.BLACK) + "          " + getLossPieceText(IPiece.Color.WHITE, 9) + "        " + getLossPieceText(IPiece.Color.BLACK, 9) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                           " + getLossPieceText(IPiece.Color.WHITE, 9) + "        " + getLossPieceText(IPiece.Color.BLACK, 9) + "           │\n" +
                 "│   4   │ " + board[4][0] + " │ " + board[4][1] + " │ " + board[4][2] + " │ " + board[4][3] + " │ " + board[4][4] + " │ " + board[4][5] + " │ " + board[4][6] + " │ " + board[4][7] + " │   4   │    │                           " + getLossPieceText(IPiece.Color.WHITE, 10) + "        " + getLossPieceText(IPiece.Color.BLACK, 10) + "           │\n" +
                 "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                           " + getLossPieceText(IPiece.Color.WHITE, 11) + "        " + getLossPieceText(IPiece.Color.BLACK, 11) + "           │\n" +
                 "│   3   │ " + board[5][0] + " │ " + board[5][1] + " │ " + board[5][2] + " │ " + board[5][3] + " │ " + board[5][4] + " │ " + board[5][5] + " │ " + board[5][6] + " │ " + board[5][7] + " │   3   │    │                           " + getLossPieceText(IPiece.Color.WHITE, 12) + "        " + getLossPieceText(IPiece.Color.BLACK, 12) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                           " + getLossPieceText(IPiece.Color.WHITE, 13) + "        " + getLossPieceText(IPiece.Color.BLACK, 13) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ White Clock:              " + getLossPieceText(IPiece.Color.WHITE, 13) + "        " + getLossPieceText(IPiece.Color.BLACK, 13) + "           │\n" +
                 "│   2   │ " + board[6][0] + " │ " + board[6][1] + " │ " + board[6][2] + " │ " + board[6][3] + " │ " + board[6][4] + " │ " + board[6][5] + " │ " + board[6][6] + " │ " + board[6][7] + " │   2   │    │                           " + getLossPieceText(IPiece.Color.WHITE, 14) + "        " + getLossPieceText(IPiece.Color.BLACK, 14) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                           " + getLossPieceText(IPiece.Color.WHITE, 15) + "        " + getLossPieceText(IPiece.Color.BLACK, 15) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ Black Clock:              " + getLossPieceText(IPiece.Color.WHITE, 15) + "        " + getLossPieceText(IPiece.Color.BLACK, 15) + "           │\n" +
                 "│   1   │ " + board[7][0] + " │ " + board[7][1] + " │ " + board[7][2] + " │ " + board[7][3] + " │ " + board[7][4] + " │ " + board[7][5] + " │ " + board[7][6] + " │ " + board[7][7] + " │   1   │    │                                                            │\n" +
-                "│       └─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘       │    │                                                            │\n" +
+                "│       └─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘       │    │ White Pieces: " + getPieceCount(IPiece.Color.WHITE) + "                                           │\n" +
                 "│                                                               │    │                                                            │\n" +
-                "│          A     B     C     D     E     F     G     H          │    │                                                            │\n" +
+                "│          A     B     C     D     E     F     G     H          │    │ Black Pieces: " + getPieceCount(IPiece.Color.BLACK) + "                                           │\n" +
                 "└───────────────────────────────────────────────────────────────┘    └────────────────────────────────────────────────────────────┘\n";
     }
 
     public IPiece getPiece(int x, int y) {
         return board[x][y];
+    }
+
+    public IPiece getPiece(BoardPosition boardPos) {
+        return board[boardPos.arrayX][boardPos.arrayY];
     }
 
     public BoardPosition getPieceBoardPos(int id) {
@@ -201,6 +227,11 @@ public final class Board {
                 if (board[i][j].getId() == id)
                     return new BoardPosition(i, j);
         return new BoardPosition(-1, -1);
+    }
+
+    public boolean isValidFromPos(BoardPosition boardPosition) {
+        IPiece piece = getPiece(boardPosition);
+        return piece.getColor().equals(playerColor);
     }
 
     private void setPiece(IPiece piece, int x, int y) {

@@ -43,7 +43,17 @@ public class GameController implements IGameController {
         while (true) {
             tui.printBoard(board);
 
-            BoardPosition fromPos = tui.getBoardPositionInput();
+            BoardPosition fromPos;
+
+            while (true) {
+                fromPos = tui.getBoardPositionInput();
+
+                if (board.isValidFromPos(fromPos))
+                    break;
+
+                tui.printIllegalAction("Try again!");
+            }
+
             BoardPosition toPos = tui.getBoardPositionInput();
 
             board.movePiece(fromPos, toPos);

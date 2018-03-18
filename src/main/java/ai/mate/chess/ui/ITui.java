@@ -14,6 +14,7 @@ public interface ITui {
     void printMenu();
     void printHumanPlayer(IPiece.Color playerColor);
     void printChoosePlayer();
+    void printIllegalAction(String msg);
     IPiece.Color getPlayerColorInput();
     void printUnrecognizedCommand();
     void printWin();

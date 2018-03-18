@@ -25,14 +25,12 @@ public final class King extends Piece {
 
     @Override
     public boolean isValidMove(BoardPosition from, BoardPosition to, Board board) {
-        return true;
+        return true; // DO NOT OVERRIDE THIS WHEN PIECE MOVEMENT WORKS!
     }
 
     @Override
     public void populateMoves(Board board) {
         possibleMoves.clear();
-
-
     }
 
 }

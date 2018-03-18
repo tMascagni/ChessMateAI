@@ -3,6 +3,8 @@ package ai.mate.chess.model.piece;
 import ai.mate.chess.model.Board;
 import ai.mate.chess.model.BoardPosition;
 
+import java.awt.*;
+
 /*
  * Interface for the general chess piece.
  */
@@ -16,6 +18,7 @@ public interface IPiece {
 
     int calculateDeltaX(int fromX, int toX);
     int calculateDeltaY(int fromY, int toY);
+    Point calculateDeltaMove(Point piecePos, Point move);
 
     void incMoveCount();
     void incSlayCount();

@@ -25,18 +25,6 @@ public final class Pawn extends Piece {
             name = TextHandler.BLACK_PAWN;
     }
 
-    @Override
-    public boolean isValidMove(BoardPosition from, BoardPosition to, Board board) {
-        int deltaX = calculateDeltaX(from.arrayX, to.arrayX);
-        int deltaY = calculateDeltaY(from.arrayY, to.arrayY);
-
-        for (Point p : possibleMoves)
-            if (p.x == deltaX && p.y == deltaY)
-                return true;
-
-        return false;
-    }
-
     /*
      * We populate the moves in array basis.
      * REMEMBER THIS! A white pawn can move -2 up in the array
