@@ -40,6 +40,16 @@ public final class Knight extends Piece {
     }
 
     private void populateNorthMoves(Point piecePos, Board board) {
+        Point left = new Point();
+        Point right = new Point();
+
+        left.x = piecePos.x - 2;
+        left.y = piecePos.y + 1;
+
+        right.x = piecePos.x - 2;
+        right.y = piecePos.y + 1;
+
+
 
     }
 
