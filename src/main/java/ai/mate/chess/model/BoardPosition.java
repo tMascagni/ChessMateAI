@@ -48,9 +48,7 @@ public final class BoardPosition {
 
     private char calculateRank(int arrayX) {
         int decRank = (X_OFFSET - arrayX);
-        char rank = (char) (decRank + 48);
-
-        return rank;
+        return (char) (decRank + 48);
     }
 
     private int calculateX(char rank) {

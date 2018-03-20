@@ -5,6 +5,8 @@ import ai.mate.chess.model.Board;
 import ai.mate.chess.model.BoardPosition;
 import ai.mate.chess.util.Utils;
 
+import java.awt.*;
+
 /*
  * Haest
  */
@@ -24,13 +26,33 @@ public final class Knight extends Piece {
     }
 
     @Override
-    public boolean isValidMove(BoardPosition from, BoardPosition to, Board board) {
-        return true;  // DO NOT OVERRIDE THIS WHEN PIECE MOVEMENT WORKS!
-    }
-
-    @Override
     public void populateMoves(Board board) {
         possibleMoves.clear();
+
+        /* Firstly, we need to get this piece's board position */
+        BoardPosition pieceBoardPos = board.getPieceBoardPos(this.ID);
+        Point piecePos = new Point(pieceBoardPos.arrayX, pieceBoardPos.arrayY);
+
+        populateNorthMoves(piecePos, board);
+        populateSouthMoves(piecePos, board);
+        populateEastMoves(piecePos, board);
+        populateWestMoves(piecePos, board);
+    }
+
+    private void populateNorthMoves(Point piecePos, Board board) {
+
+    }
+
+    private void populateEastMoves(Point piecePos, Board board) {
+
+    }
+
+    private void populateSouthMoves(Point piecePos, Board board) {
+
+    }
+
+    private void populateWestMoves(Point piecePos, Board board) {
+
     }
 
 }

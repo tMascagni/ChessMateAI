@@ -137,7 +137,7 @@ public final class Tui implements ITui {
         String winString = "\n┌────────────────────────┐\n" +
                 "│     Illegal Action     │\n" +
                 "├────────────────────────┤\n" +
-                "│        " + msg + "     │\n" +
+                "│       " + msg + "     │\n" +
                 "└────────────────────────┘\n\n";
         printMessage(winString);
     }

@@ -2,6 +2,7 @@ package ai.mate.chess.util;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.util.concurrent.TimeUnit;
 
 public final class ChessTimer {
 
@@ -11,8 +12,9 @@ public final class ChessTimer {
 
     }
 
-    public ChessTimer(int timeMillis, EndOfTurnListener endOfTurnListener) {
-        timer = new Timer(timeMillis, endOfTurnListener);
+    public ChessTimer(int timeSeconds, EndOfTurnListener endOfTurnListener) {
+        int millis = (int) TimeUnit.SECONDS.toMillis(timeSeconds);
+        timer = new Timer(millis, endOfTurnListener);
     }
 
     public void start() {
