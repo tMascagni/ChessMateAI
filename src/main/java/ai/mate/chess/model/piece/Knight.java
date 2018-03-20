@@ -63,7 +63,7 @@ public final class Knight extends Piece {
         Point moveRight = calculateDeltaMove(piecePos, right);
 
 
-        System.out.println("NORTH: Moves (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
+        //System.out.println("NORTH: Moves (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
 
     }
 
