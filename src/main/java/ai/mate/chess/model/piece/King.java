@@ -110,6 +110,9 @@ public final class King extends Piece {
         int x = piecePos.x + xPiece;
         int y = yPiece + 1;
 
+        if ((x < 0 || x > 7) || (y < 0 || y > 7))
+            return;
+
         Point move = calculateDeltaMove(piecePos, new Point(x, y));
         Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
 
@@ -134,6 +137,9 @@ public final class King extends Piece {
         // 0, -y
         int x = piecePos.x + xPiece;
         int y = yPiece - 1;
+
+        if ((x < 0 || x > 7) || (y < 0 || y > 7))
+            return;
 
         Point move = calculateDeltaMove(piecePos, new Point(x, y));
         Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);

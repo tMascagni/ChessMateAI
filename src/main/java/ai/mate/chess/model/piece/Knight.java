@@ -43,13 +43,27 @@ public final class Knight extends Piece {
         Point left = new Point();
         Point right = new Point();
 
+        /* New positions are north move */
         left.x = piecePos.x - 2;
         left.y = piecePos.y + 1;
 
         right.x = piecePos.x - 2;
         right.y = piecePos.y + 1;
 
+        /* Check left pos bounds */
+        if ((left.x < 0 || left.x > 7) || (left.y < 0 || left.y > 7))
+            return;
 
+        /* Check right pos bounds */
+        if ((right.x < 0 || right.x > 7) || (right.y < 0 || right.y > 7))
+            return;
+
+        /* Delta moves */
+        Point moveLeft = calculateDeltaMove(piecePos, left);
+        Point moveRight = calculateDeltaMove(piecePos, right);
+
+
+        System.out.println("NORTH: Moves (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
 
     }
 
