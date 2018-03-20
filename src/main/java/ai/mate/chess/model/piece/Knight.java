@@ -40,43 +40,171 @@ public final class Knight extends Piece {
     }
 
     private void populateNorthMoves(Point piecePos, Board board) {
-        Point left = new Point();
-        Point right = new Point();
+        Point posAfterLeftMove = new Point();
+        Point posAfterRightMove = new Point();
 
         /* New positions are north move */
-        left.x = piecePos.x - 2;
-        left.y = piecePos.y - 1;
+        posAfterLeftMove.x = piecePos.x - 2;
+        posAfterLeftMove.y = piecePos.y - 1;
 
-        right.x = piecePos.x - 2;
-        right.y = piecePos.y + 1;
+        posAfterRightMove.x = piecePos.x - 2;
+        posAfterRightMove.y = piecePos.y + 1;
 
         /* Check left pos bounds */
-        if ((left.x < 0 || left.x > 7) || (left.y < 0 || left.y > 7))
+        if ((posAfterLeftMove.x < 0 || posAfterLeftMove.x > 7) || (posAfterLeftMove.y < 0 || posAfterLeftMove.y > 7))
             return;
 
         /* Check right pos bounds */
-        if ((right.x < 0 || right.x > 7) || (right.y < 0 || right.y > 7))
+        if ((posAfterRightMove.x < 0 || posAfterRightMove.x > 7) || (posAfterRightMove.y < 0 || posAfterRightMove.y > 7))
             return;
 
         /* Delta moves */
-        Point moveLeft = calculateDeltaMove(piecePos, left);
-        Point moveRight = calculateDeltaMove(piecePos, right);
+        Point moveLeft = calculateDeltaMove(piecePos, posAfterLeftMove);
+        Point moveRight = calculateDeltaMove(piecePos, posAfterRightMove);
 
+        /* Left */
+        if (board.getPiece(posAfterLeftMove.x, posAfterLeftMove.y) instanceof Empty) {
+            /* Legal move! */
+            possibleMoves.add(moveLeft);
+        } else if (board.getPiece(posAfterLeftMove.x, posAfterLeftMove.y).getColor().equals(getOpponentColor())) {
+            /* Legal slay move! */
+            possibleMoves.add(moveLeft);
+        }
 
-        System.out.println("NORTH: Moves LEFT: (" + left.x + ", " + left.y + ") RIGHT: (" + right.x + ", " + right.y + ") Position after move: LEFT: (" + moveLeft.x + ", " + moveLeft.y + ") RIGHT: (" + moveRight.x + ", " + moveRight.y + ")");
+        /* Right */
+        if (board.getPiece(posAfterRightMove.x, posAfterRightMove.y) instanceof Empty) {
+            /* Legal move! */
+            possibleMoves.add(moveRight);
+        } else if (board.getPiece(posAfterRightMove.x, posAfterRightMove.y).getColor().equals(getOpponentColor())) {
+            /* Legal slay move! */
+            possibleMoves.add(moveRight);
+        }
 
+        //System.out.println("NORTH: Moves LEFT: (" + posAfterLeftMove.x + ", " + posAfterLeftMove.y + ") RIGHT: (" + posAfterRightMove.x + ", " + posAfterRightMove.y + ") Position after move: LEFT: (" + moveLeft.x + ", " + moveLeft.y + ") RIGHT: (" + moveRight.x + ", " + moveRight.y + ")");
     }
 
     private void populateEastMoves(Point piecePos, Board board) {
+        Point posAfterNorthMove = new Point();
+        Point posAfterSouthMove = new Point();
 
+        /* New positions are north move */
+        posAfterNorthMove.x = piecePos.x - 1;
+        posAfterNorthMove.y = piecePos.y + 2;
+
+        posAfterSouthMove.x = piecePos.x + 1;
+        posAfterSouthMove.y = piecePos.y + 2;
+
+        /* Check left pos bounds */
+        if ((posAfterNorthMove.x < 0 || posAfterNorthMove.x > 7) || (posAfterNorthMove.y < 0 || posAfterNorthMove.y > 7))
+            return;
+
+        /* Delta moves */
+        Point moveNorth = calculateDeltaMove(piecePos, posAfterNorthMove);
+        Point moveSouth = calculateDeltaMove(piecePos, posAfterSouthMove);
+
+        /* North */
+        if (board.getPiece(posAfterNorthMove.x, posAfterNorthMove.y) instanceof Empty) {
+            /* Legal move! */
+            possibleMoves.add(moveNorth);
+        } else if (board.getPiece(posAfterNorthMove.x, posAfterNorthMove.y).getColor().equals(getOpponentColor())) {
+            /* Legal slay move! */
+            possibleMoves.add(moveNorth);
+        }
+
+        /* South */
+        if (board.getPiece(posAfterSouthMove.x, posAfterSouthMove.y) instanceof Empty) {
+            /* Legal move! */
+            possibleMoves.add(moveSouth);
+        } else if (board.getPiece(posAfterSouthMove.x, posAfterSouthMove.y).getColor().equals(getOpponentColor())) {
+            /* Legal slay move! */
+            possibleMoves.add(moveSouth);
+        }
+
+        //System.out.println("EAST: Moves NORTH: (" + posAfterNorthMove.x + ", " + posAfterNorthMove.y + ") SOUTH: (" + posAfterSouthMove.x + ", " + posAfterSouthMove.y + ") Position after move: NORTH: (" + moveNorth.x + ", " + moveNorth.y + ") SOUTH: (" + moveSouth.x + ", " + moveSouth.y + ")");
     }
 
     private void populateSouthMoves(Point piecePos, Board board) {
+        Point posAfterLeftMove = new Point();
+        Point posAfterRightMove = new Point();
 
+        /* New positions are north move */
+        posAfterLeftMove.x = piecePos.x + 2;
+        posAfterLeftMove.y = piecePos.y - 1;
+
+        posAfterRightMove.x = piecePos.x + 2;
+        posAfterRightMove.y = piecePos.y + 1;
+
+        /* Check left pos bounds */
+        if ((posAfterLeftMove.x < 0 || posAfterLeftMove.x > 7) || (posAfterLeftMove.y < 0 || posAfterLeftMove.y > 7))
+            return;
+
+        /* Check right pos bounds */
+        if ((posAfterRightMove.x < 0 || posAfterRightMove.x > 7) || (posAfterRightMove.y < 0 || posAfterRightMove.y > 7))
+            return;
+
+        /* Delta moves */
+        Point moveLeft = calculateDeltaMove(piecePos, posAfterLeftMove);
+        Point moveRight = calculateDeltaMove(piecePos, posAfterRightMove);
+
+        /* Left */
+        if (board.getPiece(posAfterLeftMove.x, posAfterLeftMove.y) instanceof Empty) {
+            /* Legal move! */
+            possibleMoves.add(moveLeft);
+        } else if (board.getPiece(posAfterLeftMove.x, posAfterLeftMove.y).getColor().equals(getOpponentColor())) {
+            /* Legal slay move! */
+            possibleMoves.add(moveLeft);
+        }
+
+        /* Right */
+        if (board.getPiece(posAfterRightMove.x, posAfterRightMove.y) instanceof Empty) {
+            /* Legal move! */
+            possibleMoves.add(moveRight);
+        } else if (board.getPiece(posAfterRightMove.x, posAfterRightMove.y).getColor().equals(getOpponentColor())) {
+            /* Legal slay move! */
+            possibleMoves.add(moveRight);
+        }
+
+        //System.out.println("SOUTH: Moves LEFT: (" + posAfterLeftMove.x + ", " + posAfterLeftMove.y + ") RIGHT: (" + posAfterRightMove.x + ", " + posAfterRightMove.y + ") Position after move: LEFT: (" + moveLeft.x + ", " + moveLeft.y + ") RIGHT: (" + moveRight.x + ", " + moveRight.y + ")");
     }
 
     private void populateWestMoves(Point piecePos, Board board) {
+        Point posAfterNorthMove = new Point();
+        Point posAfterSouthMove = new Point();
 
+        /* New positions are north move */
+        posAfterNorthMove.x = piecePos.x - 1;
+        posAfterNorthMove.y = piecePos.y - 2;
+
+        posAfterSouthMove.x = piecePos.x + 1;
+        posAfterSouthMove.y = piecePos.y - 2;
+
+        /* Check left pos bounds */
+        if ((posAfterNorthMove.x < 0 || posAfterNorthMove.x > 7) || (posAfterNorthMove.y < 0 || posAfterNorthMove.y > 7))
+            return;
+
+        /* Delta moves */
+        Point moveNorth = calculateDeltaMove(piecePos, posAfterNorthMove);
+        Point moveSouth = calculateDeltaMove(piecePos, posAfterSouthMove);
+
+        /* North */
+        if (board.getPiece(posAfterNorthMove.x, posAfterNorthMove.y) instanceof Empty) {
+            /* Legal move! */
+            possibleMoves.add(moveNorth);
+        } else if (board.getPiece(posAfterNorthMove.x, posAfterNorthMove.y).getColor().equals(getOpponentColor())) {
+            /* Legal slay move! */
+            possibleMoves.add(moveNorth);
+        }
+
+        /* South */
+        if (board.getPiece(posAfterSouthMove.x, posAfterSouthMove.y) instanceof Empty) {
+            /* Legal move! */
+            possibleMoves.add(moveSouth);
+        } else if (board.getPiece(posAfterSouthMove.x, posAfterSouthMove.y).getColor().equals(getOpponentColor())) {
+            /* Legal slay move! */
+            possibleMoves.add(moveSouth);
+        }
+
+        //System.out.println("WEST: Moves NORTH: (" + posAfterNorthMove.x + ", " + posAfterNorthMove.y + ") SOUTH: (" + posAfterSouthMove.x + ", " + posAfterSouthMove.y + ") Position after move: NORTH: (" + moveNorth.x + ", " + moveNorth.y + ") SOUTH: (" + moveSouth.x + ", " + moveSouth.y + ")");
     }
 
 }

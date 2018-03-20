@@ -162,7 +162,7 @@ public final class Board {
                 {new Empty(), new Empty(), new Rook(IPiece.Color.WHITE), new Empty(), new Knight(IPiece.Color.WHITE), new Empty(), new Empty(), new Empty()},
                 {new Empty(), new Empty(), new Empty(), new Empty(), new King(IPiece.Color.WHITE), new Empty(), new Empty(), new Empty()},
                 {new Empty(), new Empty(), new Empty(), new Queen(IPiece.Color.WHITE), new Empty(), new Empty(), new Empty(), new Empty()},
-                {new Empty(), new Knight(IPiece.Color.BLACK), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
+                {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
                 {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()}};
 
 /*
