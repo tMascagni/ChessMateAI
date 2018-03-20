@@ -6,12 +6,15 @@ import ai.mate.chess.model.piece.IPiece;
 
 public interface ITui {
     char getUserInput();
+    char getPromotionSelection();
     BoardPosition getBoardPositionInput();
     void printPressEnter();
     void printArrow();
+    void printPromotionSuccess(char selection, IPiece.Color playerColor);
     void printArrow(String postfix);
     void printStartScreen();
     void printMenu();
+    void printPromotion();
     void printHumanPlayer(IPiece.Color playerColor);
     void printChoosePlayer();
     void printIllegalAction(String msg);

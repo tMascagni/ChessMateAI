@@ -55,6 +55,36 @@ public final class Tui implements ITui {
     }
 
     @Override
+    public void printPromotionSuccess(char selection, IPiece.Color playerColor) {
+        String promotedPiece = "Empty";
+
+        switch (selection) {
+            case '1':
+                promotedPiece = "Queen";
+                break;
+            case '2':
+                promotedPiece = "Knight";
+                break;
+            case '3':
+                promotedPiece = "Rook";
+                break;
+            case '4':
+                promotedPiece = "Bishop";
+            default:
+                break;
+        }
+
+        String menuString = "\n┌────────────────────────┐\n" +
+                "│        Promotion       │\n" +
+                "├────────────────────────┤\n" +
+                "│ " + playerColor + " has   │\n" +
+                "│ promoted a Pawn to a   │\n" +
+                "│ " + promotedPiece + "!      │\n" +
+                "└────────────────────────┘\n";
+        printMessage(menuString);
+    }
+
+    @Override
     public void printArrow(String postfix) {
         printMessage("[" + postfix + "] " + Utils.ARROW + " ");
     }
@@ -106,6 +136,21 @@ public final class Tui implements ITui {
                 "│ (2)      Match History │\n" +
                 "│                        │\n" +
                 "│ (0)      Exit          │\n" +
+                "└────────────────────────┘\n";
+        printMessage(menuString);
+    }
+
+    @Override
+    public void printPromotion() {
+        String menuString = "\n┌────────────────────────┐\n" +
+                "│        Promotion       │\n" +
+                "├────────────────────────┤\n" +
+                "│  Choose your officer!  │\n" +
+                "├────────────────────────┤\n" +
+                "│ (1)           Queen    │\n" +
+                "│ (2)           Knight   │\n" +
+                "│ (3)           Rook     │\n" +
+                "│ (4)           Bishop   │\n" +
                 "└────────────────────────┘\n";
         printMessage(menuString);
     }
@@ -256,6 +301,31 @@ public final class Tui implements ITui {
                 continue;
             }
         } while (!Character.isDigit(ch) || (Character.getNumericValue(ch) < 1 || Character.getNumericValue(ch) > 8));
+        return ch;
+    }
+
+    @Override
+    public char getPromotionSelection() {
+        return getNumericCharForPromotion("Selection");
+    }
+
+    private char getNumericCharForPromotion(String arrowMsg) {
+        char ch = 'X';
+
+        do {
+            printArrow(arrowMsg);
+            try {
+                String str = scanner.nextLine();
+
+                if (str.length() > 1)
+                    continue;
+
+                ch = str.charAt(0);
+
+            } catch (Exception e) {
+                continue;
+            }
+        } while (!Character.isDigit(ch) || (Character.getNumericValue(ch) < 1 || Character.getNumericValue(ch) > 4));
         return ch;
     }
 

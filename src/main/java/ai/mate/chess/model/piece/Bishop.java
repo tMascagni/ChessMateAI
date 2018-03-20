@@ -48,7 +48,9 @@ public final class Bishop extends Piece {
 
         for (int y = (yPiece + 1); y <= 7; y++) {
             x--;
-            if (x < 0) break;
+
+            if ((x < 0 || x > 7) || (y < 0 || y > 7))
+                return;
 
             Point move = calculateDeltaMove(piecePos, new Point(x, y));
             Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
@@ -79,7 +81,9 @@ public final class Bishop extends Piece {
 
         for (int y = (yPiece + 1); y <= 7; y++) {
             x++;
-            if (x > 7) break;
+
+            if ((x < 0 || x > 7) || (y < 0 || y > 7))
+                return;
 
             Point move = calculateDeltaMove(piecePos, new Point(x, y));
             Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
@@ -110,7 +114,9 @@ public final class Bishop extends Piece {
 
         for (int y = (yPiece - 1); y >= 0; y--) {
             x++;
-            if (x > 7) break;
+
+            if ((x < 0 || x > 7) || (y < 0 || y > 7))
+                return;
 
             Point move = calculateDeltaMove(piecePos, new Point(x, y));
             Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
@@ -141,7 +147,9 @@ public final class Bishop extends Piece {
 
         for (int y = (yPiece - 1); y >= 0; y--) {
             x--;
-            if (x < 0) break;
+
+            if ((x < 0 || x > 7) || (y < 0 || y > 7))
+                return;
 
             Point move = calculateDeltaMove(piecePos, new Point(x, y));
             Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);

@@ -64,13 +64,9 @@ public final class King extends Piece {
             /* legal slay move! */
             possibleMoves.add(move);
             /* but nothing more */
-        } else {
-            /* Can't walk onto own pieces! */
-
         }
 
         //System.out.println("NORTH: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
-
     }
 
     private void populateSouthMoves(Point piecePos, Board board) {
@@ -94,12 +90,9 @@ public final class King extends Piece {
             /* legal slay move! */
             possibleMoves.add(move);
             /* but nothing more */
-        } else {
-            /* Can't walk onto own pieces! */
         }
 
         //System.out.println("SOUTH: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
-
     }
 
     private void populateEastMoves(Point piecePos, Board board) {
@@ -123,8 +116,6 @@ public final class King extends Piece {
             /* legal slay move! */
             possibleMoves.add(move);
             /* but nothing more */
-        } else {
-            /* Can't walk onto own pieces! */
         }
 
         //System.out.println("EAST: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
@@ -151,8 +142,6 @@ public final class King extends Piece {
             /* legal slay move! */
             possibleMoves.add(move);
             /* but nothing more */
-        } else {
-            /* Can't walk onto own pieces! */
         }
 
         //System.out.println("WEST: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
@@ -179,8 +168,6 @@ public final class King extends Piece {
             /* legal slay move! */
             possibleMoves.add(move);
             /* but nothing more */
-        } else {
-            /* Can't walk onto own pieces! */
         }
 
         //System.out.println("NORTH EAST: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
@@ -207,8 +194,6 @@ public final class King extends Piece {
             /* legal slay move! */
             possibleMoves.add(move);
             /* but nothing more */
-        } else {
-            /* Can't walk onto own pieces! */
         }
 
         //System.out.println("SOUTH EAST: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
@@ -235,8 +220,6 @@ public final class King extends Piece {
             /* legal slay move! */
             possibleMoves.add(move);
             /* but nothing more */
-        } else {
-            /* Can't walk onto own pieces! */
         }
 
         //System.out.println("SOUTH WEST: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
@@ -263,8 +246,6 @@ public final class King extends Piece {
             /* legal slay move! */
             possibleMoves.add(move);
             /* but nothing more */
-        } else {
-            /* Can't walk onto own pieces! */
         }
 
         //System.out.println("NORTH WEST: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");

@@ -53,16 +53,12 @@ public abstract class Piece implements IPiece {
 
     @Override
     public int calculateDeltaX(int fromX, int toX) {
-        int deltaX = toX - fromX;
-        //System.out.println("deltaX: " + deltaX);
-        return deltaX;
+        return toX - fromX;
     }
 
     @Override
     public int calculateDeltaY(int fromY, int toY) {
-        int deltaY = toY - fromY;
-        //System.out.println("deltaY: " + deltaY);
-        return deltaY;
+        return toY - fromY;
     }
 
     @Override
@@ -120,6 +116,11 @@ public abstract class Piece implements IPiece {
     @Override
     public int getId() {
         return ID;
+    }
+
+    @Override
+    public List<Point> getPossibleMoves() {
+        return possibleMoves;
     }
 
     @Override

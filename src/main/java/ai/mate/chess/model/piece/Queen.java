@@ -52,6 +52,9 @@ public final class Queen extends Piece {
             int x = i;
             int y = piecePos.y + yPiece;
 
+            if ((x < 0 || x > 7) || (y < 0 || y > 7))
+                return;
+
             Point move = calculateDeltaMove(piecePos, new Point(x, y));
             Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
 
@@ -81,6 +84,9 @@ public final class Queen extends Piece {
             int x = i;
             int y = piecePos.y + yPiece;
 
+            if ((x < 0 || x > 7) || (y < 0 || y > 7))
+                return;
+
             Point move = calculateDeltaMove(piecePos, new Point(x, y));
             Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
 
@@ -105,10 +111,12 @@ public final class Queen extends Piece {
         int xPiece = 0;
         int yPiece = piecePos.y;
 
-        for (int i = (yPiece + 1); i <= 7; i++) {
+        for (int y = (yPiece + 1); y <= 7; y++) {
             // 0, +y
             int x = piecePos.x + xPiece;
-            int y = i;
+
+            if ((x < 0 || x > 7) || (y < 0 || y > 7))
+                return;
 
             Point move = calculateDeltaMove(piecePos, new Point(x, y));
             Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
@@ -134,10 +142,12 @@ public final class Queen extends Piece {
         int xPiece = 0;
         int yPiece = piecePos.y;
 
-        for (int i = (yPiece - 1); i >= 0; i--) {
+        for (int y = (yPiece - 1); y >= 0; y--) {
             // 0, -y
             int x = piecePos.x + xPiece;
-            int y = i;
+
+            if ((x < 0 || x > 7) || (y < 0 || y > 7))
+                return;
 
             Point move = calculateDeltaMove(piecePos, new Point(x, y));
             Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
@@ -168,7 +178,9 @@ public final class Queen extends Piece {
 
         for (int y = (yPiece + 1); y <= 7; y++) {
             x--;
-            if (x < 0) break;
+
+            if ((x < 0 || x > 7) || (y < 0 || y > 7))
+                return;
 
             Point move = calculateDeltaMove(piecePos, new Point(x, y));
             Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
@@ -199,7 +211,9 @@ public final class Queen extends Piece {
 
         for (int y = (yPiece + 1); y <= 7; y++) {
             x++;
-            if (x > 7) break;
+
+            if ((x < 0 || x > 7) || (y < 0 || y > 7))
+                return;
 
             Point move = calculateDeltaMove(piecePos, new Point(x, y));
             Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
@@ -230,7 +244,9 @@ public final class Queen extends Piece {
 
         for (int y = (yPiece - 1); y >= 0; y--) {
             x++;
-            if (x > 7) break;
+
+            if ((x < 0 || x > 7) || (y < 0 || y > 7))
+                return;
 
             Point move = calculateDeltaMove(piecePos, new Point(x, y));
             Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
@@ -261,7 +277,9 @@ public final class Queen extends Piece {
 
         for (int y = (yPiece - 1); y >= 0; y--) {
             x--;
-            if (x < 0) break;
+
+            if ((x < 0 || x > 7) || (y < 0 || y > 7))
+                return;
 
             Point move = calculateDeltaMove(piecePos, new Point(x, y));
             Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);

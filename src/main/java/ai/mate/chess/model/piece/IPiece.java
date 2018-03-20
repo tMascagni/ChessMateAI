@@ -3,7 +3,9 @@ package ai.mate.chess.model.piece;
 import ai.mate.chess.model.Board;
 import ai.mate.chess.model.BoardPosition;
 
-import java.awt.*;
+import java.awt.Point;
+import java.util.List;
+
 
 /*
  * Interface for the general chess piece.
@@ -31,6 +33,7 @@ public interface IPiece {
     Color getColor();
     Color getOpponentColor();
     int getId();
+    List<Point> getPossibleMoves();
 
     String toString();
 }

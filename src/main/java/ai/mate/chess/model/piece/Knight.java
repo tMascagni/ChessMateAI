@@ -94,8 +94,12 @@ public final class Knight extends Piece {
         posAfterSouthMove.x = piecePos.x + 1;
         posAfterSouthMove.y = piecePos.y + 2;
 
-        /* Check left pos bounds */
+        /* Check north pos bounds */
         if ((posAfterNorthMove.x < 0 || posAfterNorthMove.x > 7) || (posAfterNorthMove.y < 0 || posAfterNorthMove.y > 7))
+            return;
+
+        /* Check south pos bounds */
+        if ((posAfterSouthMove.x < 0 || posAfterSouthMove.x > 7) || (posAfterSouthMove.y < 0 || posAfterSouthMove.y > 7))
             return;
 
         /* Delta moves */
@@ -178,8 +182,12 @@ public final class Knight extends Piece {
         posAfterSouthMove.x = piecePos.x + 1;
         posAfterSouthMove.y = piecePos.y - 2;
 
-        /* Check left pos bounds */
+        /* Check north pos bounds */
         if ((posAfterNorthMove.x < 0 || posAfterNorthMove.x > 7) || (posAfterNorthMove.y < 0 || posAfterNorthMove.y > 7))
+            return;
+
+        /* Check south pos bounds */
+        if ((posAfterSouthMove.x < 0 || posAfterSouthMove.x > 7) || (posAfterSouthMove.y < 0 || posAfterSouthMove.y > 7))
             return;
 
         /* Delta moves */

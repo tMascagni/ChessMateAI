@@ -1,6 +1,7 @@
 package ai.mate.chess.model;
 
 import ai.mate.chess.model.piece.*;
+import ai.mate.chess.model.special_moves.SpecialMoves;
 import ai.mate.chess.ui.ITui;
 import ai.mate.chess.ui.Tui;
 
@@ -43,32 +44,9 @@ public final class Board {
         IPiece fromPiece = getPiece(from.arrayX, from.arrayY);
         IPiece toPiece = getPiece(to.arrayX, to.arrayY);
 
-        /*
-         * If the 'from' piece is instance of a 'Empty' piece,
-         * then return false, since the player is not allowed to
-         * move an 'Empty' piece.
-         */
-        if (fromPiece instanceof Empty) {
-            tui.printIllegalAction("No piece at position: [" + from.file + ", " + from.rank + "]!");
+        /* Check if the move is valid */
+        if (!isValidMove(fromPiece, toPiece, to, from))
             return false;
-        }
-
-        /*
-         * If the WHITE player tries to move a BLACK piece,
-         * then return false, and vice versa.
-         */
-        if (!fromPiece.getColor().equals(playerColor)) {
-            tui.printIllegalAction("Can't move opponents piece!");
-            return false;
-        }
-
-        /*
-         * You are not allowed to move onto yourself.
-         */
-        if (to.rank == from.rank && to.file == from.file) {
-            tui.printIllegalAction("Can't move onto the same piece!");
-            return false;
-        }
 
         /*
          * Populate moves to pieces every single move, so that they
@@ -78,18 +56,18 @@ public final class Board {
             for (IPiece piece : boardRow)
                 piece.populateMoves(this);
 
+        /*
+         * Get amount of current possible moves
+         * for every single piece.
+         */
+        int possibleMovesSum = 0;
+        for (IPiece[] boardRow : board)
+            for (IPiece piece : boardRow)
+                possibleMovesSum += piece.getPossibleMoves().size();
+        System.out.println("Amount of total possible moves: " + possibleMovesSum);
+
         /* Check to see whether this is a valid move for the fromPiece. */
         boolean isValidMove = fromPiece.isValidMove(from, to, this);
-
-        // Debugging purposes
-        /*
-        System.out.println();
-        System.out.println("fromPiece: " + fromPiece.toString());
-        System.out.println("toPiece: " + toPiece.toString());
-        System.out.println("Player: " + playerColor);
-        System.out.println("isValidMove: " + isValidMove);
-        System.out.println();
-        */
 
         /* If the move is not valid, let the player know and then return false. */
         if (!isValidMove) {
@@ -146,6 +124,15 @@ public final class Board {
         /* Set latest move String */
         latestMove = playerColor.name() + ": [" + from.file + ", " + from.rank + "] → [" + to.file + ", " + to.rank + "]";
 
+        /* Check if promotion is available */
+        if (SpecialMoves.isPromotionAllowed(fromPiece, this)) {
+            tui.printPromotion();
+            char selection = tui.getPromotionSelection();
+            IPiece promotedPiece = SpecialMoves.promotePawn(selection, playerColor);
+            setPiece(promotedPiece, to.arrayX, to.arrayY);
+            tui.printPromotionSuccess(selection, playerColor);
+        }
+
         /* Since the move have been a success, we shall switch the player. */
         switchPlayer();
 
@@ -154,17 +141,15 @@ public final class Board {
     }
 
     public final void reset() {
-
         board = new IPiece[][]{
                 {new Bishop(IPiece.Color.BLACK), new Bishop(IPiece.Color.WHITE), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
-                {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
+                {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Pawn(IPiece.Color.WHITE), new Empty(), new Empty()},
                 {new Empty(), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.BLACK), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
                 {new Empty(), new Empty(), new Rook(IPiece.Color.WHITE), new Empty(), new Knight(IPiece.Color.WHITE), new Empty(), new Empty(), new Empty()},
                 {new Empty(), new Empty(), new Empty(), new Empty(), new King(IPiece.Color.WHITE), new Empty(), new Empty(), new Empty()},
                 {new Empty(), new Empty(), new Empty(), new Queen(IPiece.Color.WHITE), new Empty(), new Empty(), new Empty(), new Empty()},
-                {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
+                {new Empty(), new Empty(), new Pawn(IPiece.Color.BLACK), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
                 {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()}};
-
 /*
         board = new IPiece[][]{
                 {new Rook(IPiece.Color.BLACK), new Knight(IPiece.Color.BLACK), new Bishop(IPiece.Color.BLACK), new Queen(IPiece.Color.BLACK), new King(IPiece.Color.BLACK), new Bishop(IPiece.Color.BLACK), new Knight(IPiece.Color.BLACK), new Rook(IPiece.Color.BLACK)},
@@ -176,7 +161,6 @@ public final class Board {
                 {new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE), new Pawn(IPiece.Color.WHITE)},
                 {new Rook(IPiece.Color.WHITE), new Knight(IPiece.Color.WHITE), new Bishop(IPiece.Color.WHITE), new Queen(IPiece.Color.WHITE), new King(IPiece.Color.WHITE), new Bishop(IPiece.Color.WHITE), new Knight(IPiece.Color.WHITE), new Rook(IPiece.Color.WHITE)}};
 */
-
         globalMoveCount = 0;
         playerColor = IPiece.Color.WHITE;
 
@@ -294,6 +278,37 @@ public final class Board {
             return "      ";
         else
             return "       ";
+    }
+
+    private boolean isValidMove(IPiece fromPiece, IPiece toPiece, BoardPosition to, BoardPosition from) {
+        /*
+         * If the 'from' piece is instance of a 'Empty' piece,
+         * then return false, since the player is not allowed to
+         * move an 'Empty' piece.
+         */
+        if (fromPiece instanceof Empty) {
+            tui.printIllegalAction("No piece at position: [" + from.file + ", " + from.rank + "]!");
+            return false;
+        }
+
+        /*
+         * If the WHITE player tries to move a BLACK piece,
+         * then return false, and vice versa.
+         */
+        if (!fromPiece.getColor().equals(playerColor)) {
+            tui.printIllegalAction("Can't move opponents piece!");
+            return false;
+        }
+
+        /*
+         * You are not allowed to move onto yourself.
+         */
+        if (to.rank == from.rank && to.file == from.file) {
+            tui.printIllegalAction("Can't move onto the same piece!");
+            return false;
+        }
+
+        return true;
     }
 
 }
