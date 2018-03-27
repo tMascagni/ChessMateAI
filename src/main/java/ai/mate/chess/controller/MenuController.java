@@ -50,9 +50,6 @@ public final class MenuController implements IMenuController {
             case '1':
                 gameController.start();
                 break;
-            case '2':
-                System.out.println("TWO!");
-                break;
             default:
                 tui.printUnrecognizedCommand();
                 break;

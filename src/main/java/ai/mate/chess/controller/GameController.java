@@ -39,6 +39,7 @@ public class GameController implements IGameController {
         IPiece.Color playerColor = tui.getPlayerColorInput();
 
         tui.printHumanPlayer(playerColor);
+        tui.printAIPlayer(getOpponentColor(playerColor));
 
         while (true) {
             tui.printBoard(board);
@@ -55,9 +56,18 @@ public class GameController implements IGameController {
             }
 
             BoardPosition toPos = tui.getBoardPositionInput();
-
             board.movePiece(fromPos, toPos);
         }
+    }
+
+    private IPiece.Color getOpponentColor(IPiece.Color playerColor) {
+        if (playerColor.equals(IPiece.Color.EMPTY))
+            return IPiece.Color.EMPTY;
+
+        if (playerColor.equals(IPiece.Color.WHITE))
+            return IPiece.Color.BLACK;
+
+        return IPiece.Color.WHITE;
     }
 
 }

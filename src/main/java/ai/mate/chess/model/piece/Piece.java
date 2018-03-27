@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/*
+/**
  * Abstract class that implements the piece interface.
  * This is used for the actual Pieces to inherit from.
  */
@@ -27,45 +27,66 @@ public abstract class Piece implements IPiece {
     protected int score;
 
     protected List<Point> possibleMoves;
+    protected List<IPiece> slayMoves;
 
     public Piece(Color color) {
         this.color = color;
         ID = idCounter.getAndIncrement();
         initName();
         possibleMoves = new ArrayList<>();
+        slayMoves = new ArrayList<>();
     }
 
     protected abstract void initName();
 
     public abstract void populateMoves(Board board);
 
+    protected void resetMoves() {
+        possibleMoves.clear();
+        slayMoves.clear();
+    }
+
+    protected boolean isInBoardBounds(int rowX, int colY) {
+        return (rowX >= 0 && rowX <= 7) && (colY >= 0 && colY <= 7);
+    }
+
     @Override
-    public boolean isValidMove(BoardPosition from, BoardPosition to, Board board) {
-        int deltaX = calculateDeltaX(from.arrayX, to.arrayX);
-        int deltaY = calculateDeltaY(from.arrayY, to.arrayY);
+    public boolean isValidMove(BoardPosition from, BoardPosition to) {
+        int deltaRowX = calculateDeltaRowX(from.rowX, to.rowX);
+        int deltaColY = calculateDeltaColY(from.colY, to.colY);
 
         for (Point p : possibleMoves)
-            if (p.x == deltaX && p.y == deltaY)
+            if (p.x == deltaRowX && p.y == deltaColY)
                 return true;
 
         return false;
     }
 
     @Override
-    public int calculateDeltaX(int fromX, int toX) {
-        return toX - fromX;
-    }
-
-    @Override
-    public int calculateDeltaY(int fromY, int toY) {
-        return toY - fromY;
-    }
-
-    @Override
     public Point calculateDeltaMove(Point piecePos, Point move) {
-        int x = calculateDeltaX(piecePos.x, move.x);
-        int y = calculateDeltaY(piecePos.y, move.y);
-        return new Point(x, y);
+        int deltaRowX = calculateDeltaRowX(piecePos.x, move.x);
+        int deltaColY = calculateDeltaColY(piecePos.y, move.y);
+        return new Point(deltaRowX, deltaColY);
+    }
+
+    @Override
+    public int calculateDeltaRowX(int fromRowX, int toRowX) {
+        return toRowX - fromRowX;
+    }
+
+    @Override
+    public int calculateDeltaColY(int fromColY, int toColY) {
+        return toColY - fromColY;
+    }
+
+    @Override
+    public List<Point> getPossibleMoves() {
+        return possibleMoves;
+    }
+
+    @Override
+    public List<IPiece> getSlayMoves() {
+        return slayMoves;
     }
 
     @Override
@@ -79,6 +100,16 @@ public abstract class Piece implements IPiece {
     }
 
     @Override
+    public void decMoveCount() {
+        moveCount--;
+    }
+
+    @Override
+    public void decSlayCount() {
+        slayCount--;
+    }
+
+    @Override
     public int getMoveCount() {
         return moveCount;
     }
@@ -89,8 +120,8 @@ public abstract class Piece implements IPiece {
     }
 
     @Override
-    public String getName() {
-        return name;
+    public int getId() {
+        return ID;
     }
 
     @Override
@@ -110,17 +141,8 @@ public abstract class Piece implements IPiece {
 
         if (getColor().equals(Color.WHITE))
             return Color.BLACK;
+
         return Color.WHITE;
-    }
-
-    @Override
-    public int getId() {
-        return ID;
-    }
-
-    @Override
-    public List<Point> getPossibleMoves() {
-        return possibleMoves;
     }
 
     @Override

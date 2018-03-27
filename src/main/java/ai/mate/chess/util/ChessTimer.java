@@ -6,13 +6,13 @@ import java.util.concurrent.TimeUnit;
 
 public final class ChessTimer {
 
-    private final Timer timer;
+    private Timer timer;
 
     public interface EndOfTurnListener extends ActionListener {
 
     }
 
-    public ChessTimer(int timeSeconds, EndOfTurnListener endOfTurnListener) {
+    public ChessTimer(int timeSeconds, ActionListener endOfTurnListener) {
         int millis = (int) TimeUnit.SECONDS.toMillis(timeSeconds);
         timer = new Timer(millis, endOfTurnListener);
     }

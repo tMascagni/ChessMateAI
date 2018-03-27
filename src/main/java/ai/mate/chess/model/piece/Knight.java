@@ -27,11 +27,12 @@ public final class Knight extends Piece {
 
     @Override
     public void populateMoves(Board board) {
-        possibleMoves.clear();
+        /* Remove old possible moves and slay moves */
+        resetMoves();
 
         /* Firstly, we need to get this piece's board position */
         BoardPosition pieceBoardPos = board.getPieceBoardPos(this.ID);
-        Point piecePos = new Point(pieceBoardPos.arrayX, pieceBoardPos.arrayY);
+        Point piecePos = new Point(pieceBoardPos.rowX, pieceBoardPos.colY);
 
         populateNorthMoves(piecePos, board);
         populateSouthMoves(piecePos, board);
@@ -51,11 +52,11 @@ public final class Knight extends Piece {
         posAfterRightMove.y = piecePos.y + 1;
 
         /* Check left pos bounds */
-        if ((posAfterLeftMove.x < 0 || posAfterLeftMove.x > 7) || (posAfterLeftMove.y < 0 || posAfterLeftMove.y > 7))
+        if (!isInBoardBounds(posAfterLeftMove.x, posAfterLeftMove.y))
             return;
 
         /* Check right pos bounds */
-        if ((posAfterRightMove.x < 0 || posAfterRightMove.x > 7) || (posAfterRightMove.y < 0 || posAfterRightMove.y > 7))
+        if (!isInBoardBounds(posAfterRightMove.x, posAfterRightMove.y))
             return;
 
         /* Delta moves */
@@ -69,6 +70,7 @@ public final class Knight extends Piece {
         } else if (board.getPiece(posAfterLeftMove.x, posAfterLeftMove.y).getColor().equals(getOpponentColor())) {
             /* Legal slay move! */
             possibleMoves.add(moveLeft);
+            addToKillMoves(board, posAfterLeftMove.x, posAfterLeftMove.y);
         }
 
         /* Right */
@@ -78,9 +80,8 @@ public final class Knight extends Piece {
         } else if (board.getPiece(posAfterRightMove.x, posAfterRightMove.y).getColor().equals(getOpponentColor())) {
             /* Legal slay move! */
             possibleMoves.add(moveRight);
+            addToKillMoves(board, posAfterRightMove.x, posAfterRightMove.y);
         }
-
-        //System.out.println("NORTH: Moves LEFT: (" + posAfterLeftMove.x + ", " + posAfterLeftMove.y + ") RIGHT: (" + posAfterRightMove.x + ", " + posAfterRightMove.y + ") Position after move: LEFT: (" + moveLeft.x + ", " + moveLeft.y + ") RIGHT: (" + moveRight.x + ", " + moveRight.y + ")");
     }
 
     private void populateEastMoves(Point piecePos, Board board) {
@@ -95,11 +96,11 @@ public final class Knight extends Piece {
         posAfterSouthMove.y = piecePos.y + 2;
 
         /* Check north pos bounds */
-        if ((posAfterNorthMove.x < 0 || posAfterNorthMove.x > 7) || (posAfterNorthMove.y < 0 || posAfterNorthMove.y > 7))
+        if (!isInBoardBounds(posAfterNorthMove.x, posAfterNorthMove.y))
             return;
 
         /* Check south pos bounds */
-        if ((posAfterSouthMove.x < 0 || posAfterSouthMove.x > 7) || (posAfterSouthMove.y < 0 || posAfterSouthMove.y > 7))
+        if (!isInBoardBounds(posAfterSouthMove.x, posAfterSouthMove.y))
             return;
 
         /* Delta moves */
@@ -113,6 +114,7 @@ public final class Knight extends Piece {
         } else if (board.getPiece(posAfterNorthMove.x, posAfterNorthMove.y).getColor().equals(getOpponentColor())) {
             /* Legal slay move! */
             possibleMoves.add(moveNorth);
+            addToKillMoves(board, posAfterNorthMove.x, posAfterNorthMove.y);
         }
 
         /* South */
@@ -122,9 +124,8 @@ public final class Knight extends Piece {
         } else if (board.getPiece(posAfterSouthMove.x, posAfterSouthMove.y).getColor().equals(getOpponentColor())) {
             /* Legal slay move! */
             possibleMoves.add(moveSouth);
+            addToKillMoves(board, posAfterSouthMove.x, posAfterSouthMove.y);
         }
-
-        //System.out.println("EAST: Moves NORTH: (" + posAfterNorthMove.x + ", " + posAfterNorthMove.y + ") SOUTH: (" + posAfterSouthMove.x + ", " + posAfterSouthMove.y + ") Position after move: NORTH: (" + moveNorth.x + ", " + moveNorth.y + ") SOUTH: (" + moveSouth.x + ", " + moveSouth.y + ")");
     }
 
     private void populateSouthMoves(Point piecePos, Board board) {
@@ -139,11 +140,11 @@ public final class Knight extends Piece {
         posAfterRightMove.y = piecePos.y + 1;
 
         /* Check left pos bounds */
-        if ((posAfterLeftMove.x < 0 || posAfterLeftMove.x > 7) || (posAfterLeftMove.y < 0 || posAfterLeftMove.y > 7))
+        if (!isInBoardBounds(posAfterLeftMove.x, posAfterLeftMove.y))
             return;
 
         /* Check right pos bounds */
-        if ((posAfterRightMove.x < 0 || posAfterRightMove.x > 7) || (posAfterRightMove.y < 0 || posAfterRightMove.y > 7))
+        if (!isInBoardBounds(posAfterRightMove.x, posAfterRightMove.y))
             return;
 
         /* Delta moves */
@@ -157,6 +158,7 @@ public final class Knight extends Piece {
         } else if (board.getPiece(posAfterLeftMove.x, posAfterLeftMove.y).getColor().equals(getOpponentColor())) {
             /* Legal slay move! */
             possibleMoves.add(moveLeft);
+            addToKillMoves(board, posAfterLeftMove.x, posAfterLeftMove.y);
         }
 
         /* Right */
@@ -166,9 +168,8 @@ public final class Knight extends Piece {
         } else if (board.getPiece(posAfterRightMove.x, posAfterRightMove.y).getColor().equals(getOpponentColor())) {
             /* Legal slay move! */
             possibleMoves.add(moveRight);
+            addToKillMoves(board, posAfterRightMove.x, posAfterRightMove.y);
         }
-
-        //System.out.println("SOUTH: Moves LEFT: (" + posAfterLeftMove.x + ", " + posAfterLeftMove.y + ") RIGHT: (" + posAfterRightMove.x + ", " + posAfterRightMove.y + ") Position after move: LEFT: (" + moveLeft.x + ", " + moveLeft.y + ") RIGHT: (" + moveRight.x + ", " + moveRight.y + ")");
     }
 
     private void populateWestMoves(Point piecePos, Board board) {
@@ -183,11 +184,11 @@ public final class Knight extends Piece {
         posAfterSouthMove.y = piecePos.y - 2;
 
         /* Check north pos bounds */
-        if ((posAfterNorthMove.x < 0 || posAfterNorthMove.x > 7) || (posAfterNorthMove.y < 0 || posAfterNorthMove.y > 7))
+        if (!isInBoardBounds(posAfterNorthMove.x, posAfterNorthMove.y))
             return;
 
         /* Check south pos bounds */
-        if ((posAfterSouthMove.x < 0 || posAfterSouthMove.x > 7) || (posAfterSouthMove.y < 0 || posAfterSouthMove.y > 7))
+        if (!isInBoardBounds(posAfterSouthMove.x, posAfterSouthMove.y))
             return;
 
         /* Delta moves */
@@ -201,6 +202,7 @@ public final class Knight extends Piece {
         } else if (board.getPiece(posAfterNorthMove.x, posAfterNorthMove.y).getColor().equals(getOpponentColor())) {
             /* Legal slay move! */
             possibleMoves.add(moveNorth);
+            addToKillMoves(board, posAfterNorthMove.x, posAfterNorthMove.y);
         }
 
         /* South */
@@ -210,9 +212,12 @@ public final class Knight extends Piece {
         } else if (board.getPiece(posAfterSouthMove.x, posAfterSouthMove.y).getColor().equals(getOpponentColor())) {
             /* Legal slay move! */
             possibleMoves.add(moveSouth);
+            addToKillMoves(board, posAfterSouthMove.x, posAfterSouthMove.y);
         }
+    }
 
-        //System.out.println("WEST: Moves NORTH: (" + posAfterNorthMove.x + ", " + posAfterNorthMove.y + ") SOUTH: (" + posAfterSouthMove.x + ", " + posAfterSouthMove.y + ") Position after move: NORTH: (" + moveNorth.x + ", " + moveNorth.y + ") SOUTH: (" + moveSouth.x + ", " + moveSouth.y + ")");
+    private void addToKillMoves(Board board, int xAfterMove, int yAfterMove) {
+        slayMoves.add(board.getPiece(xAfterMove, yAfterMove));
     }
 
 }

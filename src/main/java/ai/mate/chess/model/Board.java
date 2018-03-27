@@ -1,9 +1,15 @@
 package ai.mate.chess.model;
 
-import ai.mate.chess.model.piece.*;
-import ai.mate.chess.model.special_moves.SpecialMoves;
+import ai.mate.chess.handler.TextHandler;
+import ai.mate.chess.model.piece.Empty;
+import ai.mate.chess.model.piece.IPiece;
+import ai.mate.chess.model.piece.King;
+import ai.mate.chess.model.piece.Queen;
 import ai.mate.chess.ui.ITui;
 import ai.mate.chess.ui.Tui;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class Board {
 
@@ -19,61 +25,22 @@ public final class Board {
 
     private final ITui tui = Tui.getInstance();
 
-    private String latestMove = "                      ";
+    private String latestMove = TextHandler.LATEST_MOVE_INITIAL;
 
-    /* Normal constructor */
     public Board() {
         whiteLossList = new IPiece[PLAYER_PIECE_COUNT];
         blackLossList = new IPiece[PLAYER_PIECE_COUNT];
         reset();
     }
 
-    /* Deep copy constructor */
-    public Board(Board board) {
-        this.globalMoveCount = board.globalMoveCount;
-        this.whitePieceCount = board.whitePieceCount;
-        this.blackPieceCount = board.blackPieceCount;
-        this.playerColor = board.playerColor;
-        this.whiteLossList = board.whiteLossList;
-        this.blackLossList = board.blackLossList;
-        this.board = board.board;
-    }
-
     public boolean movePiece(BoardPosition from, BoardPosition to) {
-        /* Get both pieces 'to' and 'from' pieces. */
-        IPiece fromPiece = getPiece(from.arrayX, from.arrayY);
-        IPiece toPiece = getPiece(to.arrayX, to.arrayY);
+        /* Get both positions 'to' and 'from' pieces. */
+        IPiece fromPiece = getPiece(from.rowX, from.colY);
+        IPiece toPiece = getPiece(to.rowX, to.colY);
 
         /* Check if the move is valid */
         if (!isValidMove(fromPiece, toPiece, to, from))
             return false;
-
-        /*
-         * Populate moves to pieces every single move, so that they
-         * are always up to date with the their surroundings.
-         */
-        for (IPiece[] boardRow : board)
-            for (IPiece piece : boardRow)
-                piece.populateMoves(this);
-
-        /*
-         * Get amount of current possible moves
-         * for every single piece.
-         */
-        int possibleMovesSum = 0;
-        for (IPiece[] boardRow : board)
-            for (IPiece piece : boardRow)
-                possibleMovesSum += piece.getPossibleMoves().size();
-        System.out.println("Amount of total possible moves: " + possibleMovesSum);
-
-        /* Check to see whether this is a valid move for the fromPiece. */
-        boolean isValidMove = fromPiece.isValidMove(from, to, this);
-
-        /* If the move is not valid, let the player know and then return false. */
-        if (!isValidMove) {
-            tui.printIllegalAction("Illegal move!");
-            return false;
-        }
 
         if (toPiece instanceof Empty) {
             /*
@@ -84,7 +51,7 @@ public final class Board {
              *
              * Move fromPiece to "to's" x and y coordinates
              */
-            setPiece(fromPiece, to.arrayX, to.arrayY);
+            setPiece(fromPiece, to.rowX, to.colY);
         } else if (toPiece.getColor().equals(playerColor)) {
             /*
              * If the player is trying to move a piece onto one of its own,
@@ -99,14 +66,14 @@ public final class Board {
              * Therefore we need to slay that piece, of which we do by adding it to a loss list.
              * The piece will then we overwritten by the setPiece method, so all is good.
              */
-
             /* Add the slain piece to the loss list */
-            addLossList(toPiece);
+            addToLossList(toPiece);
 
             /* Increase 'from' piece's slay count */
             fromPiece.incSlayCount();
 
-            setPiece(fromPiece, to.arrayX, to.arrayY);
+            /* Set the 'from' piece to 'to's coordinates */
+            setPiece(fromPiece, to.rowX, to.colY);
         }
 
         /* Increase move count for this 'from' piece */
@@ -119,19 +86,13 @@ public final class Board {
          * Put a new 'Empty' piece at the previous position
          * of the 'from' piece.
          */
-        setPiece(new Empty(), from.arrayX, from.arrayY);
+        setPiece(new Empty(), from.rowX, from.colY);
 
         /* Set latest move String */
-        latestMove = playerColor.name() + ": [" + from.file + ", " + from.rank + "] → [" + to.file + ", " + to.rank + "]";
+        latestMove = tui.getLatestMoveText(playerColor, from, to);
 
         /* Check if promotion is available */
-        if (SpecialMoves.isPromotionAllowed(fromPiece, this)) {
-            tui.printPromotion();
-            char selection = tui.getPromotionSelection();
-            IPiece promotedPiece = SpecialMoves.promotePawn(selection, playerColor);
-            setPiece(promotedPiece, to.arrayX, to.arrayY);
-            tui.printPromotionSuccess(selection, playerColor);
-        }
+        //doPromotion(fromPiece, to);
 
         /* Since the move have been a success, we shall switch the player. */
         switchPlayer();
@@ -141,6 +102,7 @@ public final class Board {
     }
 
     public final void reset() {
+        /*
         board = new IPiece[][]{
                 {new Bishop(IPiece.Color.BLACK), new Bishop(IPiece.Color.WHITE), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
                 {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Pawn(IPiece.Color.WHITE), new Empty(), new Empty()},
@@ -150,7 +112,19 @@ public final class Board {
                 {new Empty(), new Empty(), new Empty(), new Queen(IPiece.Color.WHITE), new Empty(), new Empty(), new Empty(), new Empty()},
                 {new Empty(), new Empty(), new Pawn(IPiece.Color.BLACK), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
                 {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()}};
-/*
+*/
+
+        board = new IPiece[][]{
+                {new Empty(), new Empty(), new Empty(), new King(IPiece.Color.BLACK), new Empty(), new Empty(), new Empty(), new Empty()},
+                {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Queen(IPiece.Color.WHITE)},
+                {new Queen(IPiece.Color.BLACK), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
+                {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
+                {new Empty(), new Empty(), new Empty(), new Empty(), new King(IPiece.Color.WHITE), new Empty(), new Empty(), new Empty()},
+                {new Queen(IPiece.Color.BLACK), new Empty(), new Empty(), new Queen(IPiece.Color.WHITE), new Empty(), new Empty(), new Empty(), new Empty()},
+                {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
+                {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()}};
+
+       /*
         board = new IPiece[][]{
                 {new Rook(IPiece.Color.BLACK), new Knight(IPiece.Color.BLACK), new Bishop(IPiece.Color.BLACK), new Queen(IPiece.Color.BLACK), new King(IPiece.Color.BLACK), new Bishop(IPiece.Color.BLACK), new Knight(IPiece.Color.BLACK), new Rook(IPiece.Color.BLACK)},
                 {new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK), new Pawn(IPiece.Color.BLACK)},
@@ -162,6 +136,9 @@ public final class Board {
                 {new Rook(IPiece.Color.WHITE), new Knight(IPiece.Color.WHITE), new Bishop(IPiece.Color.WHITE), new Queen(IPiece.Color.WHITE), new King(IPiece.Color.WHITE), new Bishop(IPiece.Color.WHITE), new Knight(IPiece.Color.WHITE), new Rook(IPiece.Color.WHITE)}};
 */
         globalMoveCount = 0;
+        whitePieceCount = PLAYER_PIECE_COUNT;
+        blackPieceCount = PLAYER_PIECE_COUNT;
+
         playerColor = IPiece.Color.WHITE;
 
         for (int i = 0; i < whiteLossList.length; i++) {
@@ -169,42 +146,55 @@ public final class Board {
             blackLossList[i] = new Empty();
         }
 
-        whitePieceCount = PLAYER_PIECE_COUNT;
-        blackPieceCount = PLAYER_PIECE_COUNT;
+        latestMove = TextHandler.LATEST_MOVE_INITIAL;
+
+        populateMoves();
     }
 
-    public final String getBoard() {
+    public final String getBoardText() {
         return "\n┌───────────────────────────────────────────────────────────────┐    ┌────────────────────────────────────────────────────────────┐\n" +
                 "│          A     B     C     D     E     F     G     H          │    │ Player: " + playerColor + "           White Loss:    Black Loss:         │\n" +
-                "│                                                               │    │                            " + getLossPieceText(IPiece.Color.WHITE, 0) + "         " + getLossPieceText(IPiece.Color.BLACK, 0) + "           │\n" +
-                "│       ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐       │    │ Move: " + globalMoveCount + "                  " + getLossPieceText(IPiece.Color.WHITE, 1) + "         " + getLossPieceText(IPiece.Color.BLACK, 1) + "           │\n" +
-                "│   8   │ " + board[0][0] + " │ " + board[0][1] + " │ " + board[0][2] + " │ " + board[0][3] + " │ " + board[0][4] + " │ " + board[0][5] + " │ " + board[0][6] + " │ " + board[0][7] + " │   8   │    │                            " + getLossPieceText(IPiece.Color.WHITE, 2) + "         " + getLossPieceText(IPiece.Color.BLACK, 2) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ Latest Move:               " + getLossPieceText(IPiece.Color.WHITE, 3) + "         " + getLossPieceText(IPiece.Color.BLACK, 3) + "           │\n" +
-                "│   7   │ " + board[1][0] + " │ " + board[1][1] + " │ " + board[1][2] + " │ " + board[1][3] + " │ " + board[1][4] + " │ " + board[1][5] + " │ " + board[1][6] + " │ " + board[1][7] + " │   7   │    │ " + latestMove + "     " + getLossPieceText(IPiece.Color.WHITE, 4) + "         " + getLossPieceText(IPiece.Color.BLACK, 4) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                            " + getLossPieceText(IPiece.Color.WHITE, 5) + "         " + getLossPieceText(IPiece.Color.BLACK, 5) + "           │\n" +
-                "│   6   │ " + board[2][0] + " │ " + board[2][1] + " │ " + board[2][2] + " │ " + board[2][3] + " │ " + board[2][4] + " │ " + board[2][5] + " │ " + board[2][6] + " │ " + board[2][7] + " │   6   │    │                            " + getLossPieceText(IPiece.Color.WHITE, 6) + "         " + getLossPieceText(IPiece.Color.BLACK, 6) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                            " + getLossPieceText(IPiece.Color.WHITE, 7) + "         " + getLossPieceText(IPiece.Color.BLACK, 7) + "           │\n" +
-                "│   5   │ " + board[3][0] + " │ " + board[3][1] + " │ " + board[3][2] + " │ " + board[3][3] + " │ " + board[3][4] + " │ " + board[3][5] + " │ " + board[3][6] + " │ " + board[3][7] + " │   5   │    │                            " + getLossPieceText(IPiece.Color.WHITE, 8) + "         " + getLossPieceText(IPiece.Color.BLACK, 8) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                           " + getLossPieceText(IPiece.Color.WHITE, 9) + "        " + getLossPieceText(IPiece.Color.BLACK, 9) + "           │\n" +
-                "│   4   │ " + board[4][0] + " │ " + board[4][1] + " │ " + board[4][2] + " │ " + board[4][3] + " │ " + board[4][4] + " │ " + board[4][5] + " │ " + board[4][6] + " │ " + board[4][7] + " │   4   │    │                           " + getLossPieceText(IPiece.Color.WHITE, 10) + "        " + getLossPieceText(IPiece.Color.BLACK, 10) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                           " + getLossPieceText(IPiece.Color.WHITE, 11) + "        " + getLossPieceText(IPiece.Color.BLACK, 11) + "           │\n" +
-                "│   3   │ " + board[5][0] + " │ " + board[5][1] + " │ " + board[5][2] + " │ " + board[5][3] + " │ " + board[5][4] + " │ " + board[5][5] + " │ " + board[5][6] + " │ " + board[5][7] + " │   3   │    │                           " + getLossPieceText(IPiece.Color.WHITE, 12) + "        " + getLossPieceText(IPiece.Color.BLACK, 12) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ White Clock:              " + getLossPieceText(IPiece.Color.WHITE, 13) + "        " + getLossPieceText(IPiece.Color.BLACK, 13) + "           │\n" +
-                "│   2   │ " + board[6][0] + " │ " + board[6][1] + " │ " + board[6][2] + " │ " + board[6][3] + " │ " + board[6][4] + " │ " + board[6][5] + " │ " + board[6][6] + " │ " + board[6][7] + " │   2   │    │                           " + getLossPieceText(IPiece.Color.WHITE, 14) + "        " + getLossPieceText(IPiece.Color.BLACK, 14) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ Black Clock:              " + getLossPieceText(IPiece.Color.WHITE, 15) + "        " + getLossPieceText(IPiece.Color.BLACK, 15) + "           │\n" +
+                "│                                                               │    │                            " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 0) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 0) + "           │\n" +
+                "│       ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐       │    │ Move: " + globalMoveCount + "                  " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 1) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 1) + "           │\n" +
+                "│   8   │ " + board[0][0] + " │ " + board[0][1] + " │ " + board[0][2] + " │ " + board[0][3] + " │ " + board[0][4] + " │ " + board[0][5] + " │ " + board[0][6] + " │ " + board[0][7] + " │   8   │    │                            " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 2) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 2) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ Latest Move:               " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 3) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 3) + "           │\n" +
+                "│   7   │ " + board[1][0] + " │ " + board[1][1] + " │ " + board[1][2] + " │ " + board[1][3] + " │ " + board[1][4] + " │ " + board[1][5] + " │ " + board[1][6] + " │ " + board[1][7] + " │   7   │    │ " + latestMove + "     " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 4) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 4) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                            " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 5) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 5) + "           │\n" +
+                "│   6   │ " + board[2][0] + " │ " + board[2][1] + " │ " + board[2][2] + " │ " + board[2][3] + " │ " + board[2][4] + " │ " + board[2][5] + " │ " + board[2][6] + " │ " + board[2][7] + " │   6   │    │ Possible Moves: " + tui.getPossibleMoveCountText(board) + " " +
+                "       " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 6) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 6) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                            " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 7) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 7) + "           │\n" +
+                "│   5   │ " + board[3][0] + " │ " + board[3][1] + " │ " + board[3][2] + " │ " + board[3][3] + " │ " + board[3][4] + " │ " + board[3][5] + " │ " + board[3][6] + " │ " + board[3][7] + " │   5   │    │                            " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 8) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 8) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                           " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 9) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 9) + "           │\n" +
+                "│   4   │ " + board[4][0] + " │ " + board[4][1] + " │ " + board[4][2] + " │ " + board[4][3] + " │ " + board[4][4] + " │ " + board[4][5] + " │ " + board[4][6] + " │ " + board[4][7] + " │   4   │    │                           " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 10) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 10) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                           " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 11) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 11) + "           │\n" +
+                "│   3   │ " + board[5][0] + " │ " + board[5][1] + " │ " + board[5][2] + " │ " + board[5][3] + " │ " + board[5][4] + " │ " + board[5][5] + " │ " + board[5][6] + " │ " + board[5][7] + " │   3   │    │                           " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 12) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 12) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ White Clock:              " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 13) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 13) + "           │\n" +
+                "│   2   │ " + board[6][0] + " │ " + board[6][1] + " │ " + board[6][2] + " │ " + board[6][3] + " │ " + board[6][4] + " │ " + board[6][5] + " │ " + board[6][6] + " │ " + board[6][7] + " │   2   │    │                           " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 14) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 14) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ Black Clock:              " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 15) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 15) + "           │\n" +
                 "│   1   │ " + board[7][0] + " │ " + board[7][1] + " │ " + board[7][2] + " │ " + board[7][3] + " │ " + board[7][4] + " │ " + board[7][5] + " │ " + board[7][6] + " │ " + board[7][7] + " │   1   │    │                                                            │\n" +
-                "│       └─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘       │    │ White Pieces: " + getPieceCount(IPiece.Color.WHITE) + "                                           │\n" +
+                "│       └─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘       │    │ White Pieces: " + tui.getPieceCountText(whitePieceCount, blackPieceCount, IPiece.Color.WHITE) + "                                           │\n" +
                 "│                                                               │    │                                                            │\n" +
-                "│          A     B     C     D     E     F     G     H          │    │ Black Pieces: " + getPieceCount(IPiece.Color.BLACK) + "                                           │\n" +
+                "│          A     B     C     D     E     F     G     H          │    │ Black Pieces: " + tui.getPieceCountText(whitePieceCount, blackPieceCount, IPiece.Color.BLACK) + "                                           │\n" +
                 "└───────────────────────────────────────────────────────────────┘    └────────────────────────────────────────────────────────────┘\n";
     }
 
-    public IPiece getPiece(int x, int y) {
-        return board[x][y];
+    /*********************
+     * Getters
+     *********************/
+    public IPiece getPiece(int rowX, int colY) {
+        return board[rowX][colY];
     }
 
     public IPiece getPiece(BoardPosition boardPos) {
-        return board[boardPos.arrayX][boardPos.arrayY];
+        return board[boardPos.rowX][boardPos.colY];
+    }
+
+    public IPiece getPiece(int id) {
+        for (IPiece[] boardRow : board)
+            for (IPiece piece : boardRow)
+                if (piece.getId() == id)
+                    return piece;
+        return new Empty();
     }
 
     public BoardPosition getPieceBoardPos(int id) {
@@ -215,17 +205,28 @@ public final class Board {
         return new BoardPosition(-1, -1);
     }
 
+    /*********************
+     * Setters
+     *********************/
+    private void setPiece(IPiece piece, int rowX, int colY) {
+        board[rowX][colY] = piece;
+    }
+
+    private void setPiece(IPiece piece, BoardPosition pos) {
+        board[pos.rowX][pos.colY] = piece;
+    }
+
     public boolean isValidFromPos(BoardPosition boardPosition) {
         IPiece piece = getPiece(boardPosition);
         return piece.getColor().equals(playerColor);
     }
 
-    private void setPiece(IPiece piece, int x, int y) {
-        board[x][y] = piece;
-    }
-
     private void incGlobalMoveCount() {
         globalMoveCount += 0.5;
+    }
+
+    private void decGlobalMoveCount() {
+        globalMoveCount -= 0.5;
     }
 
     private void switchPlayer() {
@@ -235,49 +236,23 @@ public final class Board {
             playerColor = IPiece.Color.WHITE;
     }
 
-    private void addLossList(IPiece piece) {
+    private void addToLossList(IPiece piece) {
         if (piece.getColor().equals(IPiece.Color.WHITE)) {
-            whitePieceCount--;
             for (int i = 0; i < whiteLossList.length; i++)
                 if (whiteLossList[i] instanceof Empty) {
                     whiteLossList[i] = piece;
+                    whitePieceCount--;
                     return;
                 }
         } else {
             for (int i = 0; i < blackLossList.length; i++) {
-                blackPieceCount--;
                 if (blackLossList[i] instanceof Empty) {
                     blackLossList[i] = piece;
+                    blackPieceCount--;
                     return;
                 }
             }
         }
-    }
-
-    private String getPieceCount(IPiece.Color color) {
-        if (color.equals(IPiece.Color.WHITE)) {
-            if (whitePieceCount < 10)
-                return " " + whitePieceCount;
-            return String.valueOf(whitePieceCount);
-        } else {
-            if (blackPieceCount < 10)
-                return " " + blackPieceCount;
-            return String.valueOf(blackPieceCount);
-        }
-    }
-
-    private String getLossPieceText(IPiece.Color color, int index) {
-        if (color.equals(IPiece.Color.WHITE)) {
-            if (!(whiteLossList[index] instanceof Empty))
-                return (index + 1) + ". " + whiteLossList[index].toString();
-        } else if (color.equals(IPiece.Color.BLACK)) {
-            if (!(blackLossList[index] instanceof Empty))
-                return (index + 1) + ". " + blackLossList[index].toString();
-        }
-        if (index + 1 < 10)
-            return "      ";
-        else
-            return "       ";
     }
 
     private boolean isValidMove(IPiece fromPiece, IPiece toPiece, BoardPosition to, BoardPosition from) {
@@ -287,7 +262,7 @@ public final class Board {
          * move an 'Empty' piece.
          */
         if (fromPiece instanceof Empty) {
-            tui.printIllegalAction("No piece at position: [" + from.file + ", " + from.rank + "]!");
+            tui.printIllegalAction("No piece resides at the given position!");
             return false;
         }
 
@@ -308,7 +283,57 @@ public final class Board {
             return false;
         }
 
+        /*
+         * Populate moves to pieces every single move, so that they
+         * are always up to date with the their surroundings.
+         */
+        populateMoves();
+
+        /* Check to see whether this is a valid move for the fromPiece. */
+        boolean isValidMove = fromPiece.isValidMove(from, to);
+
+        /* If the move is not valid, let the player know and then return false. */
+        if (!isValidMove) {
+            tui.printIllegalAction("Illegal move!");
+            return false;
+        }
+
+        /* Move is legal, yay! */
         return true;
     }
+
+    private boolean isKingInCheck(IPiece.Color playerColor) {
+        List<IPiece> allKillMoves = new ArrayList<>();
+
+        for (IPiece[] boardRow : board)
+            for (IPiece piece : boardRow)
+                allKillMoves.addAll(piece.getSlayMoves());
+
+        for (IPiece piece : allKillMoves)
+            if (piece instanceof King && piece.getColor().equals(playerColor)) {
+                tui.printCheck(playerColor);
+                return true;
+            }
+
+        return false;
+    }
+
+    private void populateMoves() {
+        for (IPiece[] boardRow : board)
+            for (IPiece piece : boardRow)
+                piece.populateMoves(this);
+    }
+
+    /*
+    private void doPromotion(IPiece fromPiece, BoardPosition to) {
+        if (SpecialMoves.isPromotionAllowed(fromPiece, this)) {
+            tui.printPromotion();
+            char selection = tui.getPromotionSelection();
+            IPiece promotedPiece = SpecialMoves.promotePawn(selection, playerColor);
+            setPiece(promotedPiece, to.rowX, to.colY);
+            tui.printPromotionSuccess(selection, playerColor);
+        }
+    }
+    */
 
 }

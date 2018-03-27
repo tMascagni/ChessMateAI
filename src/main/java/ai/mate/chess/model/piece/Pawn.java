@@ -25,63 +25,57 @@ public final class Pawn extends Piece {
             name = TextHandler.BLACK_PAWN;
     }
 
-    /*
-     * We populate the moves in array basis.
-     * REMEMBER THIS! A white pawn can move -2 up in the array
-     * on its first move. -1 when its not its first move.
-     */
     @Override
     public void populateMoves(Board board) {
-        /* Remove old possible moves */
-        possibleMoves.clear();
+        /* Remove old possible moves and slay moves */
+        resetMoves();
 
-        /* White moves */
-        if (getColor().equals(Color.WHITE)) {
+        /* Populate moves */
+        if (getColor().equals(Color.WHITE))
+            populateWhiteMoves(board);
+        else if (getColor().equals(Color.BLACK))
+            populateBlackMoves(board);
+    }
 
-            /* First move (can walk 2 squares) */
-            if (isFirstMoveAllowed(new Point(-2, 0), board))
-                possibleMoves.add(new Point(-2, 0));
+    private void populateWhiteMoves(Board board) {
+        /* First move (can walk 2 squares) */
+        if (isFirstMoveAllowed(new Point(-2, 0), board))
+            possibleMoves.add(new Point(-2, 0));
 
-            /* Standard move (only allowed if the square is empty of opponent) */
-            if (isStandardMoveAllowed(new Point(-1, 0), board))
-                possibleMoves.add(new Point(-1, 0));
+        /* Standard move (only allowed if the square is empty of opponent) */
+        if (isStandardMoveAllowed(new Point(-1, 0), board))
+            possibleMoves.add(new Point(-1, 0));
 
-            /*
-             * First, we need to actually check where there is an opponent piece at
-             * these positions. Because these moves are only legal if an opponent
-             * is on these fields.
-             * s = START
-             * e = END
-             *             |   | e |
-             * (1, 1) ->   | s |   |
-             *
-             *             | e |   |
-             * (1, -1) ->  |   | s |
-             */
+        /* Slay opponents piece */
+        if (isSlayMoveAllowed(new Point(-1, 1), board)) {
+            possibleMoves.add(new Point(-1, 1));
+            addToKillMoves(this, board, -1, 1);
+        }
 
-            /* Slay opponents piece */
-            if (isSlayMoveAllowed(new Point(-1, 1), board))
-                possibleMoves.add(new Point(-1, 1));
+        if (isSlayMoveAllowed(new Point(-1, -1), board)) {
+            possibleMoves.add(new Point(-1, -1));
+            addToKillMoves(this, board, -1, -1);
+        }
+    }
 
-            if (isSlayMoveAllowed(new Point(-1, -1), board))
-                possibleMoves.add(new Point(-1, -1));
+    private void populateBlackMoves(Board board) {
+        /* First move (can walk 2 squares) */
+        if (isFirstMoveAllowed(new Point(2, 0), board))
+            possibleMoves.add(new Point(2, 0));
 
-            /* Black moves */
-        } else {
-            /* First move (can walk 2 squares) */
-            if (isFirstMoveAllowed(new Point(2, 0), board))
-                possibleMoves.add(new Point(2, 0));
+        /* Standard move (only allowed if the square is empty of opponent) */
+        if (isStandardMoveAllowed(new Point(1, 0), board))
+            possibleMoves.add(new Point(1, 0));
 
-            /* Standard move (only allowed if the square is empty of opponent) */
-            if (isStandardMoveAllowed(new Point(1, 0), board))
-                possibleMoves.add(new Point(1, 0));
+        /* Slay opponents piece */
+        if (isSlayMoveAllowed(new Point(1, 1), board)) {
+            possibleMoves.add(new Point(1, 1));
+            addToKillMoves(this, board, 1, 1);
+        }
 
-            /* Slay opponents piece */
-            if (isSlayMoveAllowed(new Point(1, 1), board))
-                possibleMoves.add(new Point(1, 1));
-
-            if (isSlayMoveAllowed(new Point(1, -1), board))
-                possibleMoves.add(new Point(1, -1));
+        if (isSlayMoveAllowed(new Point(1, -1), board)) {
+            possibleMoves.add(new Point(1, -1));
+            addToKillMoves(this, board, 1, -1);
         }
     }
 
@@ -90,11 +84,11 @@ public final class Pawn extends Piece {
         BoardPosition piecePos = board.getPieceBoardPos(this.ID);
 
         /* Now we need to create the new position where the piece would slay */
-        int xKill = piecePos.arrayX + p.x;
-        int yKill = piecePos.arrayY + p.y;
+        int xKill = piecePos.rowX + p.x;
+        int yKill = piecePos.colY + p.y;
 
         /* If we go out of bounds, we know that its a bad move. */
-        if ((xKill < 0 || xKill > 7) || (yKill < 0 || yKill > 7))
+        if (!isInBoardBounds(xKill, yKill))
             return false;
 
         /* Now we have the slay position. Now check if there's an opponent there! */
@@ -107,11 +101,11 @@ public final class Pawn extends Piece {
     private boolean isStandardMoveAllowed(Point p, Board board) {
         BoardPosition piecePos = board.getPieceBoardPos(ID);
 
-        int xRel = piecePos.arrayX + p.x;
-        int yRel = piecePos.arrayY + p.y;
+        int xRel = piecePos.rowX + p.x;
+        int yRel = piecePos.colY + p.y;
 
         /* If we go out of bounds, we know that its a bad move. */
-        if ((xRel < 0 || xRel > 7) || (yRel < 0 || yRel > 7))
+        if (!isInBoardBounds(xRel, yRel))
             return false;
 
         IPiece pieceAtRelPosition = board.getPiece(xRel, yRel);
@@ -119,10 +113,7 @@ public final class Pawn extends Piece {
         if (pieceAtRelPosition.getColor().equals(getOpponentColor()))
             return false;
 
-        if (pieceAtRelPosition.getColor().equals(getColor()))
-            return false;
-
-        return true;
+        return !pieceAtRelPosition.getColor().equals(getColor());
     }
 
     private boolean isFirstMoveAllowed(Point p, Board board) {
@@ -134,11 +125,11 @@ public final class Pawn extends Piece {
 
         BoardPosition piecePos = board.getPieceBoardPos(ID);
 
-        int xRel = piecePos.arrayX + p.x;
-        int yRel = piecePos.arrayY + p.y;
+        int xRel = piecePos.rowX + p.x;
+        int yRel = piecePos.colY + p.y;
 
         /* If we go out of bounds, we know that its a bad move. */
-        if ((xRel < 0 || xRel > 7) || (yRel < 0 || yRel > 7))
+        if (!isInBoardBounds(xRel, yRel))
             return false;
 
         IPiece pieceAtRelPosition = board.getPiece(xRel, yRel);
@@ -151,19 +142,30 @@ public final class Pawn extends Piece {
         if (getColor().equals(Color.WHITE))
             dec = 1;
 
-        xRel = piecePos.arrayX + p.x + dec;
-        yRel = piecePos.arrayY + p.y;
+        xRel = piecePos.rowX + p.x + dec;
+        yRel = piecePos.colY + p.y;
 
         /* If we go out of bounds, we know that its a bad move. */
-        if ((xRel < 0 || xRel > 7) || (yRel < 0 || yRel > 7))
+        if (!isInBoardBounds(xRel, yRel))
             return false;
 
         pieceAtRelPosition = board.getPiece(xRel, yRel);
 
-        if (!(pieceAtRelPosition instanceof Empty))
-            return false;
+        return pieceAtRelPosition instanceof Empty;
+    }
 
-        return true;
+    private void addToKillMoves(IPiece piece, Board board, int deltaX, int deltaY) {
+        BoardPosition currentPos = board.getPieceBoardPos(this.ID);
+
+        int actualX = currentPos.rowX + deltaX;
+        int actualY = currentPos.colY + deltaY;
+
+        /* If we go out of bounds, we know that its a bad move. */
+        if (!isInBoardBounds(actualX, actualY))
+            return;
+
+        IPiece killPiece = board.getPiece(actualX, actualY);
+        slayMoves.add(killPiece);
     }
 
 }

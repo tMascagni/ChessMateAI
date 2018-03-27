@@ -3,6 +3,9 @@
     <output-path>$PROJECT_DIR$/out/artifacts/ChessMateAI_jar</output-path>
     <root id="archive" name="ChessMateAI.jar">
       <element id="module-output" name="ChessMateAI" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" />
+      </element>
     </root>
   </artifact>
 </component>

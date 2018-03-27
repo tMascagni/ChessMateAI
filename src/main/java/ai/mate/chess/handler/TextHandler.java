@@ -22,7 +22,10 @@ public final class TextHandler {
     public static final String WHITE_KING = WHITE_ID + "K" + WHITE_ID;
     public static final String WHITE_PAWN = WHITE_ID + "P" + WHITE_ID;
 
+    /* Empty */
     public static final String EMPTY = "   ";
+
+    public static final String LATEST_MOVE_INITIAL = "None                  ";
 
     private static TextHandler instance;
 

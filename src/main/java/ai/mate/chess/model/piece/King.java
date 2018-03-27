@@ -27,11 +27,12 @@ public final class King extends Piece {
 
     @Override
     public void populateMoves(Board board) {
-        possibleMoves.clear();
+        /* Remove old possible moves and slay moves */
+        resetMoves();
 
         /* Firstly, we need to get this piece's board position */
         BoardPosition pieceBoardPos = board.getPieceBoardPos(this.ID);
-        Point piecePos = new Point(pieceBoardPos.arrayX, pieceBoardPos.arrayY);
+        Point piecePos = new Point(pieceBoardPos.rowX, pieceBoardPos.colY);
 
         populateNorthMoves(piecePos, board);
         populateSouthMoves(piecePos, board);
@@ -48,13 +49,13 @@ public final class King extends Piece {
         int yPiece = 0;
 
         //-x, 0
-        int x = xPiece - 1;
-        int y = piecePos.y + yPiece;
+        int rowX = xPiece - 1;
+        int colY = piecePos.y + yPiece;
 
-        if ((x < 0 || x > 7) || (y < 0 || y > 7))
+        if (!isInBoardBounds(rowX, colY))
             return;
 
-        Point move = calculateDeltaMove(piecePos, new Point(x, y));
+        Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
         Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
 
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
@@ -63,10 +64,8 @@ public final class King extends Piece {
         } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
             /* legal slay move! */
             possibleMoves.add(move);
-            /* but nothing more */
+            addToKillMoves(board, posAfterMove.x, posAfterMove.y);
         }
-
-        //System.out.println("NORTH: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
     }
 
     private void populateSouthMoves(Point piecePos, Board board) {
@@ -74,13 +73,13 @@ public final class King extends Piece {
         int yPiece = 0;
 
         //+x, 0
-        int x = xPiece + 1;
-        int y = piecePos.y + yPiece;
+        int rowX = xPiece + 1;
+        int colY = piecePos.y + yPiece;
 
-        if ((x < 0 || x > 7) || (y < 0 || y > 7))
+        if (!isInBoardBounds(rowX, colY))
             return;
 
-        Point move = calculateDeltaMove(piecePos, new Point(x, y));
+        Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
         Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
 
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
@@ -89,10 +88,8 @@ public final class King extends Piece {
         } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
             /* legal slay move! */
             possibleMoves.add(move);
-            /* but nothing more */
+            addToKillMoves(board, posAfterMove.x, posAfterMove.y);
         }
-
-        //System.out.println("SOUTH: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
     }
 
     private void populateEastMoves(Point piecePos, Board board) {
@@ -100,13 +97,13 @@ public final class King extends Piece {
         int yPiece = piecePos.y;
 
         // 0, +y
-        int x = piecePos.x + xPiece;
-        int y = yPiece + 1;
+        int rowX = piecePos.x + xPiece;
+        int colY = yPiece + 1;
 
-        if ((x < 0 || x > 7) || (y < 0 || y > 7))
+        if (!isInBoardBounds(rowX, colY))
             return;
 
-        Point move = calculateDeltaMove(piecePos, new Point(x, y));
+        Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
         Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
 
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
@@ -115,10 +112,8 @@ public final class King extends Piece {
         } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
             /* legal slay move! */
             possibleMoves.add(move);
-            /* but nothing more */
+            addToKillMoves(board, posAfterMove.x, posAfterMove.y);
         }
-
-        //System.out.println("EAST: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
     }
 
     private void populateWestMoves(Point piecePos, Board board) {
@@ -126,13 +121,13 @@ public final class King extends Piece {
         int yPiece = piecePos.y;
 
         // 0, -y
-        int x = piecePos.x + xPiece;
-        int y = yPiece - 1;
+        int rowX = piecePos.x + xPiece;
+        int colY = yPiece - 1;
 
-        if ((x < 0 || x > 7) || (y < 0 || y > 7))
+        if (!isInBoardBounds(rowX, colY))
             return;
 
-        Point move = calculateDeltaMove(piecePos, new Point(x, y));
+        Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
         Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
 
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
@@ -141,10 +136,8 @@ public final class King extends Piece {
         } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
             /* legal slay move! */
             possibleMoves.add(move);
-            /* but nothing more */
+            addToKillMoves(board, posAfterMove.x, posAfterMove.y);
         }
-
-        //System.out.println("WEST: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
     }
 
     private void populateNorthEastMoves(Point piecePos, Board board) {
@@ -152,13 +145,13 @@ public final class King extends Piece {
         int xPiece = piecePos.x;
         int yPiece = piecePos.y;
 
-        int x = xPiece - 1;
-        int y = yPiece + 1;
+        int rowX = xPiece - 1;
+        int colY = yPiece + 1;
 
-        if ((x < 0 || x > 7) || (y < 0 || y > 7))
+        if (!isInBoardBounds(rowX, colY))
             return;
 
-        Point move = calculateDeltaMove(piecePos, new Point(x, y));
+        Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
         Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
 
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
@@ -167,10 +160,8 @@ public final class King extends Piece {
         } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
             /* legal slay move! */
             possibleMoves.add(move);
-            /* but nothing more */
+            addToKillMoves(board, posAfterMove.x, posAfterMove.y);
         }
-
-        //System.out.println("NORTH EAST: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
     }
 
     private void populateSouthEastMoves(Point piecePos, Board board) {
@@ -178,13 +169,13 @@ public final class King extends Piece {
         int xPiece = piecePos.x;
         int yPiece = piecePos.y;
 
-        int x = xPiece + 1;
-        int y = (yPiece + 1);
+        int rowX = xPiece + 1;
+        int colY = yPiece + 1;
 
-        if ((x < 0 || x > 7) || (y < 0 || y > 7))
+        if (!isInBoardBounds(rowX, colY))
             return;
 
-        Point move = calculateDeltaMove(piecePos, new Point(x, y));
+        Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
         Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
 
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
@@ -193,10 +184,8 @@ public final class King extends Piece {
         } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
             /* legal slay move! */
             possibleMoves.add(move);
-            /* but nothing more */
+            addToKillMoves(board, posAfterMove.x, posAfterMove.y);
         }
-
-        //System.out.println("SOUTH EAST: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
     }
 
     private void populateSouthWestMoves(Point piecePos, Board board) {
@@ -204,13 +193,13 @@ public final class King extends Piece {
         int xPiece = piecePos.x;
         int yPiece = piecePos.y;
 
-        int x = xPiece + 1;
-        int y = (yPiece - 1);
+        int rowX = xPiece + 1;
+        int colY = yPiece - 1;
 
-        if ((x < 0 || x > 7) || (y < 0 || y > 7))
+        if (!isInBoardBounds(rowX, colY))
             return;
 
-        Point move = calculateDeltaMove(piecePos, new Point(x, y));
+        Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
         Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
 
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
@@ -219,10 +208,8 @@ public final class King extends Piece {
         } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
             /* legal slay move! */
             possibleMoves.add(move);
-            /* but nothing more */
+            addToKillMoves(board, posAfterMove.x, posAfterMove.y);
         }
-
-        //System.out.println("SOUTH WEST: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
     }
 
     private void populateNorthWestMoves(Point piecePos, Board board) {
@@ -230,13 +217,13 @@ public final class King extends Piece {
         int xPiece = piecePos.x;
         int yPiece = piecePos.y;
 
-        int x = xPiece - 1;
-        int y = (yPiece - 1);
+        int rowX = xPiece - 1;
+        int colY = yPiece - 1;
 
-        if ((x < 0 || x > 7) || (y < 0 || y > 7))
+        if (!isInBoardBounds(rowX, colY))
             return;
 
-        Point move = calculateDeltaMove(piecePos, new Point(x, y));
+        Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
         Point posAfterMove = new Point(piecePos.x + move.x, piecePos.y + move.y);
 
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
@@ -245,10 +232,12 @@ public final class King extends Piece {
         } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
             /* legal slay move! */
             possibleMoves.add(move);
-            /* but nothing more */
+            addToKillMoves(board, posAfterMove.x, posAfterMove.y);
         }
+    }
 
-        //System.out.println("NORTH WEST: Move (" + move.x + ", " + move.y + ") Position after move: (" + posAfterMove.x + ", " + posAfterMove.y + ")");
+    private void addToKillMoves(Board board, int xAfterMove, int yAfterMove) {
+        slayMoves.add(board.getPiece(xAfterMove, yAfterMove));
     }
 
 }

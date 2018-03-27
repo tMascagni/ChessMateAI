@@ -18,7 +18,7 @@ public final class Empty extends Piece {
     }
 
     @Override
-    public boolean isValidMove(BoardPosition from, BoardPosition to, Board board) {
+    public boolean isValidMove(BoardPosition from, BoardPosition to) {
         /* Empty pieces should NEVER be able to move. There always return false. */
         return false;
     }

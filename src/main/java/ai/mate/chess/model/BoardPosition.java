@@ -4,27 +4,27 @@ public final class BoardPosition {
 
     public final char file;
     public final char rank;
-    public final int arrayX;
-    public final int arrayY;
+    public final int rowX;
+    public final int colY;
 
-    private final int X_OFFSET = 8;
+    private final int ROW_X_OFFSET = 8;
 
     public BoardPosition(char file, char rank) {
         this.file = Character.toLowerCase(file);
         this.rank = rank;
-        this.arrayX = calculateX(this.rank);
-        this.arrayY = calculateY(this.file);
+        this.rowX = calculateRowX(this.rank);
+        this.colY = calculateColY(this.file);
     }
 
-    public BoardPosition(int arrayX, int arrayY) {
-        this.arrayX = arrayX;
-        this.arrayY = arrayY;
-        this.file = calculateFile(arrayY);
-        this.rank = calculateRank(arrayX);
+    public BoardPosition(int rowX, int colY) {
+        this.rowX = rowX;
+        this.colY = colY;
+        this.file = calculateFile(colY);
+        this.rank = calculateRank(rowX);
     }
 
-    private char calculateFile(int arrayY) {
-        switch (arrayY) {
+    private char calculateFile(int colY) {
+        switch (colY) {
             case 0:
                 return 'a';
             case 1:
@@ -46,16 +46,16 @@ public final class BoardPosition {
         }
     }
 
-    private char calculateRank(int arrayX) {
-        int decRank = (X_OFFSET - arrayX);
+    private char calculateRank(int rowX) {
+        int decRank = (ROW_X_OFFSET - rowX);
         return (char) (decRank + 48);
     }
 
-    private int calculateX(char rank) {
-        return Math.abs(Character.getNumericValue(rank) - X_OFFSET);
+    private int calculateRowX(char rank) {
+        return Math.abs(Character.getNumericValue(rank) - ROW_X_OFFSET);
     }
 
-    private int calculateY(char file) {
+    private int calculateColY(char file) {
         switch (file) {
             case 'a':
                 return 0;
@@ -83,8 +83,8 @@ public final class BoardPosition {
         return "BoardPosition [" +
                 "file=" + file +
                 ", rank=" + rank +
-                ", arrayX=" + arrayX +
-                ", arrayY=" + arrayY +
+                ", rowX=" + rowX +
+                ", colY=" + colY +
                 ']';
     }
 

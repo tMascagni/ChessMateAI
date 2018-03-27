@@ -5,20 +5,29 @@ import ai.mate.chess.model.BoardPosition;
 import ai.mate.chess.model.piece.IPiece;
 
 public interface ITui {
+    /* Input */
     char getUserInput();
     char getPromotionSelection();
     BoardPosition getBoardPositionInput();
+    IPiece.Color getPlayerColorInput();
+
+    /* Print */
+    String getPossibleMoveCountText(IPiece[][] board);
+    String getLossPieceText(IPiece[] whiteLossList, IPiece[] blackLossList, IPiece.Color color, int index);
+    String getPieceCountText(int whitePieceCount, int blackPieceCount, IPiece.Color playerColor);
+    String getLatestMoveText(IPiece.Color playerColor, BoardPosition from, BoardPosition to);
     void printPressEnter();
     void printArrow();
-    void printPromotionSuccess(char selection, IPiece.Color playerColor);
     void printArrow(String postfix);
+    void printPromotionSuccess(char selection, IPiece.Color playerColor);
     void printStartScreen();
     void printMenu();
     void printPromotion();
     void printHumanPlayer(IPiece.Color playerColor);
+    void printAIPlayer(IPiece.Color aIColor);
+    void printCheck(IPiece.Color playerColor);
     void printChoosePlayer();
     void printIllegalAction(String msg);
-    IPiece.Color getPlayerColorInput();
     void printUnrecognizedCommand();
     void printWin();
     void printLoss();
