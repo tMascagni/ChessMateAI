@@ -61,7 +61,7 @@ public final class King extends Piece {
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
             /* legal move! */
             possibleMoves.add(move);
-        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
+        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
             /* legal slay move! */
             possibleMoves.add(move);
         }
@@ -84,7 +84,7 @@ public final class King extends Piece {
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
             /* legal move! */
             possibleMoves.add(move);
-        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
+        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
             /* legal slay move! */
             possibleMoves.add(move);
         }
@@ -107,7 +107,7 @@ public final class King extends Piece {
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
             /* legal move! */
             possibleMoves.add(move);
-        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
+        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
             /* legal slay move! */
             possibleMoves.add(move);
         }
@@ -130,7 +130,7 @@ public final class King extends Piece {
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
             /* legal move! */
             possibleMoves.add(move);
-        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
+        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
             /* legal slay move! */
             possibleMoves.add(move);
         }
@@ -153,7 +153,7 @@ public final class King extends Piece {
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
             /* legal move! */
             possibleMoves.add(move);
-        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
+        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
             /* legal slay move! */
             possibleMoves.add(move);
         }
@@ -176,7 +176,7 @@ public final class King extends Piece {
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
             /* legal move! */
             possibleMoves.add(move);
-        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
+        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
             /* legal slay move! */
             possibleMoves.add(move);
         }
@@ -199,7 +199,7 @@ public final class King extends Piece {
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
             /* legal move! */
             possibleMoves.add(move);
-        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
+        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
             /* legal slay move! */
             possibleMoves.add(move);
         }
@@ -222,7 +222,7 @@ public final class King extends Piece {
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
             /* legal move! */
             possibleMoves.add(move);
-        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
+        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
             /* legal slay move! */
             possibleMoves.add(move);
         }

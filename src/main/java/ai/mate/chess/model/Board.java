@@ -7,6 +7,7 @@ import ai.mate.chess.model.piece.King;
 import ai.mate.chess.model.piece.Queen;
 import ai.mate.chess.ui.ITui;
 import ai.mate.chess.ui.Tui;
+import ai.mate.chess.util.Utils;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public final class Board {
     private IPiece.Color playerColor = IPiece.Color.WHITE;
     private IPiece[] whiteLossList, blackLossList;
     private IPiece[][] board;
+    private boolean[][] opponentMoveBoard;
 
     private final ITui tui = Tui.getInstance();
 
@@ -38,10 +40,6 @@ public final class Board {
         /* Get both positions 'to' and 'from' pieces. */
         IPiece fromPiece = getPiece(from.rowX, from.colY);
         IPiece toPiece = getPiece(to.rowX, to.colY);
-
-        if (isKingInCheck(playerColor)) {
-            tui.printIllegalAction(playerColor + " KING IN CHECK!");
-        }
 
         /* Check if the move is valid */
         if (!isValidMove(fromPiece, toPiece, to, from))
@@ -104,9 +102,6 @@ public final class Board {
 
         /* After this point, we can see 1 possible move in the future for playerColor. */
 
-        if (isKingInCheck(playerColor)) {
-            tui.printIllegalAction(playerColor + " KING IN CHECK!");
-        }
 
 
 
@@ -118,6 +113,21 @@ public final class Board {
     }
 
     public final void reset() {
+
+        /* Initialize opponentMoveBoard */
+        opponentMoveBoard = new boolean[][]{
+                {false, false, false, false, false, false, false, false},
+                {false, false, false, false, false, false, false, false},
+                {false, false, false, false, false, false, false, false},
+                {false, false, false, false, false, false, false, false},
+                {false, false, false, false, false, false, false, false},
+                {false, false, false, false, false, false, false, false},
+                {false, false, false, false, false, false, false, false},
+                {false, false, false, false, false, false, false, false},
+        };
+
+        /* Initialize board */
+
         /*
         board = new IPiece[][]{
                 {new Bishop(IPiece.Color.BLACK), new Bishop(IPiece.Color.WHITE), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
@@ -299,7 +309,12 @@ public final class Board {
             return false;
         }
 
+        if (isKingInCheck(playerColor)) {
+            tui.printIllegalAction(playerColor + " KING IN CHECK!");
+        }
+
         /* Populate moves for this player */
+        boolean isKingInCheck = isKingInCheck(playerColor);
         populateMoves(playerColor);
 
         /* Check to see whether this is a valid move for the fromPiece. */
@@ -311,18 +326,20 @@ public final class Board {
             return false;
         }
 
+        /*
+         * If the move is valid, and current player's king is in check
+         * create boolean map of opponents moves.
+         */
+        if (isKingInCheck)
+            updateOpponentMoveBoard(playerColor);
+
         /* Move is legal, yay! */
         return true;
     }
 
     private boolean isKingInCheck(IPiece.Color playerColor) {
         /* Get all possible move coordinates of the opponent color */
-        List<Point> possibleMoveCoordinates = new ArrayList<>();
-
-        for (IPiece[] boardRow : board)
-            for (IPiece piece : boardRow)
-                if (piece.getColor().equals(getOpponentColor(playerColor)))
-                    possibleMoveCoordinates.addAll(piece.getPossibleMovesCoordinates(this));
+        List<Point> possibleMoveCoordinates = getAllPossibleMoveCoordinates(Utils.getOpponentColor(playerColor));
 
         /* Now we have to check whether playerColor's King is in the move coordinates */
 
@@ -350,6 +367,14 @@ public final class Board {
                 piece.populateMoves(this);
     }
 
+    private List<Point> getAllPossibleMoveCoordinates(IPiece.Color playerColor) {
+        List<Point> possibleMoveCoordinates = new ArrayList<>();
+        for (IPiece[] boardRow : board)
+            for (IPiece piece : boardRow)
+                if (piece.getColor().equals(playerColor))
+                    possibleMoveCoordinates.addAll(piece.getPossibleMovesCoordinates(this));
+        return possibleMoveCoordinates;
+    }
 
     private void populateMoves(IPiece.Color playerColor) {
         if (playerColor.equals(IPiece.Color.WHITE)) {
@@ -386,14 +411,19 @@ public final class Board {
     }
     */
 
-    private IPiece.Color getOpponentColor(IPiece.Color playerColor) {
-        if (playerColor.equals(IPiece.Color.EMPTY))
-            return IPiece.Color.EMPTY;
+    private void updateOpponentMoveBoard(IPiece.Color playerColor) {
+        /* Get all possible move coordinates from opponent */
+        List<Point> opponentMoveCoordinates = getAllPossibleMoveCoordinates(Utils.getOpponentColor(playerColor));
 
-        if (playerColor.equals(IPiece.Color.WHITE))
-            return IPiece.Color.BLACK;
+        for (Point coord : opponentMoveCoordinates)
+            opponentMoveBoard[coord.x][coord.y] = true;
 
-        return IPiece.Color.WHITE;
+        for (int row = 0; row < opponentMoveBoard.length; row++) {
+            for (int col = 0; col < opponentMoveBoard[row].length; col++) {
+                System.out.print(opponentMoveBoard[row][col] + " ");
+            }
+            System.out.println();
+        }
     }
 
 }

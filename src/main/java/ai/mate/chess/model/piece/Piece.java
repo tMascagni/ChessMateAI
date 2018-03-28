@@ -107,16 +107,6 @@ public abstract class Piece implements IPiece {
     }
 
     @Override
-    public void decMoveCount() {
-        moveCount--;
-    }
-
-    @Override
-    public void decSlayCount() {
-        slayCount--;
-    }
-
-    @Override
     public int getMoveCount() {
         return moveCount;
     }
@@ -139,17 +129,6 @@ public abstract class Piece implements IPiece {
     @Override
     public Color getColor() {
         return color;
-    }
-
-    @Override
-    public Color getOpponentColor() {
-        if (getColor().equals(Color.EMPTY))
-            return Color.EMPTY;
-
-        if (getColor().equals(Color.WHITE))
-            return Color.BLACK;
-
-        return Color.WHITE;
     }
 
     @Override

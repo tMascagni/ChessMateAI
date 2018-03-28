@@ -27,8 +27,6 @@ public interface IPiece {
 
     void incMoveCount();
     void incSlayCount();
-    void decMoveCount();
-    void decSlayCount();
 
     int getMoveCount();
     int getSlayCount();
@@ -36,5 +34,4 @@ public interface IPiece {
     int getId();
     int getScore();
     Color getColor();
-    Color getOpponentColor();
 }
