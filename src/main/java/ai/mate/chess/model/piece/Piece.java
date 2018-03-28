@@ -27,14 +27,12 @@ public abstract class Piece implements IPiece {
     protected int score;
 
     protected List<Point> possibleMoves;
-    protected List<IPiece> slayMoves;
 
     public Piece(Color color) {
         this.color = color;
         ID = idCounter.getAndIncrement();
         initName();
         possibleMoves = new ArrayList<>();
-        slayMoves = new ArrayList<>();
     }
 
     protected abstract void initName();
@@ -43,7 +41,6 @@ public abstract class Piece implements IPiece {
 
     protected void resetMoves() {
         possibleMoves.clear();
-        slayMoves.clear();
     }
 
     protected boolean isInBoardBounds(int rowX, int colY) {
@@ -85,8 +82,18 @@ public abstract class Piece implements IPiece {
     }
 
     @Override
-    public List<IPiece> getSlayMoves() {
-        return slayMoves;
+    public List<Point> getPossibleMovesCoordinates(Board board) {
+        List<Point> possibleMovesCoordinates = new ArrayList<>();
+
+        BoardPosition pieceBoardPos = board.getPieceBoardPos(this.ID);
+        Point piecePos = new Point(pieceBoardPos.rowX, pieceBoardPos.colY);
+
+        for (Point possibleMove : possibleMoves) {
+            Point moveCoordinates = new Point(piecePos.x + possibleMove.x, piecePos.y + possibleMove.y);
+            possibleMovesCoordinates.add(moveCoordinates);
+        }
+
+        return possibleMovesCoordinates;
     }
 
     @Override

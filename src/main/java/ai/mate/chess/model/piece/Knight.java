@@ -70,7 +70,6 @@ public final class Knight extends Piece {
         } else if (board.getPiece(posAfterLeftMove.x, posAfterLeftMove.y).getColor().equals(getOpponentColor())) {
             /* Legal slay move! */
             possibleMoves.add(moveLeft);
-            addToKillMoves(board, posAfterLeftMove.x, posAfterLeftMove.y);
         }
 
         /* Right */
@@ -80,7 +79,6 @@ public final class Knight extends Piece {
         } else if (board.getPiece(posAfterRightMove.x, posAfterRightMove.y).getColor().equals(getOpponentColor())) {
             /* Legal slay move! */
             possibleMoves.add(moveRight);
-            addToKillMoves(board, posAfterRightMove.x, posAfterRightMove.y);
         }
     }
 
@@ -114,7 +112,6 @@ public final class Knight extends Piece {
         } else if (board.getPiece(posAfterNorthMove.x, posAfterNorthMove.y).getColor().equals(getOpponentColor())) {
             /* Legal slay move! */
             possibleMoves.add(moveNorth);
-            addToKillMoves(board, posAfterNorthMove.x, posAfterNorthMove.y);
         }
 
         /* South */
@@ -124,7 +121,6 @@ public final class Knight extends Piece {
         } else if (board.getPiece(posAfterSouthMove.x, posAfterSouthMove.y).getColor().equals(getOpponentColor())) {
             /* Legal slay move! */
             possibleMoves.add(moveSouth);
-            addToKillMoves(board, posAfterSouthMove.x, posAfterSouthMove.y);
         }
     }
 
@@ -158,7 +154,6 @@ public final class Knight extends Piece {
         } else if (board.getPiece(posAfterLeftMove.x, posAfterLeftMove.y).getColor().equals(getOpponentColor())) {
             /* Legal slay move! */
             possibleMoves.add(moveLeft);
-            addToKillMoves(board, posAfterLeftMove.x, posAfterLeftMove.y);
         }
 
         /* Right */
@@ -168,7 +163,6 @@ public final class Knight extends Piece {
         } else if (board.getPiece(posAfterRightMove.x, posAfterRightMove.y).getColor().equals(getOpponentColor())) {
             /* Legal slay move! */
             possibleMoves.add(moveRight);
-            addToKillMoves(board, posAfterRightMove.x, posAfterRightMove.y);
         }
     }
 
@@ -202,7 +196,6 @@ public final class Knight extends Piece {
         } else if (board.getPiece(posAfterNorthMove.x, posAfterNorthMove.y).getColor().equals(getOpponentColor())) {
             /* Legal slay move! */
             possibleMoves.add(moveNorth);
-            addToKillMoves(board, posAfterNorthMove.x, posAfterNorthMove.y);
         }
 
         /* South */
@@ -212,12 +205,7 @@ public final class Knight extends Piece {
         } else if (board.getPiece(posAfterSouthMove.x, posAfterSouthMove.y).getColor().equals(getOpponentColor())) {
             /* Legal slay move! */
             possibleMoves.add(moveSouth);
-            addToKillMoves(board, posAfterSouthMove.x, posAfterSouthMove.y);
         }
-    }
-
-    private void addToKillMoves(Board board, int xAfterMove, int yAfterMove) {
-        slayMoves.add(board.getPiece(xAfterMove, yAfterMove));
     }
 
 }

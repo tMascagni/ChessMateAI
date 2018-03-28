@@ -62,7 +62,6 @@ public final class Bishop extends Piece {
             } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
                 /* legal slay move! */
                 possibleMoves.add(move);
-                addToKillMoves(board, posAfterMove.x, posAfterMove.y);
                 break;
             } else {
                 /* Can't walk onto own pieces! */
@@ -93,7 +92,6 @@ public final class Bishop extends Piece {
             } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
                 /* legal slay move! */
                 possibleMoves.add(move);
-                addToKillMoves(board, posAfterMove.x, posAfterMove.y);
                 break;
             } else {
                 /* Can't walk onto own pieces! */
@@ -124,7 +122,6 @@ public final class Bishop extends Piece {
             } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
                 /* legal slay move! */
                 possibleMoves.add(move);
-                addToKillMoves(board, posAfterMove.x, posAfterMove.y);
                 break;
             } else {
                 /* Can't walk onto own pieces! */
@@ -155,17 +152,12 @@ public final class Bishop extends Piece {
             } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
                 /* legal slay move! */
                 possibleMoves.add(move);
-                addToKillMoves(board, posAfterMove.x, posAfterMove.y);
                 break;
             } else {
                 /* Can't walk onto own pieces! */
                 break;
             }
         }
-    }
-
-    private void addToKillMoves(Board board, int xAfterMove, int yAfterMove) {
-        slayMoves.add(board.getPiece(xAfterMove, yAfterMove));
     }
 
 }

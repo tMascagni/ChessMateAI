@@ -64,7 +64,6 @@ public final class King extends Piece {
         } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
             /* legal slay move! */
             possibleMoves.add(move);
-            addToKillMoves(board, posAfterMove.x, posAfterMove.y);
         }
     }
 
@@ -88,7 +87,6 @@ public final class King extends Piece {
         } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
             /* legal slay move! */
             possibleMoves.add(move);
-            addToKillMoves(board, posAfterMove.x, posAfterMove.y);
         }
     }
 
@@ -112,7 +110,6 @@ public final class King extends Piece {
         } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
             /* legal slay move! */
             possibleMoves.add(move);
-            addToKillMoves(board, posAfterMove.x, posAfterMove.y);
         }
     }
 
@@ -136,7 +133,6 @@ public final class King extends Piece {
         } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
             /* legal slay move! */
             possibleMoves.add(move);
-            addToKillMoves(board, posAfterMove.x, posAfterMove.y);
         }
     }
 
@@ -160,7 +156,6 @@ public final class King extends Piece {
         } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
             /* legal slay move! */
             possibleMoves.add(move);
-            addToKillMoves(board, posAfterMove.x, posAfterMove.y);
         }
     }
 
@@ -184,7 +179,6 @@ public final class King extends Piece {
         } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
             /* legal slay move! */
             possibleMoves.add(move);
-            addToKillMoves(board, posAfterMove.x, posAfterMove.y);
         }
     }
 
@@ -208,7 +202,6 @@ public final class King extends Piece {
         } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
             /* legal slay move! */
             possibleMoves.add(move);
-            addToKillMoves(board, posAfterMove.x, posAfterMove.y);
         }
     }
 
@@ -232,12 +225,7 @@ public final class King extends Piece {
         } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(getOpponentColor())) {
             /* legal slay move! */
             possibleMoves.add(move);
-            addToKillMoves(board, posAfterMove.x, posAfterMove.y);
         }
-    }
-
-    private void addToKillMoves(Board board, int xAfterMove, int yAfterMove) {
-        slayMoves.add(board.getPiece(xAfterMove, yAfterMove));
     }
 
 }

@@ -49,12 +49,10 @@ public final class Pawn extends Piece {
         /* Slay opponents piece */
         if (isSlayMoveAllowed(new Point(-1, 1), board)) {
             possibleMoves.add(new Point(-1, 1));
-            addToKillMoves(this, board, -1, 1);
         }
 
         if (isSlayMoveAllowed(new Point(-1, -1), board)) {
             possibleMoves.add(new Point(-1, -1));
-            addToKillMoves(this, board, -1, -1);
         }
     }
 
@@ -70,12 +68,10 @@ public final class Pawn extends Piece {
         /* Slay opponents piece */
         if (isSlayMoveAllowed(new Point(1, 1), board)) {
             possibleMoves.add(new Point(1, 1));
-            addToKillMoves(this, board, 1, 1);
         }
 
         if (isSlayMoveAllowed(new Point(1, -1), board)) {
             possibleMoves.add(new Point(1, -1));
-            addToKillMoves(this, board, 1, -1);
         }
     }
 
@@ -152,20 +148,6 @@ public final class Pawn extends Piece {
         pieceAtRelPosition = board.getPiece(xRel, yRel);
 
         return pieceAtRelPosition instanceof Empty;
-    }
-
-    private void addToKillMoves(IPiece piece, Board board, int deltaX, int deltaY) {
-        BoardPosition currentPos = board.getPieceBoardPos(this.ID);
-
-        int actualX = currentPos.rowX + deltaX;
-        int actualY = currentPos.colY + deltaY;
-
-        /* If we go out of bounds, we know that its a bad move. */
-        if (!isInBoardBounds(actualX, actualY))
-            return;
-
-        IPiece killPiece = board.getPiece(actualX, actualY);
-        slayMoves.add(killPiece);
     }
 
 }

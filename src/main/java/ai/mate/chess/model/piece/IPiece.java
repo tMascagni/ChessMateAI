@@ -23,7 +23,7 @@ public interface IPiece {
     int calculateDeltaColY(int fromColY, int toColY);
 
     List<Point> getPossibleMoves();
-    List<IPiece> getSlayMoves();
+    List<Point> getPossibleMovesCoordinates(Board board);
 
     void incMoveCount();
     void incSlayCount();

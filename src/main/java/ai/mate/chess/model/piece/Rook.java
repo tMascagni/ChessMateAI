@@ -61,7 +61,6 @@ public final class Rook extends Piece {
                 /* legal slay move! */
                 possibleMoves.add(move);
                 /* add to slay list */
-                slayMoves.add(board.getPiece(posAfterMove.x, posAfterMove.y));
                 break;
             } else {
                 /* Can't walk onto own pieces! */
@@ -91,7 +90,6 @@ public final class Rook extends Piece {
                 /* legal slay move! */
                 possibleMoves.add(move);
                 /* add to slay list */
-                addToKillMoves(board, posAfterMove.x, posAfterMove.y);
                 break;
             } else {
                 /* Can't walk onto own pieces! */
@@ -121,7 +119,6 @@ public final class Rook extends Piece {
                 /* legal slay move! */
                 possibleMoves.add(move);
                 /* add to slay list */
-                addToKillMoves(board, posAfterMove.x, posAfterMove.y);
                 break;
             } else {
                 /* Can't walk onto own pieces! */
@@ -151,17 +148,12 @@ public final class Rook extends Piece {
                 /* legal slay move! */
                 possibleMoves.add(move);
                 /* add to slay list */
-                addToKillMoves(board, posAfterMove.x, posAfterMove.y);
                 break;
             } else {
                 /* Can't walk onto own pieces! */
                 break;
             }
         }
-    }
-
-    private void addToKillMoves(Board board, int xAfterMove, int yAfterMove) {
-        slayMoves.add(board.getPiece(xAfterMove, yAfterMove));
     }
 
 }

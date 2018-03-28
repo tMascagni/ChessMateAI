@@ -8,6 +8,7 @@ import ai.mate.chess.model.piece.Queen;
 import ai.mate.chess.ui.ITui;
 import ai.mate.chess.ui.Tui;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,10 @@ public final class Board {
         /* Get both positions 'to' and 'from' pieces. */
         IPiece fromPiece = getPiece(from.rowX, from.colY);
         IPiece toPiece = getPiece(to.rowX, to.colY);
+
+        if (isKingInCheck(playerColor)) {
+            tui.printIllegalAction(playerColor + " KING IN CHECK!");
+        }
 
         /* Check if the move is valid */
         if (!isValidMove(fromPiece, toPiece, to, from))
@@ -94,6 +99,17 @@ public final class Board {
         /* Check if promotion is available */
         //doPromotion(fromPiece, to);
 
+        /* Populate moves for this player */
+        populateMoves(playerColor);
+
+        /* After this point, we can see 1 possible move in the future for playerColor. */
+
+        if (isKingInCheck(playerColor)) {
+            tui.printIllegalAction(playerColor + " KING IN CHECK!");
+        }
+
+
+
         /* Since the move have been a success, we shall switch the player. */
         switchPlayer();
 
@@ -120,7 +136,7 @@ public final class Board {
                 {new Queen(IPiece.Color.BLACK), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
                 {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
                 {new Empty(), new Empty(), new Empty(), new Empty(), new King(IPiece.Color.WHITE), new Empty(), new Empty(), new Empty()},
-                {new Queen(IPiece.Color.BLACK), new Empty(), new Empty(), new Queen(IPiece.Color.WHITE), new Empty(), new Empty(), new Empty(), new Empty()},
+                {new Queen(IPiece.Color.BLACK), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
                 {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
                 {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()}};
 
@@ -283,11 +299,8 @@ public final class Board {
             return false;
         }
 
-        /*
-         * Populate moves to pieces every single move, so that they
-         * are always up to date with the their surroundings.
-         */
-        populateMoves();
+        /* Populate moves for this player */
+        populateMoves(playerColor);
 
         /* Check to see whether this is a valid move for the fromPiece. */
         boolean isValidMove = fromPiece.isValidMove(from, to);
@@ -303,17 +316,30 @@ public final class Board {
     }
 
     private boolean isKingInCheck(IPiece.Color playerColor) {
-        List<IPiece> allKillMoves = new ArrayList<>();
+        /* Get all possible move coordinates of the opponent color */
+        List<Point> possibleMoveCoordinates = new ArrayList<>();
 
         for (IPiece[] boardRow : board)
             for (IPiece piece : boardRow)
-                allKillMoves.addAll(piece.getSlayMoves());
+                if (piece.getColor().equals(getOpponentColor(playerColor)))
+                    possibleMoveCoordinates.addAll(piece.getPossibleMovesCoordinates(this));
 
-        for (IPiece piece : allKillMoves)
-            if (piece instanceof King && piece.getColor().equals(playerColor)) {
-                tui.printCheck(playerColor);
+        /* Now we have to check whether playerColor's King is in the move coordinates */
+
+        /* White King ID: 156 */
+        /* Black King ID: 100 */
+
+        BoardPosition kingPos = null;
+
+        if (playerColor.equals(IPiece.Color.WHITE)) {
+            kingPos = getPieceBoardPos(156);
+        } else if (playerColor.equals(IPiece.Color.BLACK)) {
+            kingPos = getPieceBoardPos(100);
+        }
+
+        for (Point coord : possibleMoveCoordinates)
+            if (coord.x == kingPos.rowX && coord.y == kingPos.colY)
                 return true;
-            }
 
         return false;
     }
@@ -322,6 +348,30 @@ public final class Board {
         for (IPiece[] boardRow : board)
             for (IPiece piece : boardRow)
                 piece.populateMoves(this);
+    }
+
+
+    private void populateMoves(IPiece.Color playerColor) {
+        if (playerColor.equals(IPiece.Color.WHITE)) {
+            for (IPiece[] boardRow : board)
+                for (IPiece piece : boardRow)
+                    if (piece.getColor().equals(IPiece.Color.WHITE))
+                        piece.populateMoves(this);
+        } else if (playerColor.equals(IPiece.Color.BLACK)) {
+            for (IPiece[] boardRow : board)
+                for (IPiece piece : boardRow)
+                    if (piece.getColor().equals(IPiece.Color.BLACK))
+                        piece.populateMoves(this);
+        }
+    }
+
+    private List<Point> getPossibleMoves(IPiece.Color playerColor) {
+        List<Point> specificPossibleMoves = new ArrayList<>();
+        for (IPiece[] boardRow : board)
+            for (IPiece piece : boardRow)
+                if (piece.getColor().equals(playerColor))
+                    specificPossibleMoves.addAll(piece.getPossibleMoves());
+        return specificPossibleMoves;
     }
 
     /*
@@ -335,5 +385,15 @@ public final class Board {
         }
     }
     */
+
+    private IPiece.Color getOpponentColor(IPiece.Color playerColor) {
+        if (playerColor.equals(IPiece.Color.EMPTY))
+            return IPiece.Color.EMPTY;
+
+        if (playerColor.equals(IPiece.Color.WHITE))
+            return IPiece.Color.BLACK;
+
+        return IPiece.Color.WHITE;
+    }
 
 }
