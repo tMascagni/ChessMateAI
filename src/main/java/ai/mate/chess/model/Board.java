@@ -2,12 +2,12 @@ package ai.mate.chess.model;
 
 import ai.mate.chess.handler.TextHandler;
 import ai.mate.chess.model.piece.Empty;
-import ai.mate.chess.model.piece.IPiece;
 import ai.mate.chess.model.piece.King;
+import ai.mate.chess.model.piece.Piece;
 import ai.mate.chess.model.piece.Queen;
+import ai.mate.chess.model.piece.interfaces.IPiece;
 import ai.mate.chess.ui.ITui;
 import ai.mate.chess.ui.Tui;
-import ai.mate.chess.util.Utils;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -18,6 +18,7 @@ public final class Board {
     private final static int PLAYER_PIECE_COUNT = 16;
 
     private double globalMoveCount = 0;
+
     private int whitePieceCount = PLAYER_PIECE_COUNT;
     private int blackPieceCount = PLAYER_PIECE_COUNT;
 
@@ -31,8 +32,6 @@ public final class Board {
     private String latestMove = TextHandler.LATEST_MOVE_INITIAL;
 
     public Board() {
-        whiteLossList = new IPiece[PLAYER_PIECE_COUNT];
-        blackLossList = new IPiece[PLAYER_PIECE_COUNT];
         reset();
     }
 
@@ -42,7 +41,7 @@ public final class Board {
         IPiece toPiece = getPiece(to.rowX, to.colY);
 
         /* Check if the move is valid */
-        if (!isValidMove(fromPiece, toPiece, to, from))
+        if (!isValidMove(fromPiece, to, from))
             return false;
 
         if (toPiece instanceof Empty) {
@@ -98,7 +97,7 @@ public final class Board {
         //doPromotion(fromPiece, to);
 
         /* Populate moves for this player */
-        populateMoves(playerColor);
+        populateMovesToPlayer(playerColor);
 
         /* After this point, we can see 1 possible move in the future for playerColor. */
 
@@ -167,6 +166,9 @@ public final class Board {
 
         playerColor = IPiece.Color.WHITE;
 
+        whiteLossList = new IPiece[PLAYER_PIECE_COUNT];
+        blackLossList = new IPiece[PLAYER_PIECE_COUNT];
+
         for (int i = 0; i < whiteLossList.length; i++) {
             whiteLossList[i] = new Empty();
             blackLossList[i] = new Empty();
@@ -174,7 +176,7 @@ public final class Board {
 
         latestMove = TextHandler.LATEST_MOVE_INITIAL;
 
-        populateMoves();
+        populateMovesToAllPlayers();
     }
 
     public final String getBoardText() {
@@ -220,7 +222,7 @@ public final class Board {
             for (IPiece piece : boardRow)
                 if (piece.getId() == id)
                     return piece;
-        return new Empty();
+        throw new RuntimeException("Failed to find piece with id: " + id + "!");
     }
 
     public BoardPosition getPieceBoardPos(int id) {
@@ -228,7 +230,11 @@ public final class Board {
             for (int j = 0; j < board[0].length; j++)
                 if (board[i][j].getId() == id)
                     return new BoardPosition(i, j);
-        return new BoardPosition(-1, -1);
+        throw new RuntimeException("Failed to find piece with id: " + id + "!");
+    }
+
+    public IPiece.Color getPlayerColor() {
+        return playerColor;
     }
 
     /*********************
@@ -249,10 +255,6 @@ public final class Board {
 
     private void incGlobalMoveCount() {
         globalMoveCount += 0.5;
-    }
-
-    private void decGlobalMoveCount() {
-        globalMoveCount -= 0.5;
     }
 
     private void switchPlayer() {
@@ -281,7 +283,7 @@ public final class Board {
         }
     }
 
-    private boolean isValidMove(IPiece fromPiece, IPiece toPiece, BoardPosition to, BoardPosition from) {
+    private boolean isValidMove(IPiece fromPiece, BoardPosition to, BoardPosition from) {
         /*
          * If the 'from' piece is instance of a 'Empty' piece,
          * then return false, since the player is not allowed to
@@ -315,7 +317,7 @@ public final class Board {
 
         /* Populate moves for this player */
         boolean isKingInCheck = isKingInCheck(playerColor);
-        populateMoves(playerColor);
+        populateMovesToPlayer(playerColor);
 
         /* Check to see whether this is a valid move for the fromPiece. */
         boolean isValidMove = fromPiece.isValidMove(from, to);
@@ -337,37 +339,54 @@ public final class Board {
         return true;
     }
 
+    /**
+     * Check whether the king belonging to playerColor
+     * is in check or not. Returns true if it is in check,
+     * false if it is not in check.
+     */
     private boolean isKingInCheck(IPiece.Color playerColor) {
         /* Get all possible move coordinates of the opponent color */
-        List<Point> possibleMoveCoordinates = getAllPossibleMoveCoordinates(Utils.getOpponentColor(playerColor));
+        List<Point> possibleMoveCoordinates = getPossibleMovesCoordinatesFromPlayer(Piece.getOpponentColor(playerColor));
 
-        /* Now we have to check whether playerColor's King is in the move coordinates */
-
-        /* White King ID: 156 */
-        /* Black King ID: 100 */
-
+        /*
+         * Now we have to check whether playerColor's King is in the move coordinates.
+         * If it is, then we know that it must be in check.
+         *
+         * White King ID: 156
+         * Black King ID: 100
+         */
         BoardPosition kingPos = null;
-
-        if (playerColor.equals(IPiece.Color.WHITE)) {
+        if (playerColor.equals(IPiece.Color.WHITE))
             kingPos = getPieceBoardPos(156);
-        } else if (playerColor.equals(IPiece.Color.BLACK)) {
+        else if (playerColor.equals(IPiece.Color.BLACK))
             kingPos = getPieceBoardPos(100);
-        }
 
-        for (Point coord : possibleMoveCoordinates)
-            if (coord.x == kingPos.rowX && coord.y == kingPos.colY)
+        if (kingPos == null)
+            throw new RuntimeException("King is null when checking for chess check!");
+
+        for (Point coordinate : possibleMoveCoordinates)
+            if (coordinate.x == kingPos.rowX && coordinate.y == kingPos.colY)
                 return true;
 
         return false;
     }
 
-    private void populateMoves() {
+    /**
+     * Populates moves to all player's pieces.
+     * Helper method.
+     */
+    private void populateMovesToAllPlayers() {
         for (IPiece[] boardRow : board)
             for (IPiece piece : boardRow)
                 piece.populateMoves(this);
     }
 
-    private List<Point> getAllPossibleMoveCoordinates(IPiece.Color playerColor) {
+    /**
+     * Get a list of the board coordinates that a specific player can
+     * move to with their current given possible moves.
+     * Helper method.
+     */
+    private List<Point> getPossibleMovesCoordinatesFromPlayer(IPiece.Color playerColor) {
         List<Point> possibleMoveCoordinates = new ArrayList<>();
         for (IPiece[] boardRow : board)
             for (IPiece piece : boardRow)
@@ -376,54 +395,37 @@ public final class Board {
         return possibleMoveCoordinates;
     }
 
-    private void populateMoves(IPiece.Color playerColor) {
-        if (playerColor.equals(IPiece.Color.WHITE)) {
-            for (IPiece[] boardRow : board)
-                for (IPiece piece : boardRow)
-                    if (piece.getColor().equals(IPiece.Color.WHITE))
-                        piece.populateMoves(this);
-        } else if (playerColor.equals(IPiece.Color.BLACK)) {
-            for (IPiece[] boardRow : board)
-                for (IPiece piece : boardRow)
-                    if (piece.getColor().equals(IPiece.Color.BLACK))
-                        piece.populateMoves(this);
-        }
-    }
-
-    private List<Point> getPossibleMoves(IPiece.Color playerColor) {
-        List<Point> specificPossibleMoves = new ArrayList<>();
+    /**
+     * Make all pieces of a specific player populate their moves.
+     * Helper method.
+     */
+    private void populateMovesToPlayer(IPiece.Color playerColor) {
         for (IPiece[] boardRow : board)
             for (IPiece piece : boardRow)
                 if (piece.getColor().equals(playerColor))
-                    specificPossibleMoves.addAll(piece.getPossibleMoves());
-        return specificPossibleMoves;
+                    piece.populateMoves(this);
     }
 
-    /*
-    private void doPromotion(IPiece fromPiece, BoardPosition to) {
-        if (SpecialMoves.isPromotionAllowed(fromPiece, this)) {
-            tui.printPromotion();
-            char selection = tui.getPromotionSelection();
-            IPiece promotedPiece = SpecialMoves.promotePawn(selection, playerColor);
-            setPiece(promotedPiece, to.rowX, to.colY);
-            tui.printPromotionSuccess(selection, playerColor);
-        }
+    /**
+     * Get all the possible moves from a specific player,
+     * i.e. black or white.
+     * Helper method.
+     */
+    public List<Point> getPossibleMovesFromPlayer(IPiece.Color playerColor) {
+        List<Point> possibleMovesPlayer = new ArrayList<>();
+        for (IPiece[] boardRow : board)
+            for (IPiece piece : boardRow)
+                if (piece.getColor().equals(playerColor))
+                    possibleMovesPlayer.addAll(piece.getPossibleMoves());
+        return possibleMovesPlayer;
     }
-    */
 
     private void updateOpponentMoveBoard(IPiece.Color playerColor) {
         /* Get all possible move coordinates from opponent */
-        List<Point> opponentMoveCoordinates = getAllPossibleMoveCoordinates(Utils.getOpponentColor(playerColor));
+        List<Point> opponentMoveCoordinates = getPossibleMovesCoordinatesFromPlayer(Piece.getOpponentColor(playerColor));
 
         for (Point coord : opponentMoveCoordinates)
             opponentMoveBoard[coord.x][coord.y] = true;
-
-        for (int row = 0; row < opponentMoveBoard.length; row++) {
-            for (int col = 0; col < opponentMoveBoard[row].length; col++) {
-                System.out.print(opponentMoveBoard[row][col] + " ");
-            }
-            System.out.println();
-        }
     }
 
 }

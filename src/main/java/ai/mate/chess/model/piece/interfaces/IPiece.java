@@ -1,4 +1,4 @@
-package ai.mate.chess.model.piece;
+package ai.mate.chess.model.piece.interfaces;
 
 import ai.mate.chess.model.Board;
 import ai.mate.chess.model.BoardPosition;
@@ -18,15 +18,11 @@ public interface IPiece {
     void populateMoves(Board board);
     boolean isValidMove(BoardPosition from, BoardPosition to);
 
-    Point calculateDeltaMove(Point piecePos, Point move);
-    int calculateDeltaRowX(int fromRowX, int toRowX);
-    int calculateDeltaColY(int fromColY, int toColY);
+    void incMoveCount();
+    void incSlayCount();
 
     List<Point> getPossibleMoves();
     List<Point> getPossibleMovesCoordinates(Board board);
-
-    void incMoveCount();
-    void incSlayCount();
 
     int getMoveCount();
     int getSlayCount();

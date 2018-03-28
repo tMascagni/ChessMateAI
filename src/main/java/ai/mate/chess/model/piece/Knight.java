@@ -52,11 +52,11 @@ public final class Knight extends Piece {
         posAfterRightMove.y = piecePos.y + 1;
 
         /* Check left pos bounds */
-        if (!isInBoardBounds(posAfterLeftMove.x, posAfterLeftMove.y))
+        if (isOutOfBounds(posAfterLeftMove.x, posAfterLeftMove.y))
             return;
 
         /* Check right pos bounds */
-        if (!isInBoardBounds(posAfterRightMove.x, posAfterRightMove.y))
+        if (isOutOfBounds(posAfterRightMove.x, posAfterRightMove.y))
             return;
 
         /* Delta moves */
@@ -67,7 +67,7 @@ public final class Knight extends Piece {
         if (board.getPiece(posAfterLeftMove.x, posAfterLeftMove.y) instanceof Empty) {
             /* Legal move! */
             possibleMoves.add(moveLeft);
-        } else if (board.getPiece(posAfterLeftMove.x, posAfterLeftMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+        } else if (board.getPiece(posAfterLeftMove.x, posAfterLeftMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* Legal slay move! */
             possibleMoves.add(moveLeft);
         }
@@ -76,7 +76,7 @@ public final class Knight extends Piece {
         if (board.getPiece(posAfterRightMove.x, posAfterRightMove.y) instanceof Empty) {
             /* Legal move! */
             possibleMoves.add(moveRight);
-        } else if (board.getPiece(posAfterRightMove.x, posAfterRightMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+        } else if (board.getPiece(posAfterRightMove.x, posAfterRightMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* Legal slay move! */
             possibleMoves.add(moveRight);
         }
@@ -94,11 +94,11 @@ public final class Knight extends Piece {
         posAfterSouthMove.y = piecePos.y + 2;
 
         /* Check north pos bounds */
-        if (!isInBoardBounds(posAfterNorthMove.x, posAfterNorthMove.y))
+        if (isOutOfBounds(posAfterNorthMove.x, posAfterNorthMove.y))
             return;
 
         /* Check south pos bounds */
-        if (!isInBoardBounds(posAfterSouthMove.x, posAfterSouthMove.y))
+        if (isOutOfBounds(posAfterSouthMove.x, posAfterSouthMove.y))
             return;
 
         /* Delta moves */
@@ -109,7 +109,7 @@ public final class Knight extends Piece {
         if (board.getPiece(posAfterNorthMove.x, posAfterNorthMove.y) instanceof Empty) {
             /* Legal move! */
             possibleMoves.add(moveNorth);
-        } else if (board.getPiece(posAfterNorthMove.x, posAfterNorthMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+        } else if (board.getPiece(posAfterNorthMove.x, posAfterNorthMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* Legal slay move! */
             possibleMoves.add(moveNorth);
         }
@@ -118,7 +118,7 @@ public final class Knight extends Piece {
         if (board.getPiece(posAfterSouthMove.x, posAfterSouthMove.y) instanceof Empty) {
             /* Legal move! */
             possibleMoves.add(moveSouth);
-        } else if (board.getPiece(posAfterSouthMove.x, posAfterSouthMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+        } else if (board.getPiece(posAfterSouthMove.x, posAfterSouthMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* Legal slay move! */
             possibleMoves.add(moveSouth);
         }
@@ -136,11 +136,11 @@ public final class Knight extends Piece {
         posAfterRightMove.y = piecePos.y + 1;
 
         /* Check left pos bounds */
-        if (!isInBoardBounds(posAfterLeftMove.x, posAfterLeftMove.y))
+        if (isOutOfBounds(posAfterLeftMove.x, posAfterLeftMove.y))
             return;
 
         /* Check right pos bounds */
-        if (!isInBoardBounds(posAfterRightMove.x, posAfterRightMove.y))
+        if (isOutOfBounds(posAfterRightMove.x, posAfterRightMove.y))
             return;
 
         /* Delta moves */
@@ -151,7 +151,7 @@ public final class Knight extends Piece {
         if (board.getPiece(posAfterLeftMove.x, posAfterLeftMove.y) instanceof Empty) {
             /* Legal move! */
             possibleMoves.add(moveLeft);
-        } else if (board.getPiece(posAfterLeftMove.x, posAfterLeftMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+        } else if (board.getPiece(posAfterLeftMove.x, posAfterLeftMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* Legal slay move! */
             possibleMoves.add(moveLeft);
         }
@@ -160,7 +160,7 @@ public final class Knight extends Piece {
         if (board.getPiece(posAfterRightMove.x, posAfterRightMove.y) instanceof Empty) {
             /* Legal move! */
             possibleMoves.add(moveRight);
-        } else if (board.getPiece(posAfterRightMove.x, posAfterRightMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+        } else if (board.getPiece(posAfterRightMove.x, posAfterRightMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* Legal slay move! */
             possibleMoves.add(moveRight);
         }
@@ -178,11 +178,11 @@ public final class Knight extends Piece {
         posAfterSouthMove.y = piecePos.y - 2;
 
         /* Check north pos bounds */
-        if (!isInBoardBounds(posAfterNorthMove.x, posAfterNorthMove.y))
+        if (isOutOfBounds(posAfterNorthMove.x, posAfterNorthMove.y))
             return;
 
         /* Check south pos bounds */
-        if (!isInBoardBounds(posAfterSouthMove.x, posAfterSouthMove.y))
+        if (isOutOfBounds(posAfterSouthMove.x, posAfterSouthMove.y))
             return;
 
         /* Delta moves */
@@ -193,7 +193,7 @@ public final class Knight extends Piece {
         if (board.getPiece(posAfterNorthMove.x, posAfterNorthMove.y) instanceof Empty) {
             /* Legal move! */
             possibleMoves.add(moveNorth);
-        } else if (board.getPiece(posAfterNorthMove.x, posAfterNorthMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+        } else if (board.getPiece(posAfterNorthMove.x, posAfterNorthMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* Legal slay move! */
             possibleMoves.add(moveNorth);
         }
@@ -202,7 +202,7 @@ public final class Knight extends Piece {
         if (board.getPiece(posAfterSouthMove.x, posAfterSouthMove.y) instanceof Empty) {
             /* Legal move! */
             possibleMoves.add(moveSouth);
-        } else if (board.getPiece(posAfterSouthMove.x, posAfterSouthMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+        } else if (board.getPiece(posAfterSouthMove.x, posAfterSouthMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* Legal slay move! */
             possibleMoves.add(moveSouth);
         }

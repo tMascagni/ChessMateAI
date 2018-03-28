@@ -3,7 +3,7 @@ package ai.mate.chess.ui;
 import ai.mate.chess.model.Board;
 import ai.mate.chess.model.BoardPosition;
 import ai.mate.chess.model.piece.Empty;
-import ai.mate.chess.model.piece.IPiece;
+import ai.mate.chess.model.piece.interfaces.IPiece;
 import ai.mate.chess.util.Utils;
 
 import java.util.Scanner;
@@ -46,10 +46,40 @@ public final class Tui implements ITui {
     }
 
     @Override
-    public BoardPosition getBoardPositionInput() {
-        char file = getAlphabeticChar("File");
-        char rank = getNumericChar("Rank");
-        return new BoardPosition(file, rank);
+    public BoardPosition getBoardPositionInput(String msg) {
+        char[] boardPair = getBoardPair(msg);
+        return new BoardPosition(boardPair[0], boardPair[1]);
+    }
+
+    private char[] getBoardPair(String msg) {
+        char file = 'x';
+        char rank = 'x';
+        do {
+            try {
+                /* Prompt */
+                printArrow(msg + ": File/Rank");
+
+                /* Get the string */
+                String input = scanner.nextLine();
+
+                /* The string has to be of length 2, if its not, its illegal. */
+                if (input.length() != 2)
+                    continue;
+
+                /* split em */
+                file = Character.toLowerCase(input.charAt(0));
+                rank = input.charAt(1);
+
+            } catch (Exception ignored) {
+
+            }
+            /*
+             * If its of length 2, check if the first is a alphabetic character
+             * from A-H, and if the second is a numeric character from 1 to 8.
+             */
+        } while (!isValidFile(file) || !isValidRank(rank));
+
+        return new char[]{file, rank};
     }
 
     @Override
@@ -349,40 +379,12 @@ public final class Tui implements ITui {
         }
     }
 
-    private char getAlphabeticChar(String arrowMsg) {
-        char ch;
-        while (true) {
-            printArrow(arrowMsg);
-            try {
-                ch = scanner.nextLine().charAt(0);
-            } catch (Exception e) {
-                continue;
-            }
-
-            if (!Character.isAlphabetic(ch))
-                continue;
-
-            ch = Character.toLowerCase(ch);
-
-            if (ch == 'a' || ch == 'b' || ch == 'c' || ch == 'd' || ch == 'e' || ch == 'f' || ch == 'g' || ch == 'h')
-                return ch;
-        }
+    private boolean isValidRank(char ch) {
+        return Character.isDigit(ch) || (Character.getNumericValue(ch) < 1 || Character.getNumericValue(ch) > 8);
     }
 
-    private char getNumericChar(String arrowMsg) {
-        char ch = 'X';
-        do {
-            printArrow(arrowMsg);
-            try {
-                String str = scanner.nextLine();
-                if (str.length() > 1)
-                    continue;
-                ch = str.charAt(0);
-            } catch (Exception ignored) {
-
-            }
-        } while (!Character.isDigit(ch) || (Character.getNumericValue(ch) < 1 || Character.getNumericValue(ch) > 8));
-        return ch;
+    private boolean isValidFile(char ch) {
+        return ch == 'a' || ch == 'b' || ch == 'c' || ch == 'd' || ch == 'e' || ch == 'f' || ch == 'g' || ch == 'h';
     }
 
     private String parseString(String text, int lineLength, boolean withStartPipe) {

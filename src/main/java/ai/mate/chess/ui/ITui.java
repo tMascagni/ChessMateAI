@@ -2,13 +2,13 @@ package ai.mate.chess.ui;
 
 import ai.mate.chess.model.Board;
 import ai.mate.chess.model.BoardPosition;
-import ai.mate.chess.model.piece.IPiece;
+import ai.mate.chess.model.piece.interfaces.IPiece;
 
 public interface ITui {
     /* Input */
     char getUserInput();
     char getPromotionSelection();
-    BoardPosition getBoardPositionInput();
+    BoardPosition getBoardPositionInput(String msg);
     IPiece.Color getPlayerColorInput();
 
     /* Print */

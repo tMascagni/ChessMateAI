@@ -3,7 +3,8 @@ package ai.mate.chess.controller;
 import ai.mate.chess.controller.interfaces.IGameController;
 import ai.mate.chess.model.Board;
 import ai.mate.chess.model.BoardPosition;
-import ai.mate.chess.model.piece.IPiece;
+import ai.mate.chess.model.piece.interfaces.IPiece;
+import ai.mate.chess.model.piece.Piece;
 import ai.mate.chess.ui.ITui;
 import ai.mate.chess.ui.Tui;
 
@@ -39,35 +40,29 @@ public class GameController implements IGameController {
         IPiece.Color playerColor = tui.getPlayerColorInput();
 
         tui.printHumanPlayer(playerColor);
-        tui.printAIPlayer(getOpponentColor(playerColor));
+        tui.printAIPlayer(Piece.getOpponentColor(playerColor));
 
         while (true) {
             tui.printBoard(board);
 
             BoardPosition fromPos;
 
+            /*
+             * Check whether the fromPosition is valid.
+             */
             while (true) {
-                fromPos = tui.getBoardPositionInput();
+                fromPos = tui.getBoardPositionInput("From");
 
                 if (board.isValidFromPos(fromPos))
                     break;
 
                 tui.printIllegalAction("Try again!");
+                System.out.println();
             }
 
-            BoardPosition toPos = tui.getBoardPositionInput();
+            BoardPosition toPos = tui.getBoardPositionInput("To");
             board.movePiece(fromPos, toPos);
         }
-    }
-
-    private IPiece.Color getOpponentColor(IPiece.Color playerColor) {
-        if (playerColor.equals(IPiece.Color.EMPTY))
-            return IPiece.Color.EMPTY;
-
-        if (playerColor.equals(IPiece.Color.WHITE))
-            return IPiece.Color.BLACK;
-
-        return IPiece.Color.WHITE;
     }
 
 }

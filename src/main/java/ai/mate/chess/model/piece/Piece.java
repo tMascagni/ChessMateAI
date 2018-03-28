@@ -2,6 +2,7 @@ package ai.mate.chess.model.piece;
 
 import ai.mate.chess.model.Board;
 import ai.mate.chess.model.BoardPosition;
+import ai.mate.chess.model.piece.interfaces.IPiece;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -39,14 +40,6 @@ public abstract class Piece implements IPiece {
 
     public abstract void populateMoves(Board board);
 
-    protected void resetMoves() {
-        possibleMoves.clear();
-    }
-
-    protected boolean isInBoardBounds(int rowX, int colY) {
-        return (rowX >= 0 && rowX <= 7) && (colY >= 0 && colY <= 7);
-    }
-
     @Override
     public boolean isValidMove(BoardPosition from, BoardPosition to) {
         int deltaRowX = calculateDeltaRowX(from.rowX, to.rowX);
@@ -60,20 +53,13 @@ public abstract class Piece implements IPiece {
     }
 
     @Override
-    public Point calculateDeltaMove(Point piecePos, Point move) {
-        int deltaRowX = calculateDeltaRowX(piecePos.x, move.x);
-        int deltaColY = calculateDeltaColY(piecePos.y, move.y);
-        return new Point(deltaRowX, deltaColY);
+    public void incMoveCount() {
+        moveCount++;
     }
 
     @Override
-    public int calculateDeltaRowX(int fromRowX, int toRowX) {
-        return toRowX - fromRowX;
-    }
-
-    @Override
-    public int calculateDeltaColY(int fromColY, int toColY) {
-        return toColY - fromColY;
+    public void incSlayCount() {
+        slayCount++;
     }
 
     @Override
@@ -94,16 +80,6 @@ public abstract class Piece implements IPiece {
         }
 
         return possibleMovesCoordinates;
-    }
-
-    @Override
-    public void incMoveCount() {
-        moveCount++;
-    }
-
-    @Override
-    public void incSlayCount() {
-        slayCount++;
     }
 
     @Override
@@ -134,6 +110,38 @@ public abstract class Piece implements IPiece {
     @Override
     public String toString() {
         return name;
+    }
+
+    Point calculateDeltaMove(Point piecePos, Point move) {
+        int deltaRowX = calculateDeltaRowX(piecePos.x, move.x);
+        int deltaColY = calculateDeltaColY(piecePos.y, move.y);
+        return new Point(deltaRowX, deltaColY);
+    }
+
+    void resetMoves() {
+        possibleMoves.clear();
+    }
+
+    boolean isOutOfBounds(int rowX, int colY) {
+        return (rowX < 0 || rowX > 7) || (colY < 0 || colY > 7);
+    }
+
+    private int calculateDeltaRowX(int fromRowX, int toRowX) {
+        return toRowX - fromRowX;
+    }
+
+    private int calculateDeltaColY(int fromColY, int toColY) {
+        return toColY - fromColY;
+    }
+
+    public static IPiece.Color getOpponentColor(IPiece.Color playerColor) {
+        if (playerColor.equals(IPiece.Color.EMPTY))
+            return IPiece.Color.EMPTY;
+
+        if (playerColor.equals(IPiece.Color.WHITE))
+            return IPiece.Color.BLACK;
+
+        return IPiece.Color.WHITE;
     }
 
 }

@@ -1,8 +1,7 @@
 package ai.mate.chess.model;
 
-import ai.mate.chess.model.Board;
-import ai.mate.chess.model.BoardPosition;
 import ai.mate.chess.model.piece.*;
+import ai.mate.chess.model.piece.interfaces.IPiece;
 
 public final class SpecialMoves {
 
@@ -128,5 +127,17 @@ public final class SpecialMoves {
     public static boolean isBlackQueenSideCastleAllowed(Board board) {
         return false;
     }
+
+   /*
+    private void doPromotion(IPiece fromPiece, BoardPosition to) {
+        if (SpecialMoves.isPromotionAllowed(fromPiece, this)) {
+            tui.printPromotion();
+            char selection = tui.getPromotionSelection();
+            IPiece promotedPiece = SpecialMoves.promotePawn(selection, playerColor);
+            setPiece(promotedPiece, to.rowX, to.colY);
+            tui.printPromotionSuccess(selection, playerColor);
+        }
+    }
+    */
 
 }

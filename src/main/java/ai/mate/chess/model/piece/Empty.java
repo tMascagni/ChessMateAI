@@ -25,7 +25,7 @@ public final class Empty extends Piece {
 
     @Override
     public void populateMoves(Board board) {
-
+        /* Do nothing here. */
     }
 
 }

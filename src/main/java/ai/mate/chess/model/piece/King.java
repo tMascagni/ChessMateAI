@@ -52,7 +52,7 @@ public final class King extends Piece {
         int rowX = xPiece - 1;
         int colY = piecePos.y + yPiece;
 
-        if (!isInBoardBounds(rowX, colY))
+        if (isOutOfBounds(rowX, colY))
             return;
 
         Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
@@ -61,7 +61,7 @@ public final class King extends Piece {
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
             /* legal move! */
             possibleMoves.add(move);
-        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* legal slay move! */
             possibleMoves.add(move);
         }
@@ -75,7 +75,7 @@ public final class King extends Piece {
         int rowX = xPiece + 1;
         int colY = piecePos.y + yPiece;
 
-        if (!isInBoardBounds(rowX, colY))
+        if (isOutOfBounds(rowX, colY))
             return;
 
         Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
@@ -84,7 +84,7 @@ public final class King extends Piece {
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
             /* legal move! */
             possibleMoves.add(move);
-        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* legal slay move! */
             possibleMoves.add(move);
         }
@@ -98,7 +98,7 @@ public final class King extends Piece {
         int rowX = piecePos.x + xPiece;
         int colY = yPiece + 1;
 
-        if (!isInBoardBounds(rowX, colY))
+        if (isOutOfBounds(rowX, colY))
             return;
 
         Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
@@ -107,7 +107,7 @@ public final class King extends Piece {
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
             /* legal move! */
             possibleMoves.add(move);
-        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* legal slay move! */
             possibleMoves.add(move);
         }
@@ -121,7 +121,7 @@ public final class King extends Piece {
         int rowX = piecePos.x + xPiece;
         int colY = yPiece - 1;
 
-        if (!isInBoardBounds(rowX, colY))
+        if (isOutOfBounds(rowX, colY))
             return;
 
         Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
@@ -130,7 +130,7 @@ public final class King extends Piece {
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
             /* legal move! */
             possibleMoves.add(move);
-        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* legal slay move! */
             possibleMoves.add(move);
         }
@@ -144,7 +144,7 @@ public final class King extends Piece {
         int rowX = xPiece - 1;
         int colY = yPiece + 1;
 
-        if (!isInBoardBounds(rowX, colY))
+        if (isOutOfBounds(rowX, colY))
             return;
 
         Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
@@ -153,7 +153,7 @@ public final class King extends Piece {
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
             /* legal move! */
             possibleMoves.add(move);
-        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* legal slay move! */
             possibleMoves.add(move);
         }
@@ -167,7 +167,7 @@ public final class King extends Piece {
         int rowX = xPiece + 1;
         int colY = yPiece + 1;
 
-        if (!isInBoardBounds(rowX, colY))
+        if (isOutOfBounds(rowX, colY))
             return;
 
         Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
@@ -176,7 +176,7 @@ public final class King extends Piece {
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
             /* legal move! */
             possibleMoves.add(move);
-        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* legal slay move! */
             possibleMoves.add(move);
         }
@@ -190,7 +190,7 @@ public final class King extends Piece {
         int rowX = xPiece + 1;
         int colY = yPiece - 1;
 
-        if (!isInBoardBounds(rowX, colY))
+        if (isOutOfBounds(rowX, colY))
             return;
 
         Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
@@ -199,7 +199,7 @@ public final class King extends Piece {
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
             /* legal move! */
             possibleMoves.add(move);
-        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* legal slay move! */
             possibleMoves.add(move);
         }
@@ -213,7 +213,7 @@ public final class King extends Piece {
         int rowX = xPiece - 1;
         int colY = yPiece - 1;
 
-        if (!isInBoardBounds(rowX, colY))
+        if (isOutOfBounds(rowX, colY))
             return;
 
         Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
@@ -222,7 +222,7 @@ public final class King extends Piece {
         if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
             /* legal move! */
             possibleMoves.add(move);
-        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+        } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* legal slay move! */
             possibleMoves.add(move);
         }

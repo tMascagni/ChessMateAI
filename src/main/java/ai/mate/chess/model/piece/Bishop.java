@@ -50,7 +50,7 @@ public final class Bishop extends Piece {
         for (int colY = yPiece + 1; colY <= 7; colY++) {
             rowX--;
 
-            if (!isInBoardBounds(rowX, colY))
+            if (isOutOfBounds(rowX, colY))
                 return;
 
             Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
@@ -59,7 +59,7 @@ public final class Bishop extends Piece {
             if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
                 /* legal move! */
                 possibleMoves.add(move);
-            } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+            } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
                 /* legal slay move! */
                 possibleMoves.add(move);
                 break;
@@ -80,7 +80,7 @@ public final class Bishop extends Piece {
         for (int colY = yPiece + 1; colY <= 7; colY++) {
             rowX++;
 
-            if (!isInBoardBounds(rowX, colY))
+            if (isOutOfBounds(rowX, colY))
                 return;
 
             Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
@@ -89,7 +89,7 @@ public final class Bishop extends Piece {
             if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
                 /* legal move! */
                 possibleMoves.add(move);
-            } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+            } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
                 /* legal slay move! */
                 possibleMoves.add(move);
                 break;
@@ -110,7 +110,7 @@ public final class Bishop extends Piece {
         for (int colY = yPiece - 1; colY >= 0; colY--) {
             rowX++;
 
-            if (!isInBoardBounds(rowX, colY))
+            if (isOutOfBounds(rowX, colY))
                 return;
 
             Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
@@ -119,7 +119,7 @@ public final class Bishop extends Piece {
             if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
                 /* legal move! */
                 possibleMoves.add(move);
-            } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+            } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
                 /* legal slay move! */
                 possibleMoves.add(move);
                 break;
@@ -140,7 +140,7 @@ public final class Bishop extends Piece {
         for (int colY = yPiece - 1; colY >= 0; colY--) {
             rowX--;
 
-            if (!isInBoardBounds(rowX, colY))
+            if (isOutOfBounds(rowX, colY))
                 return;
 
             Point move = calculateDeltaMove(piecePos, new Point(rowX, colY));
@@ -149,7 +149,7 @@ public final class Bishop extends Piece {
             if (board.getPiece(posAfterMove.x, posAfterMove.y) instanceof Empty) {
                 /* legal move! */
                 possibleMoves.add(move);
-            } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Utils.getOpponentColor(getColor()))) {
+            } else if (board.getPiece(posAfterMove.x, posAfterMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
                 /* legal slay move! */
                 possibleMoves.add(move);
                 break;

@@ -1,7 +1,5 @@
 package ai.mate.chess.util;
 
-import ai.mate.chess.model.piece.IPiece;
-
 public final class Utils {
 
     public static final String ARROW = "»";
@@ -30,16 +28,6 @@ public final class Utils {
 
     public static synchronized Utils getInstance() {
         return instance;
-    }
-
-    public static IPiece.Color getOpponentColor(IPiece.Color color) {
-        if (color.equals(IPiece.Color.EMPTY))
-            return IPiece.Color.EMPTY;
-
-        if (color.equals(IPiece.Color.WHITE))
-            return IPiece.Color.BLACK;
-
-        return IPiece.Color.WHITE;
     }
 
 }
