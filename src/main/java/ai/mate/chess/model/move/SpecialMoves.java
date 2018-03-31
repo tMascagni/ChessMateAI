@@ -1,7 +1,7 @@
 package ai.mate.chess.model.move;
 
 import ai.mate.chess.model.board.Board;
-import ai.mate.chess.model.BoardPosition;
+import ai.mate.chess.model.board.BoardPosition;
 import ai.mate.chess.model.piece.*;
 
 public final class SpecialMoves {

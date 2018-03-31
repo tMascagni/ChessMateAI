@@ -2,7 +2,7 @@ package ai.mate.chess.model.piece;
 
 import ai.mate.chess.handler.TextHandler;
 import ai.mate.chess.model.board.Board;
-import ai.mate.chess.model.BoardPosition;
+import ai.mate.chess.model.board.BoardPosition;
 
 import java.awt.*;
 

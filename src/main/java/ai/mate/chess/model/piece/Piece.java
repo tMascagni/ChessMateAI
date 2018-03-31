@@ -1,7 +1,7 @@
 package ai.mate.chess.model.piece;
 
 import ai.mate.chess.model.board.Board;
-import ai.mate.chess.model.BoardPosition;
+import ai.mate.chess.model.board.BoardPosition;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -112,17 +112,17 @@ public abstract class Piece {
         return name;
     }
 
-    Point calculateDeltaMove(Point piecePos, Point move) {
+    protected Point calculateDeltaMove(Point piecePos, Point move) {
         int deltaRowX = calculateDeltaRowX(piecePos.x, move.x);
         int deltaColY = calculateDeltaColY(piecePos.y, move.y);
         return new Point(deltaRowX, deltaColY);
     }
 
-    void resetMoves() {
+    protected void resetMoves() {
         possibleMoves.clear();
     }
 
-    boolean isOutOfBounds(int rowX, int colY) {
+    protected boolean isOutOfBounds(int rowX, int colY) {
         return (rowX < 0 || rowX > 7) || (colY < 0 || colY > 7);
     }
 

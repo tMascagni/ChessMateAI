@@ -1,7 +1,6 @@
 package ai.mate.chess.model.board;
 
 import ai.mate.chess.handler.TextHandler;
-import ai.mate.chess.model.BoardPosition;
 import ai.mate.chess.model.piece.Empty;
 import ai.mate.chess.model.piece.King;
 import ai.mate.chess.model.piece.Piece;

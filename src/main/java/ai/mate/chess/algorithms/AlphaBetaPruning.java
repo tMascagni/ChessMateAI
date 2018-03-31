@@ -1,7 +1,7 @@
 package ai.mate.chess.algorithms;
 
 import ai.mate.chess.model.board.Board;
-import ai.mate.chess.model.BoardPosition;
+import ai.mate.chess.model.board.BoardPosition;
 import ai.mate.chess.model.piece.Piece;
 
 import java.awt.*;

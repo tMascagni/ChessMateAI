@@ -1,6 +1,6 @@
 package ai.mate.chess.ui;
 
-import ai.mate.chess.model.BoardPosition;
+import ai.mate.chess.model.board.BoardPosition;
 import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.piece.Empty;
 import ai.mate.chess.model.piece.Piece;

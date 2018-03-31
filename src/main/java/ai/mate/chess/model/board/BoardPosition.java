@@ -1,4 +1,4 @@
-package ai.mate.chess.model;
+package ai.mate.chess.model.board;
 
 public final class BoardPosition {
 

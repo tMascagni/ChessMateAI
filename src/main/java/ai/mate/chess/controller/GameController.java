@@ -2,7 +2,7 @@ package ai.mate.chess.controller;
 
 import ai.mate.chess.controller.interfaces.IGameController;
 import ai.mate.chess.model.board.Board;
-import ai.mate.chess.model.BoardPosition;
+import ai.mate.chess.model.board.BoardPosition;
 import ai.mate.chess.model.piece.Piece;
 import ai.mate.chess.ui.Tui;
 
