@@ -1,6 +1,6 @@
 package ai.mate.chess.algorithms;
 
-import ai.mate.chess.model.Board;
+import ai.mate.chess.model.board.Board;
 
 public final class Algorithms {
 

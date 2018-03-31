@@ -1,8 +1,7 @@
 package ai.mate.chess.model.piece;
 
-import ai.mate.chess.model.Board;
+import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.BoardPosition;
-import ai.mate.chess.model.piece.interfaces.IPiece;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -13,7 +12,15 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Abstract class that implements the piece interface.
  * This is used for the actual Pieces to inherit from.
  */
-public abstract class Piece implements IPiece {
+public abstract class Piece {
+
+    public static final int BISHOP_SCORE = 3;
+    public static final int ROOK_SCORE = 5;
+    public static final int QUEEN_SCORE = 9;
+    public static final int PAWN_SCORE = 1;
+    public static final int KNIGHT_SCORE = 3;
+    public static final int KING_SCORE = 100;
+    public static final int EMPTY_SCORE = 0;
 
     private static final AtomicInteger idCounter = new AtomicInteger(0);
 
@@ -29,6 +36,10 @@ public abstract class Piece implements IPiece {
 
     protected List<Point> possibleMoves;
 
+    public enum Color {
+        WHITE, BLACK, EMPTY
+    }
+
     public Piece(Color color) {
         this.color = color;
         ID = idCounter.getAndIncrement();
@@ -40,7 +51,6 @@ public abstract class Piece implements IPiece {
 
     public abstract void populateMoves(Board board);
 
-    @Override
     public boolean isValidMove(BoardPosition from, BoardPosition to) {
         int deltaRowX = calculateDeltaRowX(from.rowX, to.rowX);
         int deltaColY = calculateDeltaColY(from.colY, to.colY);
@@ -52,22 +62,18 @@ public abstract class Piece implements IPiece {
         return false;
     }
 
-    @Override
     public void incMoveCount() {
         moveCount++;
     }
 
-    @Override
     public void incSlayCount() {
         slayCount++;
     }
 
-    @Override
     public List<Point> getPossibleMoves() {
         return possibleMoves;
     }
 
-    @Override
     public List<Point> getPossibleMovesCoordinates(Board board) {
         List<Point> possibleMovesCoordinates = new ArrayList<>();
 
@@ -82,32 +88,26 @@ public abstract class Piece implements IPiece {
         return possibleMovesCoordinates;
     }
 
-    @Override
     public int getMoveCount() {
         return moveCount;
     }
 
-    @Override
     public int getSlayCount() {
         return slayCount;
     }
 
-    @Override
     public int getId() {
         return ID;
     }
 
-    @Override
     public int getScore() {
         return score;
     }
 
-    @Override
     public Color getColor() {
         return color;
     }
 
-    @Override
     public String toString() {
         return name;
     }
@@ -134,14 +134,14 @@ public abstract class Piece implements IPiece {
         return toColY - fromColY;
     }
 
-    public static IPiece.Color getOpponentColor(IPiece.Color playerColor) {
-        if (playerColor.equals(IPiece.Color.EMPTY))
-            return IPiece.Color.EMPTY;
+    public static Piece.Color getOpponentColor(Piece.Color playerColor) {
+        if (playerColor.equals(Piece.Color.EMPTY))
+            return Piece.Color.EMPTY;
 
-        if (playerColor.equals(IPiece.Color.WHITE))
-            return IPiece.Color.BLACK;
+        if (playerColor.equals(Piece.Color.WHITE))
+            return Piece.Color.BLACK;
 
-        return IPiece.Color.WHITE;
+        return Piece.Color.WHITE;
     }
 
 }

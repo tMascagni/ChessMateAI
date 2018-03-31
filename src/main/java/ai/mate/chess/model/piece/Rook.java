@@ -1,9 +1,8 @@
 package ai.mate.chess.model.piece;
 
 import ai.mate.chess.handler.TextHandler;
-import ai.mate.chess.model.Board;
+import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.BoardPosition;
-import ai.mate.chess.util.Utils;
 
 import java.awt.*;
 
@@ -14,7 +13,7 @@ public final class Rook extends Piece {
 
     public Rook(Color color) {
         super(color);
-        this.score = Utils.ROOK_SCORE;
+        this.score = ROOK_SCORE;
     }
 
     @Override

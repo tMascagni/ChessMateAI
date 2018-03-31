@@ -1,16 +1,14 @@
 package ai.mate.chess.controller;
 
 import ai.mate.chess.controller.interfaces.IGameController;
-import ai.mate.chess.model.Board;
+import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.BoardPosition;
-import ai.mate.chess.model.piece.interfaces.IPiece;
 import ai.mate.chess.model.piece.Piece;
-import ai.mate.chess.ui.ITui;
 import ai.mate.chess.ui.Tui;
 
 public class GameController implements IGameController {
 
-    private final ITui tui = Tui.getInstance();
+    private final Tui tui = Tui.getInstance();
 
     private Board board;
 
@@ -37,7 +35,7 @@ public class GameController implements IGameController {
         board.reset();
 
         tui.printChoosePlayer();
-        IPiece.Color playerColor = tui.getPlayerColorInput();
+        Piece.Color playerColor = tui.getPlayerColorInput();
 
         tui.printHumanPlayer(playerColor);
         tui.printAIPlayer(Piece.getOpponentColor(playerColor));

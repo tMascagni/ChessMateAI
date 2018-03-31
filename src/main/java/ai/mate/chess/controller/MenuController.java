@@ -2,12 +2,11 @@ package ai.mate.chess.controller;
 
 import ai.mate.chess.controller.interfaces.IGameController;
 import ai.mate.chess.controller.interfaces.IMenuController;
-import ai.mate.chess.ui.ITui;
 import ai.mate.chess.ui.Tui;
 
 public final class MenuController implements IMenuController {
 
-    private final ITui tui = Tui.getInstance();
+    private final Tui tui = Tui.getInstance();
     private final IGameController gameController = GameController.getInstance();
 
     private static IMenuController instance;

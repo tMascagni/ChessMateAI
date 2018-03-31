@@ -1,9 +1,9 @@
 package ai.mate.chess.model.piece;
 
 import ai.mate.chess.handler.TextHandler;
-import ai.mate.chess.model.Board;
+import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.BoardPosition;
-import ai.mate.chess.util.Utils;
+
 
 import java.awt.*;
 
@@ -14,7 +14,7 @@ public final class Knight extends Piece {
 
     public Knight(Color color) {
         super(color);
-        this.score = Utils.KNIGHT_SCORE;
+        this.score = KNIGHT_SCORE;
     }
 
     @Override

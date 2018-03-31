@@ -1,8 +1,8 @@
 package ai.mate.chess.algorithms;
 
-import ai.mate.chess.model.Board;
+import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.BoardPosition;
-import ai.mate.chess.model.piece.interfaces.IPiece;
+import ai.mate.chess.model.piece.Piece;
 
 import java.awt.*;
 import java.util.List;
@@ -16,7 +16,7 @@ public final class AlphaBetaPruning {
 
     }
 
-    public static void run(IPiece.Color playerColor, Board board, double maxPly) {
+    public static void run(Piece.Color playerColor, Board board, double maxPly) {
         alphaBetaPruning(playerColor, board, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, 0);
         /*
          * Gets the best move, aka.
@@ -28,12 +28,12 @@ public final class AlphaBetaPruning {
         //board.movePiece(from, to);
     }
 
-    private static int alphaBetaPruning(IPiece.Color playerColor, Board board, double alpha, double beta, int currentPly) {
+    private static int alphaBetaPruning(Piece.Color playerColor, Board board, double alpha, double beta, int currentPly) {
         /*
          * Black: maximizer
          * White: minimizer
          */
-        boolean maximizer = playerColor == IPiece.Color.BLACK;
+        boolean maximizer = playerColor == Piece.Color.BLACK;
 
         if (currentPly++ == maxPly) {
             return score(playerColor, board, currentPly);
@@ -61,16 +61,16 @@ public final class AlphaBetaPruning {
         return 0;
     }
 
-    private static int getMax(IPiece.Color playerColor, Board board, double alpha, double beta, int currentPly) {
+    private static int getMax(Piece.Color playerColor, Board board, double alpha, double beta, int currentPly) {
         return 0;
     }
 
-    private static int getMin(IPiece.Color playerColor, Board board, double alpha, double beta, int currentPly) {
+    private static int getMin(Piece.Color playerColor, Board board, double alpha, double beta, int currentPly) {
         return 0;
     }
 
-    private static int score(IPiece.Color playerColor, Board board, int currentPly) {
-        if (playerColor == IPiece.Color.EMPTY)
+    private static int score(Piece.Color playerColor, Board board, int currentPly) {
+        if (playerColor == Piece.Color.EMPTY)
             throw new IllegalArgumentException("Player must be BLACK or WHITE!.");
 
         /*

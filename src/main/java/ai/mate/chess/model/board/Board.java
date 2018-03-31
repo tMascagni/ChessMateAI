@@ -1,12 +1,11 @@
-package ai.mate.chess.model;
+package ai.mate.chess.model.board;
 
 import ai.mate.chess.handler.TextHandler;
+import ai.mate.chess.model.BoardPosition;
 import ai.mate.chess.model.piece.Empty;
 import ai.mate.chess.model.piece.King;
 import ai.mate.chess.model.piece.Piece;
 import ai.mate.chess.model.piece.Queen;
-import ai.mate.chess.model.piece.interfaces.IPiece;
-import ai.mate.chess.ui.ITui;
 import ai.mate.chess.ui.Tui;
 
 import java.awt.*;
@@ -22,12 +21,12 @@ public final class Board {
     private int whitePieceCount = PLAYER_PIECE_COUNT;
     private int blackPieceCount = PLAYER_PIECE_COUNT;
 
-    private IPiece.Color playerColor = IPiece.Color.WHITE;
-    private IPiece[] whiteLossList, blackLossList;
-    private IPiece[][] board;
+    private Piece.Color playerColor = Piece.Color.WHITE;
+    private Piece[] whiteLossList, blackLossList;
+    private Piece[][] board;
     private boolean[][] opponentMoveBoard;
 
-    private final ITui tui = Tui.getInstance();
+    private final Tui tui = Tui.getInstance();
 
     private String latestMove = TextHandler.LATEST_MOVE_INITIAL;
 
@@ -37,8 +36,8 @@ public final class Board {
 
     public boolean movePiece(BoardPosition from, BoardPosition to) {
         /* Get both positions 'to' and 'from' pieces. */
-        IPiece fromPiece = getPiece(from.rowX, from.colY);
-        IPiece toPiece = getPiece(to.rowX, to.colY);
+        Piece fromPiece = getPiece(from.rowX, from.colY);
+        Piece toPiece = getPiece(to.rowX, to.colY);
 
         /* Check if the move is valid */
         if (!isValidMove(fromPiece, to, from))
@@ -139,13 +138,13 @@ public final class Board {
                 {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()}};
 */
 
-        board = new IPiece[][]{
-                {new Empty(), new Empty(), new Empty(), new King(IPiece.Color.BLACK), new Empty(), new Empty(), new Empty(), new Empty()},
-                {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Queen(IPiece.Color.WHITE)},
-                {new Queen(IPiece.Color.BLACK), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
+        board = new Piece[][]{
+                {new Empty(), new Empty(), new Empty(), new King(Piece.Color.BLACK), new Empty(), new Empty(), new Empty(), new Empty()},
+                {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Queen(Piece.Color.WHITE)},
+                {new Queen(Piece.Color.BLACK), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
                 {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
-                {new Empty(), new Empty(), new Empty(), new Empty(), new King(IPiece.Color.WHITE), new Empty(), new Empty(), new Empty()},
-                {new Queen(IPiece.Color.BLACK), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
+                {new Empty(), new Empty(), new Empty(), new Empty(), new King(Piece.Color.WHITE), new Empty(), new Empty(), new Empty()},
+                {new Queen(Piece.Color.BLACK), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
                 {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()},
                 {new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty(), new Empty()}};
 
@@ -164,10 +163,10 @@ public final class Board {
         whitePieceCount = PLAYER_PIECE_COUNT;
         blackPieceCount = PLAYER_PIECE_COUNT;
 
-        playerColor = IPiece.Color.WHITE;
+        playerColor = Piece.Color.WHITE;
 
-        whiteLossList = new IPiece[PLAYER_PIECE_COUNT];
-        blackLossList = new IPiece[PLAYER_PIECE_COUNT];
+        whiteLossList = new Piece[PLAYER_PIECE_COUNT];
+        blackLossList = new Piece[PLAYER_PIECE_COUNT];
 
         for (int i = 0; i < whiteLossList.length; i++) {
             whiteLossList[i] = new Empty();
@@ -182,44 +181,44 @@ public final class Board {
     public final String getBoardText() {
         return "\n┌───────────────────────────────────────────────────────────────┐    ┌────────────────────────────────────────────────────────────┐\n" +
                 "│          A     B     C     D     E     F     G     H          │    │ Player: " + playerColor + "           White Loss:    Black Loss:         │\n" +
-                "│                                                               │    │                            " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 0) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 0) + "           │\n" +
-                "│       ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐       │    │ Move: " + globalMoveCount + "                  " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 1) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 1) + "           │\n" +
-                "│   8   │ " + board[0][0] + " │ " + board[0][1] + " │ " + board[0][2] + " │ " + board[0][3] + " │ " + board[0][4] + " │ " + board[0][5] + " │ " + board[0][6] + " │ " + board[0][7] + " │   8   │    │                            " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 2) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 2) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ Latest Move:               " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 3) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 3) + "           │\n" +
-                "│   7   │ " + board[1][0] + " │ " + board[1][1] + " │ " + board[1][2] + " │ " + board[1][3] + " │ " + board[1][4] + " │ " + board[1][5] + " │ " + board[1][6] + " │ " + board[1][7] + " │   7   │    │ " + latestMove + "     " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 4) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 4) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                            " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 5) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 5) + "           │\n" +
+                "│                                                               │    │                            " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.WHITE, 0) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.BLACK, 0) + "           │\n" +
+                "│       ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐       │    │ Move: " + globalMoveCount + "                  " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.WHITE, 1) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.BLACK, 1) + "           │\n" +
+                "│   8   │ " + board[0][0] + " │ " + board[0][1] + " │ " + board[0][2] + " │ " + board[0][3] + " │ " + board[0][4] + " │ " + board[0][5] + " │ " + board[0][6] + " │ " + board[0][7] + " │   8   │    │                            " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.WHITE, 2) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.BLACK, 2) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ Latest Move:               " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.WHITE, 3) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.BLACK, 3) + "           │\n" +
+                "│   7   │ " + board[1][0] + " │ " + board[1][1] + " │ " + board[1][2] + " │ " + board[1][3] + " │ " + board[1][4] + " │ " + board[1][5] + " │ " + board[1][6] + " │ " + board[1][7] + " │   7   │    │ " + latestMove + "     " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.WHITE, 4) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.BLACK, 4) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                            " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.WHITE, 5) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.BLACK, 5) + "           │\n" +
                 "│   6   │ " + board[2][0] + " │ " + board[2][1] + " │ " + board[2][2] + " │ " + board[2][3] + " │ " + board[2][4] + " │ " + board[2][5] + " │ " + board[2][6] + " │ " + board[2][7] + " │   6   │    │ Possible Moves: " + tui.getPossibleMoveCountText(board) + " " +
-                "       " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 6) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 6) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                            " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 7) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 7) + "           │\n" +
-                "│   5   │ " + board[3][0] + " │ " + board[3][1] + " │ " + board[3][2] + " │ " + board[3][3] + " │ " + board[3][4] + " │ " + board[3][5] + " │ " + board[3][6] + " │ " + board[3][7] + " │   5   │    │                            " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 8) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 8) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                           " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 9) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 9) + "           │\n" +
-                "│   4   │ " + board[4][0] + " │ " + board[4][1] + " │ " + board[4][2] + " │ " + board[4][3] + " │ " + board[4][4] + " │ " + board[4][5] + " │ " + board[4][6] + " │ " + board[4][7] + " │   4   │    │                           " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 10) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 10) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                           " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 11) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 11) + "           │\n" +
-                "│   3   │ " + board[5][0] + " │ " + board[5][1] + " │ " + board[5][2] + " │ " + board[5][3] + " │ " + board[5][4] + " │ " + board[5][5] + " │ " + board[5][6] + " │ " + board[5][7] + " │   3   │    │                           " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 12) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 12) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ White Clock:              " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 13) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 13) + "           │\n" +
-                "│   2   │ " + board[6][0] + " │ " + board[6][1] + " │ " + board[6][2] + " │ " + board[6][3] + " │ " + board[6][4] + " │ " + board[6][5] + " │ " + board[6][6] + " │ " + board[6][7] + " │   2   │    │                           " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 14) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 14) + "           │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ Black Clock:              " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.WHITE, 15) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, IPiece.Color.BLACK, 15) + "           │\n" +
+                "       " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.WHITE, 6) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.BLACK, 6) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                            " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.WHITE, 7) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.BLACK, 7) + "           │\n" +
+                "│   5   │ " + board[3][0] + " │ " + board[3][1] + " │ " + board[3][2] + " │ " + board[3][3] + " │ " + board[3][4] + " │ " + board[3][5] + " │ " + board[3][6] + " │ " + board[3][7] + " │   5   │    │                            " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.WHITE, 8) + "         " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.BLACK, 8) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                           " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.WHITE, 9) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.BLACK, 9) + "           │\n" +
+                "│   4   │ " + board[4][0] + " │ " + board[4][1] + " │ " + board[4][2] + " │ " + board[4][3] + " │ " + board[4][4] + " │ " + board[4][5] + " │ " + board[4][6] + " │ " + board[4][7] + " │   4   │    │                           " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.WHITE, 10) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.BLACK, 10) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                           " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.WHITE, 11) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.BLACK, 11) + "           │\n" +
+                "│   3   │ " + board[5][0] + " │ " + board[5][1] + " │ " + board[5][2] + " │ " + board[5][3] + " │ " + board[5][4] + " │ " + board[5][5] + " │ " + board[5][6] + " │ " + board[5][7] + " │   3   │    │                           " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.WHITE, 12) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.BLACK, 12) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ White Clock:              " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.WHITE, 13) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.BLACK, 13) + "           │\n" +
+                "│   2   │ " + board[6][0] + " │ " + board[6][1] + " │ " + board[6][2] + " │ " + board[6][3] + " │ " + board[6][4] + " │ " + board[6][5] + " │ " + board[6][6] + " │ " + board[6][7] + " │   2   │    │                           " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.WHITE, 14) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.BLACK, 14) + "           │\n" +
+                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ Black Clock:              " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.WHITE, 15) + "        " + tui.getLossPieceText(whiteLossList, blackLossList, Piece.Color.BLACK, 15) + "           │\n" +
                 "│   1   │ " + board[7][0] + " │ " + board[7][1] + " │ " + board[7][2] + " │ " + board[7][3] + " │ " + board[7][4] + " │ " + board[7][5] + " │ " + board[7][6] + " │ " + board[7][7] + " │   1   │    │                                                            │\n" +
-                "│       └─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘       │    │ White Pieces: " + tui.getPieceCountText(whitePieceCount, blackPieceCount, IPiece.Color.WHITE) + "                                           │\n" +
+                "│       └─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘       │    │ White Pieces: " + tui.getPieceCountText(whitePieceCount, blackPieceCount, Piece.Color.WHITE) + "                                           │\n" +
                 "│                                                               │    │                                                            │\n" +
-                "│          A     B     C     D     E     F     G     H          │    │ Black Pieces: " + tui.getPieceCountText(whitePieceCount, blackPieceCount, IPiece.Color.BLACK) + "                                           │\n" +
+                "│          A     B     C     D     E     F     G     H          │    │ Black Pieces: " + tui.getPieceCountText(whitePieceCount, blackPieceCount, Piece.Color.BLACK) + "                                           │\n" +
                 "└───────────────────────────────────────────────────────────────┘    └────────────────────────────────────────────────────────────┘\n";
     }
 
     /*********************
      * Getters
      *********************/
-    public IPiece getPiece(int rowX, int colY) {
+    public Piece getPiece(int rowX, int colY) {
         return board[rowX][colY];
     }
 
-    public IPiece getPiece(BoardPosition boardPos) {
+    public Piece getPiece(BoardPosition boardPos) {
         return board[boardPos.rowX][boardPos.colY];
     }
 
-    public IPiece getPiece(int id) {
-        for (IPiece[] boardRow : board)
-            for (IPiece piece : boardRow)
+    public Piece getPiece(int id) {
+        for (Piece[] boardRow : board)
+            for (Piece piece : boardRow)
                 if (piece.getId() == id)
                     return piece;
         throw new RuntimeException("Failed to find piece with id: " + id + "!");
@@ -233,23 +232,23 @@ public final class Board {
         throw new RuntimeException("Failed to find piece with id: " + id + "!");
     }
 
-    public IPiece.Color getPlayerColor() {
+    public Piece.Color getPlayerColor() {
         return playerColor;
     }
 
     /*********************
      * Setters
      *********************/
-    private void setPiece(IPiece piece, int rowX, int colY) {
+    private void setPiece(Piece piece, int rowX, int colY) {
         board[rowX][colY] = piece;
     }
 
-    private void setPiece(IPiece piece, BoardPosition pos) {
+    private void setPiece(Piece piece, BoardPosition pos) {
         board[pos.rowX][pos.colY] = piece;
     }
 
     public boolean isValidFromPos(BoardPosition boardPosition) {
-        IPiece piece = getPiece(boardPosition);
+        Piece piece = getPiece(boardPosition);
         return piece.getColor().equals(playerColor);
     }
 
@@ -258,14 +257,14 @@ public final class Board {
     }
 
     private void switchPlayer() {
-        if (playerColor.equals(IPiece.Color.WHITE))
-            playerColor = IPiece.Color.BLACK;
+        if (playerColor.equals(Piece.Color.WHITE))
+            playerColor = Piece.Color.BLACK;
         else
-            playerColor = IPiece.Color.WHITE;
+            playerColor = Piece.Color.WHITE;
     }
 
-    private void addToLossList(IPiece piece) {
-        if (piece.getColor().equals(IPiece.Color.WHITE)) {
+    private void addToLossList(Piece piece) {
+        if (piece.getColor().equals(Piece.Color.WHITE)) {
             for (int i = 0; i < whiteLossList.length; i++)
                 if (whiteLossList[i] instanceof Empty) {
                     whiteLossList[i] = piece;
@@ -283,7 +282,7 @@ public final class Board {
         }
     }
 
-    private boolean isValidMove(IPiece fromPiece, BoardPosition to, BoardPosition from) {
+    private boolean isValidMove(Piece fromPiece, BoardPosition to, BoardPosition from) {
         /*
          * If the 'from' piece is instance of a 'Empty' piece,
          * then return false, since the player is not allowed to
@@ -344,7 +343,7 @@ public final class Board {
      * is in check or not. Returns true if it is in check,
      * false if it is not in check.
      */
-    private boolean isKingInCheck(IPiece.Color playerColor) {
+    private boolean isKingInCheck(Piece.Color playerColor) {
         /* Get all possible move coordinates of the opponent color */
         List<Point> possibleMoveCoordinates = getPossibleMovesCoordinatesFromPlayer(Piece.getOpponentColor(playerColor));
 
@@ -356,9 +355,9 @@ public final class Board {
          * Black King ID: 100
          */
         BoardPosition kingPos = null;
-        if (playerColor.equals(IPiece.Color.WHITE))
+        if (playerColor.equals(Piece.Color.WHITE))
             kingPos = getPieceBoardPos(156);
-        else if (playerColor.equals(IPiece.Color.BLACK))
+        else if (playerColor.equals(Piece.Color.BLACK))
             kingPos = getPieceBoardPos(100);
 
         if (kingPos == null)
@@ -376,8 +375,8 @@ public final class Board {
      * Helper method.
      */
     private void populateMovesToAllPlayers() {
-        for (IPiece[] boardRow : board)
-            for (IPiece piece : boardRow)
+        for (Piece[] boardRow : board)
+            for (Piece piece : boardRow)
                 piece.populateMoves(this);
     }
 
@@ -386,10 +385,10 @@ public final class Board {
      * move to with their current given possible moves.
      * Helper method.
      */
-    private List<Point> getPossibleMovesCoordinatesFromPlayer(IPiece.Color playerColor) {
+    private List<Point> getPossibleMovesCoordinatesFromPlayer(Piece.Color playerColor) {
         List<Point> possibleMoveCoordinates = new ArrayList<>();
-        for (IPiece[] boardRow : board)
-            for (IPiece piece : boardRow)
+        for (Piece[] boardRow : board)
+            for (Piece piece : boardRow)
                 if (piece.getColor().equals(playerColor))
                     possibleMoveCoordinates.addAll(piece.getPossibleMovesCoordinates(this));
         return possibleMoveCoordinates;
@@ -399,9 +398,9 @@ public final class Board {
      * Make all pieces of a specific player populate their moves.
      * Helper method.
      */
-    private void populateMovesToPlayer(IPiece.Color playerColor) {
-        for (IPiece[] boardRow : board)
-            for (IPiece piece : boardRow)
+    private void populateMovesToPlayer(Piece.Color playerColor) {
+        for (Piece[] boardRow : board)
+            for (Piece piece : boardRow)
                 if (piece.getColor().equals(playerColor))
                     piece.populateMoves(this);
     }
@@ -411,16 +410,16 @@ public final class Board {
      * i.e. black or white.
      * Helper method.
      */
-    public List<Point> getPossibleMovesFromPlayer(IPiece.Color playerColor) {
+    public List<Point> getPossibleMovesFromPlayer(Piece.Color playerColor) {
         List<Point> possibleMovesPlayer = new ArrayList<>();
-        for (IPiece[] boardRow : board)
-            for (IPiece piece : boardRow)
+        for (Piece[] boardRow : board)
+            for (Piece piece : boardRow)
                 if (piece.getColor().equals(playerColor))
                     possibleMovesPlayer.addAll(piece.getPossibleMoves());
         return possibleMovesPlayer;
     }
 
-    private void updateOpponentMoveBoard(IPiece.Color playerColor) {
+    private void updateOpponentMoveBoard(Piece.Color playerColor) {
         /* Get all possible move coordinates from opponent */
         List<Point> opponentMoveCoordinates = getPossibleMovesCoordinatesFromPlayer(Piece.getOpponentColor(playerColor));
 

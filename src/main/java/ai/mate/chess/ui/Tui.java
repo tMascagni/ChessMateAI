@@ -1,16 +1,17 @@
 package ai.mate.chess.ui;
 
-import ai.mate.chess.model.Board;
+import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.BoardPosition;
 import ai.mate.chess.model.piece.Empty;
-import ai.mate.chess.model.piece.interfaces.IPiece;
-import ai.mate.chess.util.Utils;
+import ai.mate.chess.model.piece.Piece;
 
 import java.util.Scanner;
 
-public final class Tui implements ITui {
+public final class Tui {
 
-    private static ITui instance;
+    public static final String ARROW = "»";
+
+    private static Tui instance;
 
     private final Scanner scanner;
 
@@ -26,7 +27,7 @@ public final class Tui implements ITui {
         scanner = new Scanner(System.in);
     }
 
-    public static synchronized ITui getInstance() {
+    public static synchronized Tui getInstance() {
         return instance;
     }
 
@@ -34,18 +35,15 @@ public final class Tui implements ITui {
      * USER INPUT METHODS
      *
      **************************************************/
-    @Override
     public char getUserInput() {
         printArrow();
         return getChar();
     }
 
-    @Override
     public char getPromotionSelection() {
         return getNumericCharForPromotion("Selection");
     }
 
-    @Override
     public BoardPosition getBoardPositionInput(String msg) {
         char[] boardPair = getBoardPair(msg);
         return new BoardPosition(boardPair[0], boardPair[1]);
@@ -82,24 +80,22 @@ public final class Tui implements ITui {
         return new char[]{file, rank};
     }
 
-    @Override
-    public IPiece.Color getPlayerColorInput() {
+    public Piece.Color getPlayerColorInput() {
         char input;
         do {
             input = getUserInput();
         } while (input != '1' && input != '2');
 
         if (input == '1')
-            return IPiece.Color.WHITE;
+            return Piece.Color.WHITE;
         else
-            return IPiece.Color.BLACK;
+            return Piece.Color.BLACK;
     }
 
-    @Override
-    public String getPossibleMoveCountText(IPiece[][] board) {
+    public String getPossibleMoveCountText(Piece[][] board) {
         int possibleMovesSum = 0;
-        for (IPiece[] boardRow : board)
-            for (IPiece piece : boardRow)
+        for (Piece[] boardRow : board)
+            for (Piece piece : boardRow)
                 possibleMovesSum += piece.getPossibleMoves().size();
 
         if (possibleMovesSum > 99)
@@ -110,12 +106,11 @@ public final class Tui implements ITui {
             return possibleMovesSum + "  ";
     }
 
-    @Override
-    public String getLossPieceText(IPiece[] whiteLossList, IPiece[] blackLossList, IPiece.Color color, int index) {
-        if (color.equals(IPiece.Color.WHITE)) {
+    public String getLossPieceText(Piece[] whiteLossList, Piece[] blackLossList, Piece.Color color, int index) {
+        if (color.equals(Piece.Color.WHITE)) {
             if (!(whiteLossList[index] instanceof Empty))
                 return (index + 1) + ". " + whiteLossList[index].toString();
-        } else if (color.equals(IPiece.Color.BLACK)) {
+        } else if (color.equals(Piece.Color.BLACK)) {
             if (!(blackLossList[index] instanceof Empty))
                 return (index + 1) + ". " + blackLossList[index].toString();
         }
@@ -126,13 +121,12 @@ public final class Tui implements ITui {
             return "       ";
     }
 
-    @Override
-    public String getPieceCountText(int whitePieceCount, int blackPieceCount, IPiece.Color playerColor) {
-        if (playerColor.equals(IPiece.Color.WHITE)) {
+    public String getPieceCountText(int whitePieceCount, int blackPieceCount, Piece.Color playerColor) {
+        if (playerColor.equals(Piece.Color.WHITE)) {
             if (whitePieceCount < 10)
                 return " " + whitePieceCount;
             return String.valueOf(whitePieceCount);
-        } else if (playerColor.equals(IPiece.Color.BLACK)) {
+        } else if (playerColor.equals(Piece.Color.BLACK)) {
             if (blackPieceCount < 10)
                 return " " + blackPieceCount;
             return String.valueOf(blackPieceCount);
@@ -140,8 +134,7 @@ public final class Tui implements ITui {
         return "Error";
     }
 
-    @Override
-    public String getLatestMoveText(IPiece.Color playerColor, BoardPosition from, BoardPosition to) {
+    public String getLatestMoveText(Piece.Color playerColor, BoardPosition from, BoardPosition to) {
         return playerColor.name() + ": [" + from.file + ", " + from.rank + "] → [" + to.file + ", " + to.rank + "]";
     }
 
@@ -149,25 +142,21 @@ public final class Tui implements ITui {
      * PRINT METHODS
      *
      **************************************************/
-    @Override
     public void printPressEnter() {
         printArrow();
         printMessage("Press Enter...");
         scanner.nextLine();
     }
 
-    @Override
     public void printArrow() {
-        printMessage(Utils.ARROW + " ");
+        printMessage(ARROW + " ");
     }
 
-    @Override
     public void printArrow(String postfix) {
-        printMessage("[" + postfix + "] " + Utils.ARROW + " ");
+        printMessage("[" + postfix + "] " + ARROW + " ");
     }
 
-    @Override
-    public void printPromotionSuccess(char selection, IPiece.Color playerColor) {
+    public void printPromotionSuccess(char selection, Piece.Color playerColor) {
         String promotedPiece = "Empty";
         switch (selection) {
             case '1':
@@ -197,7 +186,6 @@ public final class Tui implements ITui {
         printMessage(menuString);
     }
 
-    @Override
     public final void printStartScreen() {
         String startScreenString = "┌───────────────────────────────────────────────────────────────────────┐\n" +
                 "│                                                           .::.        │\n" +
@@ -233,7 +221,6 @@ public final class Tui implements ITui {
         printMessage(startScreenString);
     }
 
-    @Override
     public final void printMenu() {
         String menuString = "\n┌────────────────────────┐\n" +
                 "│       ChessMateAI      │\n" +
@@ -247,7 +234,6 @@ public final class Tui implements ITui {
         printMessage(menuString);
     }
 
-    @Override
     public void printPromotion() {
         String menuString = "\n┌────────────────────────┐\n" +
                 "│        Promotion       │\n" +
@@ -262,8 +248,7 @@ public final class Tui implements ITui {
         printMessage(menuString);
     }
 
-    @Override
-    public void printHumanPlayer(IPiece.Color playerColor) {
+    public void printHumanPlayer(Piece.Color playerColor) {
         String winString = "\n┌────────────────────────┐\n" +
                 "│      Human Player      │\n" +
                 "├────────────────────────┤\n" +
@@ -273,8 +258,7 @@ public final class Tui implements ITui {
         printMessage(winString);
     }
 
-    @Override
-    public void printAIPlayer(IPiece.Color aIColor) {
+    public void printAIPlayer(Piece.Color aIColor) {
         String winString = "\n┌────────────────────────┐\n" +
                 "│        AI Player       │\n" +
                 "├────────────────────────┤\n" +
@@ -284,8 +268,7 @@ public final class Tui implements ITui {
         printMessage(winString);
     }
 
-    @Override
-    public void printCheck(IPiece.Color playerColor) {
+    public void printCheck(Piece.Color playerColor) {
         String winString = "\n┌────────────────────────┐\n" +
                 "│          Check         │\n" +
                 "├────────────────────────┤\n" +
@@ -294,7 +277,6 @@ public final class Tui implements ITui {
         printMessage(winString);
     }
 
-    @Override
     public void printChoosePlayer() {
         String winString = "\n┌────────────────────────┐\n" +
                 "│  Choose Human Player   │\n" +
@@ -305,7 +287,6 @@ public final class Tui implements ITui {
         printMessage(winString);
     }
 
-    @Override
     public void printIllegalAction(String msg) {
         String winString = "\n┌────────────────────────────────────────────┐\n" +
                 "│               Illegal Action               │\n" +
@@ -315,7 +296,6 @@ public final class Tui implements ITui {
         printMessage(winString);
     }
 
-    @Override
     public void printUnrecognizedCommand() {
         String winString = "\n┌────────────────────────┐\n" +
                 "│          Oops!         │\n" +
@@ -325,7 +305,6 @@ public final class Tui implements ITui {
         printMessage(winString);
     }
 
-    @Override
     public final void printWin() {
         String winString = "┌────────────────────────┐\n" +
                 "│         You won!       │\n" +
@@ -338,7 +317,6 @@ public final class Tui implements ITui {
         printMessage(winString);
     }
 
-    @Override
     public final void printLoss() {
         String winString = "┌────────────────────────┐\n" +
                 "│        You lost!       │\n" +
@@ -351,7 +329,6 @@ public final class Tui implements ITui {
         printMessage(winString);
     }
 
-    @Override
     public void printExit() {
         String winString = "┌────────────────────────┐\n" +
                 "│          Exit          │\n" +
@@ -362,7 +339,6 @@ public final class Tui implements ITui {
     }
 
 
-    @Override
     public final void printBoard(Board board) {
         printMessage(board.getBoardText());
     }

@@ -1,10 +1,8 @@
 package ai.mate.chess.model.piece;
 
 import ai.mate.chess.handler.TextHandler;
-import ai.mate.chess.model.Board;
+import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.BoardPosition;
-import ai.mate.chess.model.piece.interfaces.IPiece;
-import ai.mate.chess.util.Utils;
 
 import java.awt.*;
 
@@ -15,7 +13,7 @@ public final class Pawn extends Piece {
 
     public Pawn(Color color) {
         super(color);
-        this.score = Utils.PAWN_SCORE;
+        this.score = PAWN_SCORE;
     }
 
     @Override
@@ -89,7 +87,7 @@ public final class Pawn extends Piece {
             return false;
 
         /* Now we have the slay position. Now check if there's an opponent there! */
-        IPiece pieceToBeSlain = board.getPiece(xKill, yKill);
+        Piece pieceToBeSlain = board.getPiece(xKill, yKill);
 
         /* If the pieceToBeSlain is an opponent, return true, if not, return false */
         return pieceToBeSlain.getColor().equals(Piece.getOpponentColor(getColor()));
@@ -105,7 +103,7 @@ public final class Pawn extends Piece {
         if (isOutOfBounds(xRel, yRel))
             return false;
 
-        IPiece pieceAtRelPosition = board.getPiece(xRel, yRel);
+        Piece pieceAtRelPosition = board.getPiece(xRel, yRel);
 
         if (pieceAtRelPosition.getColor().equals(Piece.getOpponentColor(getColor())))
             return false;
@@ -129,7 +127,7 @@ public final class Pawn extends Piece {
         if (isOutOfBounds(xRel, yRel))
             return false;
 
-        IPiece pieceAtRelPosition = board.getPiece(xRel, yRel);
+        Piece pieceAtRelPosition = board.getPiece(xRel, yRel);
 
         if (!(pieceAtRelPosition instanceof Empty))
             return false;

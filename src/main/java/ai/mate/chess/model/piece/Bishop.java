@@ -1,9 +1,8 @@
 package ai.mate.chess.model.piece;
 
 import ai.mate.chess.handler.TextHandler;
-import ai.mate.chess.model.Board;
+import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.BoardPosition;
-import ai.mate.chess.util.Utils;
 
 import java.awt.*;
 
@@ -14,7 +13,7 @@ public final class Bishop extends Piece {
 
     public Bishop(Color color) {
         super(color);
-        this.score = Utils.BISHOP_SCORE;
+        this.score = BISHOP_SCORE;
     }
 
     @Override

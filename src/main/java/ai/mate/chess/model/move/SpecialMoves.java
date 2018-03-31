@@ -1,7 +1,8 @@
-package ai.mate.chess.model;
+package ai.mate.chess.model.move;
 
+import ai.mate.chess.model.board.Board;
+import ai.mate.chess.model.BoardPosition;
 import ai.mate.chess.model.piece.*;
-import ai.mate.chess.model.piece.interfaces.IPiece;
 
 public final class SpecialMoves {
 
@@ -9,7 +10,7 @@ public final class SpecialMoves {
 
     }
 
-    public static boolean isPromotionAllowed(IPiece piece, Board board) {
+    public static boolean isPromotionAllowed(Piece piece, Board board) {
         /* SpecialMoves is only available for Pawn pieces */
         if (!(piece instanceof Pawn))
             return false;
@@ -25,7 +26,7 @@ public final class SpecialMoves {
         return true;
     }
 
-    public static IPiece promotePawn(char selection, IPiece.Color playerColor) {
+    public static Piece promotePawn(char selection, Piece.Color playerColor) {
         switch (selection) {
             case '1':
                 return new Queen(playerColor);
@@ -43,34 +44,34 @@ public final class SpecialMoves {
     public static boolean isWhiteKingSideCastleAllowed(Board board) {
         /* Check if the rook is in position with moveCount of 0 */
         /* Rook pos (7, 7) */
-        IPiece rook = board.getPiece(7, 7);
+        Piece rook = board.getPiece(7, 7);
 
         /*
          * Check whether the gotten IPiece instance is actually a rook, and that its color is actually white,
          * and that its moveCount is actually 0.
          */
-        if (!(rook instanceof Rook && rook.getColor().equals(IPiece.Color.WHITE) && rook.getMoveCount() == 0))
+        if (!(rook instanceof Rook && rook.getColor().equals(Piece.Color.WHITE) && rook.getMoveCount() == 0))
             return false;
 
         /* Check if the king is in position with moveCount of 0 */
         /* King pos (7, 4) */
-        IPiece king = board.getPiece(7, 4);
+        Piece king = board.getPiece(7, 4);
 
         /*
          * Check whether the gotten IPiece instance is actually a king, and that its color is actually white,
          * and that its moveCount is actually 0.
          */
-        if (!(king instanceof King && king.getColor().equals(IPiece.Color.WHITE) && king.getMoveCount() == 0))
+        if (!(king instanceof King && king.getColor().equals(Piece.Color.WHITE) && king.getMoveCount() == 0))
             return false;
 
 
         /* Check whether the two positions between the king and rook is empty or not */
-        IPiece rookLeft = board.getPiece(7, 6);
+        Piece rookLeft = board.getPiece(7, 6);
 
         if (!(rookLeft instanceof Empty))
             return false;
 
-        IPiece kingRight = board.getPiece(7, 5);
+        Piece kingRight = board.getPiece(7, 5);
 
         if (!(kingRight instanceof Empty))
             return false;
@@ -84,36 +85,36 @@ public final class SpecialMoves {
     public static boolean isWhiteQueenSideCastleAllowed(Board board) {
         /* Check if the rook is in position with moveCount of 0 */
         /* Rook pos (7, 7) */
-        IPiece rook = board.getPiece(7, 0);
+        Piece rook = board.getPiece(7, 0);
 
         /*
          * Check whether the gotten IPiece instance is actually a rook, and that its color is actually white,
          * and that its moveCount is actually 0.
          */
-        if (!(rook instanceof Rook && rook.getColor().equals(IPiece.Color.WHITE) && rook.getMoveCount() == 0))
+        if (!(rook instanceof Rook && rook.getColor().equals(Piece.Color.WHITE) && rook.getMoveCount() == 0))
             return false;
 
         /* Check if the king is in position with moveCount of 0 */
         /* King pos (7, 4) */
-        IPiece king = board.getPiece(7, 4);
+        Piece king = board.getPiece(7, 4);
 
         /*
          * Check whether the gotten IPiece instance is actually a king, and that its color is actually white,
          * and that its moveCount is actually 0.
          */
-        if (!(king instanceof King && king.getColor().equals(IPiece.Color.WHITE) && king.getMoveCount() == 0))
+        if (!(king instanceof King && king.getColor().equals(Piece.Color.WHITE) && king.getMoveCount() == 0))
             return false;
 
         /* Check whether the tree positions between the king and rook is empty or not */
-        IPiece kingLeft1 = board.getPiece(7, 3);
+        Piece kingLeft1 = board.getPiece(7, 3);
         if (!(kingLeft1 instanceof Empty))
             return false;
 
-        IPiece kingLeft2 = board.getPiece(7, 2);
+        Piece kingLeft2 = board.getPiece(7, 2);
         if (!(kingLeft2 instanceof Empty))
             return false;
 
-        IPiece kingLeft3 = board.getPiece(7, 1);
+        Piece kingLeft3 = board.getPiece(7, 1);
         if (!(kingLeft3 instanceof Empty))
             return false;
 
