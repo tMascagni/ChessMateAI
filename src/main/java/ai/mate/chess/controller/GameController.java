@@ -1,18 +1,17 @@
 package ai.mate.chess.controller;
 
-import ai.mate.chess.controller.interfaces.IGameController;
 import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.board.BoardPosition;
 import ai.mate.chess.model.piece.Piece;
 import ai.mate.chess.ui.Tui;
 
-public class GameController implements IGameController {
+public class GameController {
 
     private final Tui tui = Tui.getInstance();
 
     private Board board;
 
-    private static IGameController instance;
+    private static GameController instance;
 
     static {
         try {
@@ -26,11 +25,10 @@ public class GameController implements IGameController {
         board = new Board();
     }
 
-    public static synchronized IGameController getInstance() {
+    public static synchronized GameController getInstance() {
         return instance;
     }
 
-    @Override
     public void start() {
         board.reset();
 

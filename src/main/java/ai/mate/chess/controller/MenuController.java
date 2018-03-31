@@ -1,15 +1,13 @@
 package ai.mate.chess.controller;
 
-import ai.mate.chess.controller.interfaces.IGameController;
-import ai.mate.chess.controller.interfaces.IMenuController;
 import ai.mate.chess.ui.Tui;
 
-public final class MenuController implements IMenuController {
+public final class MenuController {
 
     private final Tui tui = Tui.getInstance();
-    private final IGameController gameController = GameController.getInstance();
+    private final GameController gameController = GameController.getInstance();
 
-    private static IMenuController instance;
+    private static MenuController instance;
 
     static {
         try {
@@ -23,11 +21,10 @@ public final class MenuController implements IMenuController {
 
     }
 
-    public static synchronized IMenuController getInstance() {
+    public static synchronized MenuController getInstance() {
         return instance;
     }
 
-    @Override
     public final void start() {
         tui.printStartScreen();
         tui.printPressEnter();
