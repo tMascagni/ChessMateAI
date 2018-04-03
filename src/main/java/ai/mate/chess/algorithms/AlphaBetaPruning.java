@@ -1,6 +1,6 @@
 package ai.mate.chess.algorithms;
 
-import ai.mate.chess.model.board.Board;
+import ai.mate.chess.model.board.BoardOld;
 import ai.mate.chess.model.board.BoardPosition;
 import ai.mate.chess.model.piece.Piece;
 
@@ -16,8 +16,8 @@ public final class AlphaBetaPruning {
 
     }
 
-    public static void run(Piece.Color playerColor, Board board, double maxPly) {
-        alphaBetaPruning(playerColor, board, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, 0);
+    public static void run(Piece.Color playerColor, BoardOld boardOld, double maxPly) {
+        alphaBetaPruning(playerColor, boardOld, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, 0);
         /*
          * Gets the best move, aka.
          * the best 'from' and 'to'
@@ -25,10 +25,10 @@ public final class AlphaBetaPruning {
          */
         BoardPosition from = bestMove[0];
         BoardPosition to = bestMove[1];
-        //board.movePiece(from, to);
+        //boardOld.movePiece(from, to);
     }
 
-    private static int alphaBetaPruning(Piece.Color playerColor, Board board, double alpha, double beta, int currentPly) {
+    private static int alphaBetaPruning(Piece.Color playerColor, BoardOld boardOld, double alpha, double beta, int currentPly) {
         /*
          * Black: maximizer
          * White: minimizer
@@ -36,13 +36,13 @@ public final class AlphaBetaPruning {
         boolean maximizer = playerColor == Piece.Color.BLACK;
 
         if (currentPly++ == maxPly) {
-            return score(playerColor, board, currentPly);
+            return score(playerColor, boardOld, currentPly);
         }
 
         /*
          * Get all the possible moves for this player.
          */
-        List<Point> possibleMovesPlayer = board.getPossibleMovesFromPlayer(playerColor);
+        List<Point> possibleMovesPlayer = boardOld.getPossibleMovesFromPlayer(playerColor);
 
 
         if (maximizer) {
@@ -54,31 +54,31 @@ public final class AlphaBetaPruning {
 
 
        /*
-        if (currentPly++ == maxPly || board.isGameOver()) {
-            return score(player, board, currentPly);
+        if (currentPly++ == maxPly || boardOld.isGameOver()) {
+            return score(player, boardOld, currentPly);
         }
         */
         return 0;
     }
 
-    private static int getMax(Piece.Color playerColor, Board board, double alpha, double beta, int currentPly) {
+    private static int getMax(Piece.Color playerColor, BoardOld boardOld, double alpha, double beta, int currentPly) {
         return 0;
     }
 
-    private static int getMin(Piece.Color playerColor, Board board, double alpha, double beta, int currentPly) {
+    private static int getMin(Piece.Color playerColor, BoardOld boardOld, double alpha, double beta, int currentPly) {
         return 0;
     }
 
-    private static int score(Piece.Color playerColor, Board board, int currentPly) {
+    private static int score(Piece.Color playerColor, BoardOld boardOld, int currentPly) {
         if (playerColor == Piece.Color.EMPTY)
             throw new IllegalArgumentException("Player must be BLACK or WHITE!.");
 
         /*
-        Board.SquareState opponent = (player == Board.SquareState.X) ? Board.SquareState.O : Board.SquareState.X;
+        BoardOld.SquareState opponent = (player == BoardOld.SquareState.X) ? BoardOld.SquareState.O : BoardOld.SquareState.X;
 
-        if (board.isGameOver() && board.getWinner() == player) {
+        if (boardOld.isGameOver() && boardOld.getWinner() == player) {
             return 10 - currentPly;
-        } else if (board.isGameOver() && board.getWinner() == opponent) {
+        } else if (boardOld.isGameOver() && boardOld.getWinner() == opponent) {
             return -10 + currentPly;
         } else {
             return 0;

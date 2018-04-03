@@ -1,6 +1,6 @@
 package ai.mate.chess.model.move;
 
-import ai.mate.chess.model.board.Board;
+import ai.mate.chess.model.board.BoardOld;
 import ai.mate.chess.model.board.BoardPosition;
 import ai.mate.chess.model.piece.*;
 
@@ -10,13 +10,13 @@ public final class SpecialMoves {
 
     }
 
-    public static boolean isPromotionAllowed(Piece piece, Board board) {
+    public static boolean isPromotionAllowed(Piece piece, BoardOld boardOld) {
         /* SpecialMoves is only available for Pawn pieces */
         if (!(piece instanceof Pawn))
             return false;
 
         /* Get position of the pawn */
-        BoardPosition piecePos = board.getPieceBoardPos(piece.getId());
+        BoardPosition piecePos = boardOld.getPieceBoardPos(piece.getId());
 
         /* Check if the pawn is at any of the promotion squares */
         if (!(piecePos.rowX == 0 || piecePos.rowX == 7))
@@ -41,10 +41,10 @@ public final class SpecialMoves {
         }
     }
 
-    public static boolean isWhiteKingSideCastleAllowed(Board board) {
+    public static boolean isWhiteKingSideCastleAllowed(BoardOld boardOld) {
         /* Check if the rook is in position with moveCount of 0 */
         /* Rook pos (7, 7) */
-        Piece rook = board.getPiece(7, 7);
+        Piece rook = boardOld.getPiece(7, 7);
 
         /*
          * Check whether the gotten IPiece instance is actually a rook, and that its color is actually white,
@@ -55,7 +55,7 @@ public final class SpecialMoves {
 
         /* Check if the king is in position with moveCount of 0 */
         /* King pos (7, 4) */
-        Piece king = board.getPiece(7, 4);
+        Piece king = boardOld.getPiece(7, 4);
 
         /*
          * Check whether the gotten IPiece instance is actually a king, and that its color is actually white,
@@ -66,12 +66,12 @@ public final class SpecialMoves {
 
 
         /* Check whether the two positions between the king and rook is empty or not */
-        Piece rookLeft = board.getPiece(7, 6);
+        Piece rookLeft = boardOld.getPiece(7, 6);
 
         if (!(rookLeft instanceof Empty))
             return false;
 
-        Piece kingRight = board.getPiece(7, 5);
+        Piece kingRight = boardOld.getPiece(7, 5);
 
         if (!(kingRight instanceof Empty))
             return false;
@@ -82,10 +82,10 @@ public final class SpecialMoves {
         return true;
     }
 
-    public static boolean isWhiteQueenSideCastleAllowed(Board board) {
+    public static boolean isWhiteQueenSideCastleAllowed(BoardOld boardOld) {
         /* Check if the rook is in position with moveCount of 0 */
         /* Rook pos (7, 7) */
-        Piece rook = board.getPiece(7, 0);
+        Piece rook = boardOld.getPiece(7, 0);
 
         /*
          * Check whether the gotten IPiece instance is actually a rook, and that its color is actually white,
@@ -96,7 +96,7 @@ public final class SpecialMoves {
 
         /* Check if the king is in position with moveCount of 0 */
         /* King pos (7, 4) */
-        Piece king = board.getPiece(7, 4);
+        Piece king = boardOld.getPiece(7, 4);
 
         /*
          * Check whether the gotten IPiece instance is actually a king, and that its color is actually white,
@@ -106,26 +106,26 @@ public final class SpecialMoves {
             return false;
 
         /* Check whether the tree positions between the king and rook is empty or not */
-        Piece kingLeft1 = board.getPiece(7, 3);
+        Piece kingLeft1 = boardOld.getPiece(7, 3);
         if (!(kingLeft1 instanceof Empty))
             return false;
 
-        Piece kingLeft2 = board.getPiece(7, 2);
+        Piece kingLeft2 = boardOld.getPiece(7, 2);
         if (!(kingLeft2 instanceof Empty))
             return false;
 
-        Piece kingLeft3 = board.getPiece(7, 1);
+        Piece kingLeft3 = boardOld.getPiece(7, 1);
         if (!(kingLeft3 instanceof Empty))
             return false;
 
         return true;
     }
 
-    public static boolean isBlackKingSideCastleAllowed(Board board) {
+    public static boolean isBlackKingSideCastleAllowed(BoardOld boardOld) {
         return false;
     }
 
-    public static boolean isBlackQueenSideCastleAllowed(Board board) {
+    public static boolean isBlackQueenSideCastleAllowed(BoardOld boardOld) {
         return false;
     }
 

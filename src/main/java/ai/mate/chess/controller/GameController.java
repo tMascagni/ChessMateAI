@@ -1,6 +1,6 @@
 package ai.mate.chess.controller;
 
-import ai.mate.chess.model.board.Board;
+import ai.mate.chess.model.board.BoardOld;
 import ai.mate.chess.model.board.BoardPosition;
 import ai.mate.chess.model.piece.Piece;
 import ai.mate.chess.ui.Tui;
@@ -9,7 +9,7 @@ public class GameController {
 
     private final Tui tui = Tui.getInstance();
 
-    private Board board;
+    private BoardOld boardOld;
 
     private static GameController instance;
 
@@ -22,7 +22,7 @@ public class GameController {
     }
 
     private GameController() {
-        board = new Board();
+        boardOld = new BoardOld();
     }
 
     public static synchronized GameController getInstance() {
@@ -30,7 +30,7 @@ public class GameController {
     }
 
     public void start() {
-        board.reset();
+        boardOld.reset();
 
         tui.printChoosePlayer();
         Piece.Color playerColor = tui.getPlayerColorInput();
@@ -39,7 +39,7 @@ public class GameController {
         tui.printAIPlayer(Piece.getOpponentColor(playerColor));
 
         while (true) {
-            tui.printBoard(board);
+            tui.printBoard(boardOld);
 
             BoardPosition fromPos;
 
@@ -49,7 +49,7 @@ public class GameController {
             while (true) {
                 fromPos = tui.getBoardPositionInput("From");
 
-                if (board.isValidFromPos(fromPos))
+                if (boardOld.isValidFromPos(fromPos))
                     break;
 
                 tui.printIllegalAction("Try again!");
@@ -57,7 +57,7 @@ public class GameController {
             }
 
             BoardPosition toPos = tui.getBoardPositionInput("To");
-            board.movePiece(fromPos, toPos);
+            boardOld.movePiece(fromPos, toPos);
         }
     }
 

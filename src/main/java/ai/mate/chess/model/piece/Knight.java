@@ -1,7 +1,7 @@
 package ai.mate.chess.model.piece;
 
 import ai.mate.chess.handler.TextHandler;
-import ai.mate.chess.model.board.Board;
+import ai.mate.chess.model.board.BoardOld;
 import ai.mate.chess.model.board.BoardPosition;
 
 
@@ -26,21 +26,21 @@ public final class Knight extends Piece {
     }
 
     @Override
-    public void populateMoves(Board board) {
+    public void populateMoves(BoardOld boardOld) {
         /* Remove old possible moves and slay moves */
         resetMoves();
 
-        /* Firstly, we need to get this piece's board position */
-        BoardPosition pieceBoardPos = board.getPieceBoardPos(this.ID);
+        /* Firstly, we need to get this piece's boardOld position */
+        BoardPosition pieceBoardPos = boardOld.getPieceBoardPos(this.ID);
         Point piecePos = new Point(pieceBoardPos.rowX, pieceBoardPos.colY);
 
-        populateNorthMoves(piecePos, board);
-        populateSouthMoves(piecePos, board);
-        populateEastMoves(piecePos, board);
-        populateWestMoves(piecePos, board);
+        populateNorthMoves(piecePos, boardOld);
+        populateSouthMoves(piecePos, boardOld);
+        populateEastMoves(piecePos, boardOld);
+        populateWestMoves(piecePos, boardOld);
     }
 
-    private void populateNorthMoves(Point piecePos, Board board) {
+    private void populateNorthMoves(Point piecePos, BoardOld boardOld) {
         Point posAfterLeftMove = new Point();
         Point posAfterRightMove = new Point();
 
@@ -64,25 +64,25 @@ public final class Knight extends Piece {
         Point moveRight = calculateDeltaMove(piecePos, posAfterRightMove);
 
         /* Left */
-        if (board.getPiece(posAfterLeftMove.x, posAfterLeftMove.y) instanceof Empty) {
+        if (boardOld.getPiece(posAfterLeftMove.x, posAfterLeftMove.y) instanceof Empty) {
             /* Legal move! */
             possibleMoves.add(moveLeft);
-        } else if (board.getPiece(posAfterLeftMove.x, posAfterLeftMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
+        } else if (boardOld.getPiece(posAfterLeftMove.x, posAfterLeftMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* Legal slay move! */
             possibleMoves.add(moveLeft);
         }
 
         /* Right */
-        if (board.getPiece(posAfterRightMove.x, posAfterRightMove.y) instanceof Empty) {
+        if (boardOld.getPiece(posAfterRightMove.x, posAfterRightMove.y) instanceof Empty) {
             /* Legal move! */
             possibleMoves.add(moveRight);
-        } else if (board.getPiece(posAfterRightMove.x, posAfterRightMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
+        } else if (boardOld.getPiece(posAfterRightMove.x, posAfterRightMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* Legal slay move! */
             possibleMoves.add(moveRight);
         }
     }
 
-    private void populateEastMoves(Point piecePos, Board board) {
+    private void populateEastMoves(Point piecePos, BoardOld boardOld) {
         Point posAfterNorthMove = new Point();
         Point posAfterSouthMove = new Point();
 
@@ -106,25 +106,25 @@ public final class Knight extends Piece {
         Point moveSouth = calculateDeltaMove(piecePos, posAfterSouthMove);
 
         /* North */
-        if (board.getPiece(posAfterNorthMove.x, posAfterNorthMove.y) instanceof Empty) {
+        if (boardOld.getPiece(posAfterNorthMove.x, posAfterNorthMove.y) instanceof Empty) {
             /* Legal move! */
             possibleMoves.add(moveNorth);
-        } else if (board.getPiece(posAfterNorthMove.x, posAfterNorthMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
+        } else if (boardOld.getPiece(posAfterNorthMove.x, posAfterNorthMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* Legal slay move! */
             possibleMoves.add(moveNorth);
         }
 
         /* South */
-        if (board.getPiece(posAfterSouthMove.x, posAfterSouthMove.y) instanceof Empty) {
+        if (boardOld.getPiece(posAfterSouthMove.x, posAfterSouthMove.y) instanceof Empty) {
             /* Legal move! */
             possibleMoves.add(moveSouth);
-        } else if (board.getPiece(posAfterSouthMove.x, posAfterSouthMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
+        } else if (boardOld.getPiece(posAfterSouthMove.x, posAfterSouthMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* Legal slay move! */
             possibleMoves.add(moveSouth);
         }
     }
 
-    private void populateSouthMoves(Point piecePos, Board board) {
+    private void populateSouthMoves(Point piecePos, BoardOld boardOld) {
         Point posAfterLeftMove = new Point();
         Point posAfterRightMove = new Point();
 
@@ -148,25 +148,25 @@ public final class Knight extends Piece {
         Point moveRight = calculateDeltaMove(piecePos, posAfterRightMove);
 
         /* Left */
-        if (board.getPiece(posAfterLeftMove.x, posAfterLeftMove.y) instanceof Empty) {
+        if (boardOld.getPiece(posAfterLeftMove.x, posAfterLeftMove.y) instanceof Empty) {
             /* Legal move! */
             possibleMoves.add(moveLeft);
-        } else if (board.getPiece(posAfterLeftMove.x, posAfterLeftMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
+        } else if (boardOld.getPiece(posAfterLeftMove.x, posAfterLeftMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* Legal slay move! */
             possibleMoves.add(moveLeft);
         }
 
         /* Right */
-        if (board.getPiece(posAfterRightMove.x, posAfterRightMove.y) instanceof Empty) {
+        if (boardOld.getPiece(posAfterRightMove.x, posAfterRightMove.y) instanceof Empty) {
             /* Legal move! */
             possibleMoves.add(moveRight);
-        } else if (board.getPiece(posAfterRightMove.x, posAfterRightMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
+        } else if (boardOld.getPiece(posAfterRightMove.x, posAfterRightMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* Legal slay move! */
             possibleMoves.add(moveRight);
         }
     }
 
-    private void populateWestMoves(Point piecePos, Board board) {
+    private void populateWestMoves(Point piecePos, BoardOld boardOld) {
         Point posAfterNorthMove = new Point();
         Point posAfterSouthMove = new Point();
 
@@ -190,19 +190,19 @@ public final class Knight extends Piece {
         Point moveSouth = calculateDeltaMove(piecePos, posAfterSouthMove);
 
         /* North */
-        if (board.getPiece(posAfterNorthMove.x, posAfterNorthMove.y) instanceof Empty) {
+        if (boardOld.getPiece(posAfterNorthMove.x, posAfterNorthMove.y) instanceof Empty) {
             /* Legal move! */
             possibleMoves.add(moveNorth);
-        } else if (board.getPiece(posAfterNorthMove.x, posAfterNorthMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
+        } else if (boardOld.getPiece(posAfterNorthMove.x, posAfterNorthMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* Legal slay move! */
             possibleMoves.add(moveNorth);
         }
 
         /* South */
-        if (board.getPiece(posAfterSouthMove.x, posAfterSouthMove.y) instanceof Empty) {
+        if (boardOld.getPiece(posAfterSouthMove.x, posAfterSouthMove.y) instanceof Empty) {
             /* Legal move! */
             possibleMoves.add(moveSouth);
-        } else if (board.getPiece(posAfterSouthMove.x, posAfterSouthMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
+        } else if (boardOld.getPiece(posAfterSouthMove.x, posAfterSouthMove.y).getColor().equals(Piece.getOpponentColor(getColor()))) {
             /* Legal slay move! */
             possibleMoves.add(moveSouth);
         }

@@ -1,7 +1,7 @@
 package ai.mate.chess.ui;
 
+import ai.mate.chess.model.board.BoardOld;
 import ai.mate.chess.model.board.BoardPosition;
-import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.piece.Empty;
 import ai.mate.chess.model.piece.Piece;
 
@@ -339,8 +339,8 @@ public final class Tui {
     }
 
 
-    public final void printBoard(Board board) {
-        printMessage(board.getBoardText());
+    public final void printBoard(BoardOld boardOld) {
+        printMessage(boardOld.getBoardText());
     }
 
     private void printMessage(String msg) {
