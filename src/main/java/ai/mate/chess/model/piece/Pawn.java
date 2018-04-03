@@ -1,152 +1,119 @@
 package ai.mate.chess.model.piece;
 
-import ai.mate.chess.handler.TextHandler;
-import ai.mate.chess.model.board.BoardOld;
-import ai.mate.chess.model.board.BoardPosition;
+import ai.mate.chess.model.board.Board;
+import ai.mate.chess.model.board.Tile;
+import ai.mate.chess.model.move.*;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
-/*
- * Bonde
- */
 public final class Pawn extends Piece {
 
-    public Pawn(Color color) {
-        super(color);
-        this.score = PAWN_SCORE;
+    private Point startPosition;
+    private int direction;
+
+    public Pawn(PlayerColor playerColor, Point position) {
+        super(playerColor, position);
+        this.startPosition = new Point(position);
+        this.direction = getPlayerColor() == PlayerColor.WHITE ? -1 : 1;
     }
 
     @Override
-    protected void initName() {
-        if (color.equals(Color.WHITE))
-            name = TextHandler.WHITE_PAWN;
-        else
-            name = TextHandler.BLACK_PAWN;
+    public List<Move> getAvailableMoves(Board board) {
+        List<Move> moves = new ArrayList<>();
+        Point currentPos = getPosition();
+        Point singleMove = new Point(currentPos.x, currentPos.y + getNormalized(1));
+
+        // Regular moves
+        if (board.isValidPosition(singleMove) && board.getTile(singleMove).isEmpty()) {
+            moves.add(createNormalMove(singleMove));
+
+            Point doubleMove = new Point(currentPos.x, currentPos.y + getNormalized(2));
+            if (board.isValidPosition(doubleMove) && board.getTile(doubleMove).isEmpty() && getMoveCount() == 0)
+                moves.add(createNormalMove(doubleMove, Move.MoveType.NORMAL_DOUBLE));
+        }
+
+        Point[] diagPositions = {
+                new Point(currentPos.x - 1, currentPos.y + getNormalized(1)),
+                new Point(currentPos.x + 1, currentPos.y + getNormalized(1))
+        };
+
+        for (Point diagPos : diagPositions) {
+            if (board.isValidPosition(diagPos)) {
+                // Attack moves
+                Tile diagonalTile = board.getTile(diagPos);
+                if (!diagonalTile.isEmpty()) {
+                    if (!isSameTeam(diagonalTile.getPiece()))
+                        moves.add(createAttackMove(diagonalTile.getPosition()));
+                } else {
+                    // En passant moves
+                    if (currentPos.y == startPosition.y + getNormalized(3)) {
+                        Tile sideTile = board.getTile(diagPos.x, diagPos.y + getNormalized(-1));
+                        if (!sideTile.isEmpty()) {
+                            Piece sidePiece = sideTile.getPiece();
+                            if (isSameType(sidePiece) && !isSameTeam(sidePiece)) {
+                                Move lastMove = MoveHistory.getInstance().popLastMove();
+                                Point lastPos = lastMove.getEnd();
+                                Point sidePos = sideTile.getPosition();
+                                if (lastMove.getType() == Move.MoveType.NORMAL_DOUBLE && sidePos.equals(lastPos))
+                                    moves.add(createEnPassantMove(diagPos));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < moves.size(); i++) {
+            Move move = moves.get(i);
+            if (move.getEnd().y == 7 || move.getEnd().y == 0)
+                moves.set(i, new PawnPromotionMove(currentPos, move.getEnd()));
+        }
+
+        return moves;
     }
 
     @Override
-    public void populateMoves(BoardOld boardOld) {
-        /* Remove old possible moves and slay moves */
-        resetMoves();
-
-        /* Populate moves */
-        if (getColor().equals(Color.WHITE))
-            populateWhiteMoves(boardOld);
-        else if (getColor().equals(Color.BLACK))
-            populateBlackMoves(boardOld);
+    public int[][] getPositionTable() {
+        return new int[][]{
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {50, 50, 50, 50, 50, 50, 50, 50},
+                {10, 10, 20, 30, 30, 20, 10, 10},
+                {5, 5, 10, 25, 25, 10, 5, 5},
+                {0, 0, 0, 20, 20, 0, 0, 0},
+                {5, -5, -10, 0, 0, -10, -5, 5},
+                {5, 10, 10, -20, -20, 10, 10, 5},
+                {0, 0, 0, 0, 0, 0, 0, 0}
+        };
     }
 
-    private void populateWhiteMoves(BoardOld boardOld) {
-        /* First move (can walk 2 squares) */
-        if (isFirstMoveAllowed(new Point(-2, 0), boardOld))
-            possibleMoves.add(new Point(-2, 0));
-
-        /* Standard move (only allowed if the square is empty of opponent) */
-        if (isStandardMoveAllowed(new Point(-1, 0), boardOld))
-            possibleMoves.add(new Point(-1, 0));
-
-        /* Slay opponents piece */
-        if (isSlayMoveAllowed(new Point(-1, 1), boardOld)) {
-            possibleMoves.add(new Point(-1, 1));
-        }
-
-        if (isSlayMoveAllowed(new Point(-1, -1), boardOld)) {
-            possibleMoves.add(new Point(-1, -1));
-        }
+    @Override
+    public boolean[] getPositionThreats() {
+        boolean diagonal = getPlayerColor() == PlayerColor.WHITE;
+        return new boolean[]{!diagonal, false, !diagonal, false, false, diagonal, false, diagonal};
     }
 
-    private void populateBlackMoves(BoardOld boardOld) {
-        /* First move (can walk 2 squares) */
-        if (isFirstMoveAllowed(new Point(2, 0), boardOld))
-            possibleMoves.add(new Point(2, 0));
-
-        /* Standard move (only allowed if the square is empty of opponent) */
-        if (isStandardMoveAllowed(new Point(1, 0), boardOld))
-            possibleMoves.add(new Point(1, 0));
-
-        /* Slay opponents piece */
-        if (isSlayMoveAllowed(new Point(1, 1), boardOld)) {
-            possibleMoves.add(new Point(1, 1));
-        }
-
-        if (isSlayMoveAllowed(new Point(1, -1), boardOld)) {
-            possibleMoves.add(new Point(1, -1));
-        }
+    @Override
+    public Piece copy() {
+        return new Pawn(getPlayerColor(), new Point(getPosition()));
     }
 
-    private boolean isSlayMoveAllowed(Point p, BoardOld boardOld) {
-        /* Firstly, we need to get this piece's boardOld position */
-        BoardPosition piecePos = boardOld.getPieceBoardPos(this.ID);
-
-        /* Now we need to create the new position where the piece would slay */
-        int xKill = piecePos.rowX + p.x;
-        int yKill = piecePos.colY + p.y;
-
-        /* If we go out of bounds, we know that its a bad move. */
-        if (isOutOfBounds(xKill, yKill))
-            return false;
-
-        /* Now we have the slay position. Now check if there's an opponent there! */
-        Piece pieceToBeSlain = boardOld.getPiece(xKill, yKill);
-
-        /* If the pieceToBeSlain is an opponent, return true, if not, return false */
-        return pieceToBeSlain.getColor().equals(Piece.getOpponentColor(getColor()));
+    public boolean promotePawn() {
+        return getPlayerColor() == PlayerColor.WHITE && getPosition().y == 0 ||
+                getPlayerColor() == PlayerColor.BLACK && getPosition().y == 7;
     }
 
-    private boolean isStandardMoveAllowed(Point p, BoardOld boardOld) {
-        BoardPosition piecePos = boardOld.getPieceBoardPos(ID);
-
-        int xRel = piecePos.rowX + p.x;
-        int yRel = piecePos.colY + p.y;
-
-        /* If we go out of bounds, we know that its a bad move. */
-        if (isOutOfBounds(xRel, yRel))
-            return false;
-
-        Piece pieceAtRelPosition = boardOld.getPiece(xRel, yRel);
-
-        if (pieceAtRelPosition.getColor().equals(Piece.getOpponentColor(getColor())))
-            return false;
-
-        return !pieceAtRelPosition.getColor().equals(getColor());
+    private Move createEnPassantMove(Point target) {
+        return new EnPassantMove(getPosition(), target.getLocation());
     }
 
-    private boolean isFirstMoveAllowed(Point p, BoardOld boardOld) {
-        if (Math.abs(p.x) != 2) // Is it really the first move?
-            return false;
+    private boolean isSameType(Piece piece) {
+        return this.getPieceType() == piece.getPieceType();
+    }
 
-        if (getMoveCount() != 0)
-            return false;
-
-        BoardPosition piecePos = boardOld.getPieceBoardPos(ID);
-
-        int xRel = piecePos.rowX + p.x;
-        int yRel = piecePos.colY + p.y;
-
-        /* If we go out of bounds, we know that its a bad move. */
-        if (isOutOfBounds(xRel, yRel))
-            return false;
-
-        Piece pieceAtRelPosition = boardOld.getPiece(xRel, yRel);
-
-        if (!(pieceAtRelPosition instanceof Empty))
-            return false;
-
-        int dec = -1;
-
-        if (getColor().equals(Color.WHITE))
-            dec = 1;
-
-        xRel = piecePos.rowX + p.x + dec;
-        yRel = piecePos.colY + p.y;
-
-        /* If we go out of bounds, we know that its a bad move. */
-        if (isOutOfBounds(xRel, yRel))
-            return false;
-
-        pieceAtRelPosition = boardOld.getPiece(xRel, yRel);
-
-        return pieceAtRelPosition instanceof Empty;
+    private int getNormalized(int value) {
+        return value * direction;
     }
 
 }

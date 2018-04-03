@@ -1,12 +1,10 @@
 package ai.mate.chess.model.piece;
 
-import ai.mate.chess.handler.TextHandler;
+import ai.mate.chess.controller.GameController;
 import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.board.Tile;
-import ai.mate.chess.model.move.Move;
-import ai.mate.chess.model.move.MoveHistory;
-import ai.mate.chess.model.move.NormalMove;
-import ai.mate.chess.model.move.SlayMove;
+import ai.mate.chess.model.move.*;
+import ai.mate.chess.utils.ChessUtils;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -15,53 +13,49 @@ import java.util.Objects;
 
 public abstract class Piece {
 
-    public static final int BISHOP_SCORE = 30;
-    public static final int ROOK_SCORE = 50;
-    public static final int QUEEN_SCORE = 90;
-    public static final int PAWN_SCORE = 1;
-    public static final int KNIGHT_SCORE = 30;
-    public static final int KING_SCORE = 900;
+    private final PlayerColor playerColor;
+    private final PieceType pieceType;
+    private Point position;
 
-    protected final String name;
-    protected final PlayerColor color;
-    protected final PieceType type;
-    protected Point position;
-
-    protected final int score;
-    protected int moveCount;
-    protected int slayCount;
+    private final String name;
+    private final int score;
+    private int moveCount;
+    private int attackCount;
 
     public enum PlayerColor {
         WHITE, BLACK
     }
 
     public enum PieceType {
-        BISHOP, KING, KNIGHT, PAWN, QUEEN, ROOK
+        BISHOP, KING, KNIGHT, PAWN, QUEEN, ROOK, NONE
     }
 
-    public Piece(PlayerColor color, Point position) {
-        this.name = initName();
-        this.color = color;
-        this.type = initPieceType();
+    public Piece(PlayerColor playerColor, Point position) {
+        this.playerColor = playerColor;
+        this.pieceType = initPieceType();
         this.position = position;
+        this.name = initName();
         this.score = initScore();
         this.moveCount = 0;
-        this.slayCount = 0;
+        this.attackCount = 0;
     }
 
     public void updatePiece(Move move) {
-        if (type == PieceType.KING)
-            GameManager.getInstance().updateKingPosition(this);
-
-        if (move.getType() == Move.MoveType.ATTACK)
-            slayCount++;
+        if (pieceType == PieceType.KING)
+            GameController.getInstance().updateKingPosition(this);
 
         moveCount++;
-
-        MoveHistory.getInstance().addMove(move);
         position = move.getEnd();
+        MoveHistory.getInstance().addMove(move);
     }
 
+    /**
+     * Finds the moves in line, useful for queens, rooks and bishops
+     *
+     * @param board            board to search
+     * @param directionOffsets array of x, y pairs to search (-1, -1) for bottom diag etc
+     * @return
+     */
     public List<Move> getMovesInLine(Board board, int[][] directionOffsets) {
         List<Move> movesInLine = new ArrayList<>();
 
@@ -69,18 +63,15 @@ public abstract class Piece {
             int offsetX = offset[0];
             int offsetY = offset[1];
 
-            for (int i = 1; i < Board.BOARD_SIZE; i++) {
-                Point possiblePosition = new Point(position.x + (i * offsetX), position.y + (i * offsetY));
-
-                if (board.isValidPosition(possiblePosition)) {
-                    Tile possibleTile = board.getTile(possiblePosition);
-
+            for (int i = 1; i < 8; i++) {
+                Point possiblePos = new Point(getPosition().x + (i * offsetX), getPosition().y + (i * offsetY));
+                if (board.isValidPosition(possiblePos)) {
+                    Tile possibleTile = board.getTile(possiblePos);
                     if (possibleTile.isEmpty()) {
-                        movesInLine.add(createNormalMove(possiblePosition));
+                        movesInLine.add(createNormalMove(possiblePos));
                     } else {
-                        if (!isSameColor(possibleTile.getPiece())) {
-                            movesInLine.add(createAttackMove(possiblePosition));
-                        }
+                        if (!isSameTeam(possibleTile.getPiece()))
+                            movesInLine.add(createAttackMove(possiblePos));
                         break;
                     }
                 } else {
@@ -88,122 +79,129 @@ public abstract class Piece {
                 }
             }
         }
+
         return movesInLine;
     }
+
+    public abstract List<Move> getAvailableMoves(Board board);
 
     public abstract int[][] getPositionTable();
 
     public abstract boolean[] getPositionThreats();
 
-    public abstract List<Move> getAvailableMoves(Board board);
-
-    public boolean isSameColor(Piece piece) {
-        return color == piece.color;
+    public boolean isSameTeam(Piece piece) {
+        return this.getPlayerColor() == piece.getPlayerColor();
     }
 
     public Move createAttackMove(Point end) {
-        return new SlayMove(position, end);
+        return new AttackMove(this.position, end);
     }
 
     public Move createNormalMove(Point end) {
-        return new NormalMove(position, end);
+        return new NormalMove(this.position, end);
     }
 
-    public Move createNormalMove(Point end, Move.MoveType type) {
-        return new NormalMove(position, end, type);
+    public Move createNormalMove(Point end, Move.MoveType moveType) {
+        return new NormalMove(this.position, end, moveType);
     }
 
-    public PlayerColor getColor() {
-        return color;
+    public PlayerColor getPlayerColor() {
+        return this.playerColor;
     }
 
-    public PieceType getType() {
-        return type;
+    public PieceType getPieceType() {
+        return this.pieceType;
     }
 
     public Point getPosition() {
-        return position;
+        return this.position;
     }
 
     public int getScore() {
-        return score;
+        return this.score;
     }
 
     public int getMoveCount() {
         return moveCount;
     }
 
-    public int getSlayCount() {
-        return slayCount;
+    public int getAttackCount() {
+        return attackCount;
     }
 
     public void setPosition(Point position) {
         this.position = position;
     }
 
-    private String initName() {
-        switch (type) {
-            case BISHOP:
-                return (color == PlayerColor.WHITE) ? TextHandler.WHITE_BISHOP : TextHandler.BLACK_BISHOP;
-            case KING:
-                return (color == PlayerColor.WHITE) ? TextHandler.WHITE_KING : TextHandler.BLACK_KING;
-            case KNIGHT:
-                return (color == PlayerColor.WHITE) ? TextHandler.WHITE_KNIGHT : TextHandler.BLACK_KNIGHT;
-            case PAWN:
-                return (color == PlayerColor.WHITE) ? TextHandler.WHITE_PAWN : TextHandler.BLACK_PAWN;
-            case QUEEN:
-                return (color == PlayerColor.WHITE) ? TextHandler.WHITE_QUEEN : TextHandler.BLACK_QUEEN;
-            case ROOK:
-                return (color == PlayerColor.WHITE) ? TextHandler.WHITE_ROOK : TextHandler.BLACK_ROOK;
-            default:
-                return "ERROR: initName";
-        }
-    }
-
-    private int initScore() {
-        switch (type) {
-            case BISHOP:
-                return BISHOP_SCORE;
-            case KING:
-                return KING_SCORE;
-            case KNIGHT:
-                return KNIGHT_SCORE;
-            case PAWN:
-                return PAWN_SCORE;
-            case QUEEN:
-                return QUEEN_SCORE;
-            case ROOK:
-                return ROOK_SCORE;
-            default:
-                return 0;
-        }
-    }
-
-    private PieceType initPieceType() {
-        if (this instanceof Bishop) {
-            return PieceType.BISHOP;
-        } else if (this instanceof King) {
-            return PieceType.KING;
-        } else if (this instanceof Pawn) {
-            return PieceType.PAWN;
-        } else if (this instanceof Queen) {
-            return PieceType.QUEEN;
-        } else if (this instanceof Rook) {
-            return PieceType.ROOK;
-        } else {
-            return PieceType.PAWN;
-        }
+    @Override
+    public String toString() {
+        return name;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Piece && color == ((Piece) obj).color
-                && type == ((Piece) obj).type;
+        return obj instanceof Piece && this.playerColor ==
+                ((Piece) obj).playerColor && this.pieceType == ((Piece) obj).pieceType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this);
+        return Objects.hashCode(this);
+    }
+
+    private PieceType initPieceType() {
+        if (this instanceof Bishop)
+            return PieceType.BISHOP;
+        else if (this instanceof King)
+            return PieceType.KING;
+        else if (this instanceof Knight)
+            return PieceType.KNIGHT;
+        else if (this instanceof Pawn)
+            return PieceType.PAWN;
+        else if (this instanceof Queen)
+            return PieceType.QUEEN;
+        else if (this instanceof Rook)
+            return PieceType.ROOK;
+        else
+            return PieceType.NONE;
+    }
+
+    private String initName() {
+        switch (pieceType) {
+            case BISHOP:
+                return playerColor == PlayerColor.WHITE ? ChessUtils.WHITE_BISHOP : ChessUtils.BLACK_BISHOP;
+            case KING:
+                return playerColor == PlayerColor.WHITE ? ChessUtils.WHITE_KING : ChessUtils.BLACK_KING;
+            case KNIGHT:
+                return playerColor == PlayerColor.WHITE ? ChessUtils.WHITE_KNIGHT : ChessUtils.BLACK_KNIGHT;
+            case PAWN:
+                return playerColor == PlayerColor.WHITE ? ChessUtils.WHITE_PAWN : ChessUtils.BLACK_PAWN;
+            case QUEEN:
+                return playerColor == PlayerColor.WHITE ? ChessUtils.WHITE_QUEEN : ChessUtils.BLACK_QUEEN;
+            case ROOK:
+                return playerColor == PlayerColor.WHITE ? ChessUtils.WHITE_ROOK : ChessUtils.BLACK_ROOK;
+            default:
+                return ChessUtils.ERROR_NAME;
+        }
+    }
+
+    private int initScore() {
+        switch (pieceType) {
+            case BISHOP:
+                return ChessUtils.BISHOP_SCORE;
+            case KING:
+                return ChessUtils.KING_SCORE;
+            case KNIGHT:
+                return ChessUtils.KNIGHT_SCORE;
+            case PAWN:
+                return ChessUtils.PAWN_SCORE;
+            case QUEEN:
+                return ChessUtils.QUEEN_SCORE;
+            case ROOK:
+                return ChessUtils.ROOK_SCORE;
+            default:
+                return ChessUtils.DEFAULT_SCORE;
+        }
     }
 
     public abstract Piece copy();

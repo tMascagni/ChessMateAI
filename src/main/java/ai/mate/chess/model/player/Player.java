@@ -3,37 +3,32 @@ package ai.mate.chess.model.player;
 import ai.mate.chess.model.piece.Piece;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public final class Player {
 
-    private final Piece.PlayerColor color;
-    private final List<Piece> pieceList;
+    Piece.PlayerColor playerColor;
+    public ArrayList<Piece> pieces;
 
-    public Player(Piece.PlayerColor color) {
-        this.color = color;
-        this.pieceList = new ArrayList<>();
-    }
-
-    public void addPiece(Piece piece) {
-        pieceList.add(piece);
+    public Player(Piece.PlayerColor playerColor) {
+        this.pieces = new ArrayList<>();
+        this.playerColor = playerColor;
     }
 
     public void removePiece(Piece piece) {
-        pieceList.remove(piece);
+        pieces.remove(piece);
     }
 
-    public Piece.PlayerColor getColor() {
-        return color;
+    public Piece.PlayerColor getPlayerColor() {
+        return playerColor;
     }
 
-    public List<Piece> getPieceList() {
-        return pieceList;
+    public void addPiece(Piece piece) {
+        pieces.add(piece);
     }
 
     @Override
     public String toString() {
-        return "Player " + color.name();
+        return playerColor.toString();
     }
 
 }

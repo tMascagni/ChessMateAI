@@ -1,153 +1,204 @@
 package ai.mate.chess.model.board;
 
 import ai.mate.chess.model.move.Move;
-import ai.mate.chess.model.piece.Knight;
-import ai.mate.chess.model.piece.Piece;
+import ai.mate.chess.model.piece.*;
 import ai.mate.chess.model.player.Player;
 
 import java.awt.*;
+import java.util.List;
+
+import static ai.mate.chess.model.piece.Piece.PieceType.KING;
+import static ai.mate.chess.model.piece.Piece.PieceType.PAWN;
 
 public final class Board {
-
-    public final static int BOARD_SIZE = 8;
 
     private Tile[][] board;
 
     public Board(Player white, Player black) {
-        board = new Tile[BOARD_SIZE][BOARD_SIZE];
+        board = new Tile[8][8];
+        createEmptyBoard();
+        initBoard();
+        givePiecesToPlayers(white, black);
     }
 
-    private void initBoardTiles() {
-        for (int row = 0; row < board.length; row++)
-            for (int col = 0; col < board[row].length; col++)
-                board[row][col] = new Tile(new Point(row, col));
+    public Board(Board board) {
+        this.board = new Tile[8][8];
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                this.board[i][j] = board.getBoard()[i][j].copy();
+            }
+        }
     }
 
-    private void initBoardPieces() {
-        /* First row: Black */
-        // Do this when pieces are created
+    private void initBoard() {
+        for (int i = 0; i < 8; i += 7) {
+            Piece.PlayerColor playerColor = i == 0 ? Piece.PlayerColor.BLACK : Piece.PlayerColor.WHITE;
+            board[i][0] = new Tile(new Rook(playerColor, new Point(0, i)));
+            board[i][1] = new Tile(new Knight(playerColor, new Point(1, i)));
+            board[i][2] = new Tile(new Bishop(playerColor, new Point(2, i)));
+            board[i][3] = new Tile(new Queen(playerColor, new Point(3, i)));
+            board[i][4] = new Tile(new King(playerColor, new Point(4, i)));
+            board[i][5] = new Tile(new Bishop(playerColor, new Point(5, i)));
+            board[i][6] = new Tile(new Knight(playerColor, new Point(6, i)));
+            board[i][7] = new Tile(new Rook(playerColor, new Point(7, i)));
+        }
+
+        for (int i = 2; i < 6; i++) {
+            for (int j = 0; j < 8; j++) {
+                board[i][j] = new Tile(new Point(j, i));
+            }
+        }
+
+        for (int k = 0; k < 8; k++) {
+            board[1][k] = new Tile(new Pawn(Piece.PlayerColor.BLACK, new Point(k, 1)));
+            board[6][k] = new Tile(new Pawn(Piece.PlayerColor.WHITE, new Point(k, 6)));
+        }
     }
 
-    private void initPlayerPieces(Player white, Player black) {
+    private void createEmptyBoard() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                board[i][j] = new Tile(new Point(i, j));
+            }
+        }
+    }
+
+    private void givePiecesToPlayers(Player white, Player black) {
         int[] rows = {0, 1, 6, 7};
 
-        for (int row : rows)
-            for (int col = 0; col < board[row].length; col++) {
-                Piece piece = board[row][col].getPiece();
+        for (int row : rows) {
+            for (int i = 0; i < 8; i++) {
+                Piece piece = board[row][i].getPiece();
                 if (piece != null) {
-                    if (piece.getColor() == Piece.PlayerColor.BLACK)
+                    if (piece.getPlayerColor() == Piece.PlayerColor.BLACK) {
                         black.addPiece(piece);
-                    else
+                    } else {
                         white.addPiece(piece);
+                    }
                 }
             }
+        }
     }
 
     public Tile[][] getBoard() {
-        return board;
+        return this.board;
     }
 
-    public Tile getTile(Point position) {
-        /*
-         * x and y coordinates are switched, so
-         * we can achieve real coordinates.
-         */
-        return board[position.y][position.x];
+    public Tile getTile(Point point) {
+        return this.board[point.y][point.x];
     }
 
     public void setTile(Point position, Tile tile) {
-        board[position.y][position.x] = tile;
+        this.board[position.y][position.x] = tile;
+    }
+
+    public void unhighlightBoard() {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (board[i][j].getHighlight() != Tile.TILE_HIGHLIGHT.NONE) {
+                    board[i][j].setHighlight(Tile.TILE_HIGHLIGHT.NONE);
+                }
+            }
+        }
     }
 
     public void handleMove(Move move) {
         Tile start = getTile(move.getStart());
         Tile end = getTile(move.getEnd());
-
         Piece pieceToMove = start.getPiece();
-        pieceToMove.move(move);
-
+        pieceToMove.updatePiece(move);
         start.setPiece(null);
         end.setPiece(pieceToMove);
     }
 
     public boolean isValidPosition(Point position) {
-        return position.x >= 0 && position.x <= 7 && position.y >= 0 && position.y <= 7;
+        return (position.x >= 0 && position.x <= 7 && position.y >= 0 && position.y <= 7);
     }
 
-    public Tile getTile(int col, int row) {
-        return board[row][col];
+    public Tile getTile(int x, int y) {
+        return this.board[y][x];
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < board.length; i++) {
+            sb.append("");
+            sb.append("-----------------------------------------------------------------\n");
+            for (int j = 0; j < board[i].length; j++) {
+                sb.append("| " + board[j][i] + " ");
+            }
+            sb.append("|\n");
+        }
+        sb.append("-----------------------------------------------------------------\n");
+        return sb.toString();
     }
 
     public void clearTile(Point start) {
         getTile(start).setPiece(null);
     }
 
-    public boolean isTileThreatened(Piece.PlayerColor color, Tile tile) {
-        return isTileAtPointThreatened(color, tile.getPosition());
+    public boolean tileIsThreatened(Piece.PlayerColor playerColor, Tile tile) {
+        return tileAtPointIsThreatened(playerColor, tile.getPosition());
     }
 
-    public boolean isTileAtPointThreatened(Piece.PlayerColor goodColor, Point tilePosition) {
-        int threatenedRow = tilePosition.x;
-        int threatenedCol = tilePosition.y;
+    public boolean tileAtPointIsThreatened(Piece.PlayerColor goodPlayerColor, Point tilePos) {
+        int threatenedRow = tilePos.x;
+        int threatenedCol = tilePos.y;
 
         int[] rowDirections = {-1, -1, -1, 0, 0, 1, 1, 1};
         int[] colDirections = {-1, 0, 1, -1, 1, -1, 0, 1};
 
-        for (int direction = 0; direction < BOARD_SIZE; direction++) {
+        for (int direction = 0; direction < 8; direction++) {
             int row = threatenedRow;
             int col = threatenedCol;
+
 
             int rowIncrement = rowDirections[direction];
             int colIncrement = colDirections[direction];
 
-            for (int step = 0; step < BOARD_SIZE; step++) {
-                row += rowIncrement;
-                col += colIncrement;
+            for (int step = 0; step < 8; step++) {
+                row = row + rowIncrement;
+                col = col + colIncrement;
 
-                if (isOutOfBounds(row, col)) {
+                if (outOfBounds(row, col)) {
                     break;
                 } else {
-                    Tile tile = getTile(row, col);
-
-                    if (!tile.isEmpty()) {
-                        Piece piece = tile.getPiece();
-                        if (piece.getColor() != goodColor) {
-                            if (Piece instanceof Knight) {
-                                // Handle knights differently, just compute the moves and chec if the tile is there
-                                List<Move> availableMoves = piece.getAvailableMoves(this);
-
-                                for (Move move : availableMoves) {
+                    Tile t = getTile(row, col);
+                    if (!t.isEmpty()) {
+                        Piece piece = t.getPiece();
+                        if (piece.getPlayerColor() != goodPlayerColor) {
+                            if (piece instanceof Knight) {
+                                // Handle knights differently. Just compute the moves and check if the tile is there
+                                List<Move> moves = piece.getAvailableMoves(this);
+                                for (Move move : moves) {
                                     if (move.getType() == Move.MoveType.ATTACK) {
-                                        Piece potentialKing = getTile(move.getEnd()).getPiece();
-                                        if (potentialKing.getPieceType() == PieceType.KING &&
-                                                potentialKing.getColor() == goodColor) {
-                                            System.out.println("Knight can attack your King!");
+                                        Piece potentialKing = getTile(move.end).getPiece();
+                                        if (potentialKing.getPieceType() == KING && potentialKing.getPlayerColor() == goodPlayerColor) {
+                                            System.out.println("Knight can attack your king!");
                                             return true;
                                         }
                                     }
                                 }
-                            } else if (step > 0 && (piece.getType() != PieceType.PAWN && piece.getType() != PieceType.KING)) {
-                                if (piece.getPositionThreats()[direction]) {
-                                    return true;
-                                } else {
-                                    if (step == 0) {
-                                        if (piece.getPositionThreats()[direction]) {
-                                            return true;
-                                        }
-                                    }
+                            } else if (step > 0 && (piece.getPieceType() != PAWN && piece.getPieceType() != KING)) {
+                                if (piece.getPositionThreats()[direction]) return true;
+                            } else {
+                                if (step == 0) {
+                                    if (piece.getPositionThreats()[direction]) return true;
                                 }
                             }
-                            break;
                         }
+
+                        break;
                     }
                 }
             }
         }
+
         return false;
     }
 
-    private boolean isOutOfBounds(int row, int col) {
+    private boolean outOfBounds(int row, int col) {
         return row < 0 || row > 7 || col < 0 || col > 7;
     }
-
 }

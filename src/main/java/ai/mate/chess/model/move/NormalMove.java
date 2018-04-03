@@ -1,8 +1,14 @@
 package ai.mate.chess.model.move;
 
-import ai.mate.chess.model.board.BoardOld;
+import ai.mate.chess.model.board.Board;
+import ai.mate.chess.model.board.Tile;
+import ai.mate.chess.model.piece.Piece;
 
 import java.awt.*;
+
+/**
+ * Class which represents a updatePiece to updatePiece a piece to an empty tile
+ */
 
 public class NormalMove extends Move {
 
@@ -15,17 +21,21 @@ public class NormalMove extends Move {
     }
 
     @Override
-    public void undo(BoardOld boardOld) {
-        Tile to = boardOld.getTile(end);
+    public Tile.TILE_HIGHLIGHT getTileHighlight() {
+        return Tile.TILE_HIGHLIGHT.BLUE;
+    }
+
+    @Override
+    public void undo(Board board) {
+        Tile to = board.getTile(end);
         Piece movedPiece = to.getPiece();
         movedPiece.setPosition(start);
-        boardOld.getTile(start).setPiece(movedPiece);
-        to.setPiece(null); // pls change, make new Empty piece for this.
+        board.getTile(start).setPiece(movedPiece);
+        to.setPiece(null);
     }
 
     @Override
     public Move copy() {
-        return new NormalMove(new Point(start), new Point(end), type);
+        return new NormalMove(new Point(this.start), new Point(this.end), this.getType());
     }
-
 }

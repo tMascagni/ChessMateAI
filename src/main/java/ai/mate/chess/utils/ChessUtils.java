@@ -1,6 +1,6 @@
-package ai.mate.chess.handler;
+package ai.mate.chess.utils;
 
-public final class TextHandler {
+public final class ChessUtils {
 
     /* Black Pieces */
     private static final String BLACK_ID = "*";
@@ -22,26 +22,32 @@ public final class TextHandler {
     public static final String WHITE_KING = WHITE_ID + "K" + WHITE_ID;
     public static final String WHITE_PAWN = WHITE_ID + "P" + WHITE_ID;
 
-    /* Empty */
-    public static final String EMPTY = "   ";
+    public static final String ERROR_NAME = "ERROR";
 
-    public static final String LATEST_MOVE_INITIAL = "None                  ";
+    /* Piece scores */
+    public static final int BISHOP_SCORE = 30;
+    public static final int ROOK_SCORE = 50;
+    public static final int QUEEN_SCORE = 90;
+    public static final int PAWN_SCORE = 1;
+    public static final int KNIGHT_SCORE = 30;
+    public static final int KING_SCORE = 900;
+    public static final int DEFAULT_SCORE = 0;
 
-    private static TextHandler instance;
+    private static ChessUtils instance;
 
     static {
         try {
-            instance = new TextHandler();
+            instance = new ChessUtils();
         } catch (Exception e) {
-            throw new RuntimeException("Failed to instantiate Singleton TextHandler instance!");
+            throw new RuntimeException("Failed to instantiate Singleton ChessUtils instance!");
         }
     }
 
-    private TextHandler() {
+    private ChessUtils() {
 
     }
 
-    public static synchronized TextHandler getInstance() {
+    public static synchronized ChessUtils getInstance() {
         return instance;
     }
 

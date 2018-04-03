@@ -1,8 +1,6 @@
-package ai.mate.chess.ui;
+package ai.mate.chess.ui.tui;
 
-import ai.mate.chess.model.board.BoardOld;
-import ai.mate.chess.model.board.BoardPosition;
-import ai.mate.chess.model.piece.Empty;
+import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.piece.Piece;
 
 import java.util.Scanner;
@@ -44,11 +42,6 @@ public final class Tui {
         return getNumericCharForPromotion("Selection");
     }
 
-    public BoardPosition getBoardPositionInput(String msg) {
-        char[] boardPair = getBoardPair(msg);
-        return new BoardPosition(boardPair[0], boardPair[1]);
-    }
-
     private char[] getBoardPair(String msg) {
         char file = 'x';
         char rank = 'x';
@@ -80,63 +73,18 @@ public final class Tui {
         return new char[]{file, rank};
     }
 
-    public Piece.Color getPlayerColorInput() {
+    public Piece.PlayerColor getPlayerColorInput() {
         char input;
         do {
             input = getUserInput();
         } while (input != '1' && input != '2');
 
         if (input == '1')
-            return Piece.Color.WHITE;
+            return Piece.PlayerColor.WHITE;
         else
-            return Piece.Color.BLACK;
+            return Piece.PlayerColor.BLACK;
     }
 
-    public String getPossibleMoveCountText(Piece[][] board) {
-        int possibleMovesSum = 0;
-        for (Piece[] boardRow : board)
-            for (Piece piece : boardRow)
-                possibleMovesSum += piece.getPossibleMoves().size();
-
-        if (possibleMovesSum > 99)
-            return possibleMovesSum + "";
-        else if (possibleMovesSum > 9)
-            return possibleMovesSum + " ";
-        else
-            return possibleMovesSum + "  ";
-    }
-
-    public String getLossPieceText(Piece[] whiteLossList, Piece[] blackLossList, Piece.Color color, int index) {
-        if (color.equals(Piece.Color.WHITE)) {
-            if (!(whiteLossList[index] instanceof Empty))
-                return (index + 1) + ". " + whiteLossList[index].toString();
-        } else if (color.equals(Piece.Color.BLACK)) {
-            if (!(blackLossList[index] instanceof Empty))
-                return (index + 1) + ". " + blackLossList[index].toString();
-        }
-
-        if (index + 1 < 10)
-            return "      ";
-        else
-            return "       ";
-    }
-
-    public String getPieceCountText(int whitePieceCount, int blackPieceCount, Piece.Color playerColor) {
-        if (playerColor.equals(Piece.Color.WHITE)) {
-            if (whitePieceCount < 10)
-                return " " + whitePieceCount;
-            return String.valueOf(whitePieceCount);
-        } else if (playerColor.equals(Piece.Color.BLACK)) {
-            if (blackPieceCount < 10)
-                return " " + blackPieceCount;
-            return String.valueOf(blackPieceCount);
-        }
-        return "Error";
-    }
-
-    public String getLatestMoveText(Piece.Color playerColor, BoardPosition from, BoardPosition to) {
-        return playerColor.name() + ": [" + from.file + ", " + from.rank + "] → [" + to.file + ", " + to.rank + "]";
-    }
 
     /**************************************************
      * PRINT METHODS
@@ -156,7 +104,7 @@ public final class Tui {
         printMessage("[" + postfix + "] " + ARROW + " ");
     }
 
-    public void printPromotionSuccess(char selection, Piece.Color playerColor) {
+    public void printPromotionSuccess(char selection, Piece.PlayerColor playerColor) {
         String promotedPiece = "Empty";
         switch (selection) {
             case '1':
@@ -248,7 +196,7 @@ public final class Tui {
         printMessage(menuString);
     }
 
-    public void printHumanPlayer(Piece.Color playerColor) {
+    public void printHumanPlayer(Piece.PlayerColor playerColor) {
         String winString = "\n┌────────────────────────┐\n" +
                 "│      Human Player      │\n" +
                 "├────────────────────────┤\n" +
@@ -258,7 +206,7 @@ public final class Tui {
         printMessage(winString);
     }
 
-    public void printAIPlayer(Piece.Color aIColor) {
+    public void printAIPlayer(Piece.PlayerColor aIColor) {
         String winString = "\n┌────────────────────────┐\n" +
                 "│        AI Player       │\n" +
                 "├────────────────────────┤\n" +
@@ -268,7 +216,7 @@ public final class Tui {
         printMessage(winString);
     }
 
-    public void printCheck(Piece.Color playerColor) {
+    public void printCheck(Piece.PlayerColor playerColor) {
         String winString = "\n┌────────────────────────┐\n" +
                 "│          Check         │\n" +
                 "├────────────────────────┤\n" +
@@ -339,8 +287,8 @@ public final class Tui {
     }
 
 
-    public final void printBoard(BoardOld boardOld) {
-        printMessage(boardOld.getBoardText());
+    public final void printBoard(Board board) {
+        printMessage(board.toString());
     }
 
     private void printMessage(String msg) {
