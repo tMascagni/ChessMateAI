@@ -53,10 +53,10 @@ public final class Pawn extends Piece {
                         if (!sideTile.isEmpty()) {
                             Piece sidePiece = sideTile.getPiece();
                             if (isSameType(sidePiece) && !isSameTeam(sidePiece)) {
-                                Move lastMove = MoveHistory.getInstance().popLastMove();
-                                Point lastPos = lastMove.getEnd();
+                                Move lastMove = MoveHistory.getInstance().popMove();
+                                Point lastPos = lastMove.getTo();
                                 Point sidePos = sideTile.getPosition();
-                                if (lastMove.getType() == Move.MoveType.NORMAL_DOUBLE && sidePos.equals(lastPos))
+                                if (lastMove.getMoveType() == Move.MoveType.NORMAL_DOUBLE && sidePos.equals(lastPos))
                                     moves.add(createEnPassantMove(diagPos));
                             }
                         }
@@ -67,8 +67,8 @@ public final class Pawn extends Piece {
 
         for (int i = 0; i < moves.size(); i++) {
             Move move = moves.get(i);
-            if (move.getEnd().y == 7 || move.getEnd().y == 0)
-                moves.set(i, new PawnPromotionMove(currentPos, move.getEnd()));
+            if (move.getTo().y == 7 || move.getTo().y == 0)
+                moves.set(i, new PawnPromotionMove(currentPos, move.getTo()));
         }
 
         return moves;

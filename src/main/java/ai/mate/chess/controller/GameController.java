@@ -113,9 +113,9 @@ public final class GameController {
      * @param piece Piece to remove
      */
     public void removePieceFromGame(Move move, Piece piece) {
-        if (white.pieces.contains(piece)) {
+        if (white.getPieceList().contains(piece)) {
             white.removePiece(piece);
-        } else if (black.pieces.contains(piece)) {
+        } else if (black.getPieceList().contains(piece)) {
             black.removePiece(piece);
         }
 
@@ -240,8 +240,8 @@ public final class GameController {
         public boolean equals(Object obj) {
             if (obj instanceof AttackMoveLog) {
                 AttackMoveLog log = (AttackMoveLog) obj;
-                return log.attackMove.start == this.attackMove.start &&
-                        log.attackMove.end == this.attackMove.end &&
+                return log.attackMove.getFrom() == this.attackMove.getFrom() &&
+                        log.attackMove.getTo() == this.attackMove.getTo() &&
                         log.piece.getPieceType() == this.piece.getPieceType() &&
                         log.piece.getPlayerColor() == this.piece.getPlayerColor();
             }

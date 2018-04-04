@@ -12,13 +12,15 @@ import static ai.mate.chess.model.piece.Piece.PieceType.PAWN;
 
 public final class Board {
 
-    private Tile[][] board;
+    private static final int BOARD_SIZE = 8;
+
+    private final Tile[][] board;
 
     public Board(Player white, Player black) {
-        board = new Tile[8][8];
-        createEmptyBoard();
-        initBoard();
-        givePiecesToPlayers(white, black);
+        board = new Tile[BOARD_SIZE][BOARD_SIZE];
+        initBoardTiles();
+        initBoardPieces();
+        initPlayerPieces(white, black);
     }
 
     public Board(Board board) {
@@ -30,7 +32,7 @@ public final class Board {
         }
     }
 
-    private void initBoard() {
+    private void initBoardPieces() {
         for (int i = 0; i < 8; i += 7) {
             Piece.PlayerColor playerColor = i == 0 ? Piece.PlayerColor.BLACK : Piece.PlayerColor.WHITE;
             board[i][0] = new Tile(new Rook(playerColor, new Point(0, i)));
@@ -55,7 +57,7 @@ public final class Board {
         }
     }
 
-    private void createEmptyBoard() {
+    private void initBoardTiles() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 board[i][j] = new Tile(new Point(i, j));
@@ -63,7 +65,7 @@ public final class Board {
         }
     }
 
-    private void givePiecesToPlayers(Player white, Player black) {
+    private void initPlayerPieces(Player white, Player black) {
         int[] rows = {0, 1, 6, 7};
 
         for (int row : rows) {
@@ -95,16 +97,16 @@ public final class Board {
     public void unhighlightBoard() {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
-                if (board[i][j].getHighlight() != Tile.TILE_HIGHLIGHT.NONE) {
-                    board[i][j].setHighlight(Tile.TILE_HIGHLIGHT.NONE);
+                if (board[i][j].getTileHighlight() != Tile.TileHighlight.NONE) {
+                    board[i][j].setTileHighlight(Tile.TileHighlight.NONE);
                 }
             }
         }
     }
 
     public void handleMove(Move move) {
-        Tile start = getTile(move.getStart());
-        Tile end = getTile(move.getEnd());
+        Tile start = getTile(move.getFrom());
+        Tile end = getTile(move.getTo());
         Piece pieceToMove = start.getPiece();
         pieceToMove.updatePiece(move);
         start.setPiece(null);
@@ -161,7 +163,7 @@ public final class Board {
                 row = row + rowIncrement;
                 col = col + colIncrement;
 
-                if (outOfBounds(row, col)) {
+                if (isOutOfBounds(row, col)) {
                     break;
                 } else {
                     Tile t = getTile(row, col);
@@ -172,8 +174,8 @@ public final class Board {
                                 // Handle knights differently. Just compute the moves and check if the tile is there
                                 List<Move> moves = piece.getAvailableMoves(this);
                                 for (Move move : moves) {
-                                    if (move.getType() == Move.MoveType.ATTACK) {
-                                        Piece potentialKing = getTile(move.end).getPiece();
+                                    if (move.getMoveType() == Move.MoveType.ATTACK) {
+                                        Piece potentialKing = getTile(move.getTo()).getPiece();
                                         if (potentialKing.getPieceType() == KING && potentialKing.getPlayerColor() == goodPlayerColor) {
                                             System.out.println("Knight can attack your king!");
                                             return true;
@@ -198,7 +200,8 @@ public final class Board {
         return false;
     }
 
-    private boolean outOfBounds(int row, int col) {
+    private boolean isOutOfBounds(int row, int col) {
         return row < 0 || row > 7 || col < 0 || col > 7;
     }
+
 }

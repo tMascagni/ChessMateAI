@@ -9,19 +9,19 @@ import java.awt.*;
 
 public final class PawnPromotionMove extends NormalMove {
 
-    public PawnPromotionMove(Point start, Point end) {
-        super(start, end, MoveType.PAWN_PROMOTION);
+    public PawnPromotionMove(Point from, Point to) {
+        super(from, to, MoveType.PAWN_PROMOTION);
     }
 
     @Override
-    public Tile.TILE_HIGHLIGHT getTileHighlight() {
-        return Tile.TILE_HIGHLIGHT.YELLOW;
+    public Tile.TileHighlight getTileHighlight() {
+        return Tile.TileHighlight.YELLOW;
     }
 
     @Override
     public void undo(Board board) {
-        Tile starting = board.getTile(start);
-        Tile ending = board.getTile(end);
+        Tile starting = board.getTile(getFrom());
+        Tile ending = board.getTile(getTo());
 
         // Get the promoted piece
         Piece promoted = ending.getPiece();
@@ -36,6 +36,7 @@ public final class PawnPromotionMove extends NormalMove {
 
     @Override
     public Move copy() {
-        return new PawnPromotionMove(new Point(this.start), new Point(this.end));
+        return new PawnPromotionMove(new Point(getFrom()), new Point(getTo()));
     }
+
 }

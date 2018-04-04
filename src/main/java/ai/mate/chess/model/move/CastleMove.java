@@ -8,17 +8,17 @@ import java.awt.*;
 
 public final class CastleMove extends SpecialMove {
 
-    public CastleMove(Point startPosition, Point end) {
-        super(startPosition, end, MoveType.CASTLE);
+    public CastleMove(Point from, Point to) {
+        super(from, to, MoveType.CASTLE);
     }
 
     @Override
     public void handleMove(Board board) {
-        Tile target = board.getTile(end);
+        Tile target = board.getTile(getTo());
         Piece rook;
         Point rookFinalPosition;
 
-        if (target.getPosition().x > this.start.x) {
+        if (target.getPosition().x > getFrom().x) {
             // Rook on the right side
             rook = board.getTile(7, target.getPosition().y).getPiece();
             rookFinalPosition = new Point(target.getPosition().x - 1, target.getPosition().y);
@@ -28,13 +28,13 @@ public final class CastleMove extends SpecialMove {
             rookFinalPosition = new Point(target.getPosition().x + 1, target.getPosition().y);
         }
 
-        Piece king = board.getTile(start).getPiece();
+        Piece king = board.getTile(getFrom()).getPiece();
         king.updatePiece(this);
         board.clearTile(rook.getPosition());
         rook.setPosition(rookFinalPosition);
 
         // Clear positions
-        board.clearTile(start);
+        board.clearTile(getFrom());
         board.clearTile(target.getPosition());
         board.clearTile(rookFinalPosition);
 
@@ -45,33 +45,33 @@ public final class CastleMove extends SpecialMove {
     @Override
     public void undo(Board board) {
         // Find the king, then updatePiece him to the start
-        Piece king = board.getTile(end).getPiece();
+        Piece king = board.getTile(getTo()).getPiece();
         // Find the rook, then updatePiece him either to the left end or the right end
         Piece rook;
 
-        Tile leftFinalPosition = board.getTile(new Point(end.x + 1, end.y));
-        Tile rightFinalPosition = board.getTile(new Point(end.x - 1, end.y));
+        Tile leftFinalPosition = board.getTile(new Point(getTo().x + 1, getTo().y));
+        Tile rightFinalPosition = board.getTile(new Point(getTo().x - 1, getTo().y));
 
         if (!leftFinalPosition.isEmpty() && leftFinalPosition.getPiece().getPieceType() == Piece.PieceType.ROOK) {
             rook = leftFinalPosition.getPiece();
             board.clearTile(leftFinalPosition.getPosition());
-            rook.setPosition(new Point(0, end.y));
-            board.getTile(0, end.y).setPiece(rook);
+            rook.setPosition(new Point(0, getTo().y));
+            board.getTile(0, getTo().y).setPiece(rook);
         } else if (!rightFinalPosition.isEmpty() && rightFinalPosition.getPiece().getPieceType() == Piece.PieceType.ROOK) {
             rook = rightFinalPosition.getPiece();
             board.clearTile(rightFinalPosition.getPosition());
-            rook.setPosition(new Point(7, end.y));
-            board.getTile(7, end.y).setPiece(rook);
+            rook.setPosition(new Point(7, getTo().y));
+            board.getTile(7, getTo().y).setPiece(rook);
         }
 
-        board.clearTile(end);
-        king.setPosition(start);
-        board.getTile(start).setPiece(king);
+        board.clearTile(getTo());
+        king.setPosition(getFrom());
+        board.getTile(getFrom()).setPiece(king);
     }
 
     @Override
     public Move copy() {
-        return new CastleMove(new Point(this.start), new Point(this.end));
+        return new CastleMove(new Point(getFrom()), new Point(getTo()));
     }
 
 }

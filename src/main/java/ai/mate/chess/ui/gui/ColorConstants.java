@@ -25,64 +25,64 @@ public class ColorConstants {
     private static final Color lightTileColor = new Color(230, 179, 136);
 
     static final Color[] normalColorsLightTile = {
-            getSimulatedAlphaColor(Tile.TILE_TYPE.LIGHT, lightBlueFill),
-            getSimulatedAlphaColor(Tile.TILE_TYPE.LIGHT, darkBlueOuter)
+            getSimulatedAlphaColor(Tile.TileColor.WHITE, lightBlueFill),
+            getSimulatedAlphaColor(Tile.TileColor.WHITE, darkBlueOuter)
     };
 
     static final Color[] normalColorsDarkTile = {
-            getSimulatedAlphaColor(Tile.TILE_TYPE.DARK, lightBlueFill),
-            getSimulatedAlphaColor(Tile.TILE_TYPE.DARK, darkBlueOuter)
+            getSimulatedAlphaColor(Tile.TileColor.BLACK, lightBlueFill),
+            getSimulatedAlphaColor(Tile.TileColor.BLACK, darkBlueOuter)
     };
 
     static final Color[] inCheckColorsLightTile = {
-            getSimulatedAlphaColor(Tile.TILE_TYPE.LIGHT, lightOrangeFill),
-            getSimulatedAlphaColor(Tile.TILE_TYPE.LIGHT, darkOrangeOuter)
+            getSimulatedAlphaColor(Tile.TileColor.WHITE, lightOrangeFill),
+            getSimulatedAlphaColor(Tile.TileColor.WHITE, darkOrangeOuter)
     };
 
     static final Color[] inCheckColorsDarkTile = {
-            getSimulatedAlphaColor(Tile.TILE_TYPE.DARK, lightOrangeFill),
-            getSimulatedAlphaColor(Tile.TILE_TYPE.DARK, darkOrangeOuter)
+            getSimulatedAlphaColor(Tile.TileColor.BLACK, lightOrangeFill),
+            getSimulatedAlphaColor(Tile.TileColor.BLACK, darkOrangeOuter)
     };
 
     static final Color[] specialColorsLightTile = {
-            getSimulatedAlphaColor(Tile.TILE_TYPE.LIGHT, lightYellowFill),
-            getSimulatedAlphaColor(Tile.TILE_TYPE.LIGHT, darkYellowOuter)
+            getSimulatedAlphaColor(Tile.TileColor.WHITE, lightYellowFill),
+            getSimulatedAlphaColor(Tile.TileColor.WHITE, darkYellowOuter)
     };
 
     static final Color[] specialColorsDarkTile = {
-            getSimulatedAlphaColor(Tile.TILE_TYPE.DARK, lightYellowFill),
-            getSimulatedAlphaColor(Tile.TILE_TYPE.DARK, darkYellowOuter)};
+            getSimulatedAlphaColor(Tile.TileColor.BLACK, lightYellowFill),
+            getSimulatedAlphaColor(Tile.TileColor.BLACK, darkYellowOuter)};
 
     static final Color[] attackColorsLightTile = {
-            getSimulatedAlphaColor(Tile.TILE_TYPE.LIGHT, lightRedFill),
-            getSimulatedAlphaColor(Tile.TILE_TYPE.LIGHT, darkRedOuter)
+            getSimulatedAlphaColor(Tile.TileColor.WHITE, lightRedFill),
+            getSimulatedAlphaColor(Tile.TileColor.WHITE, darkRedOuter)
     };
 
     static final Color[] attackColorsDarkTile = {
-            getSimulatedAlphaColor(Tile.TILE_TYPE.DARK, lightRedFill),
-            getSimulatedAlphaColor(Tile.TILE_TYPE.DARK, darkRedOuter)
+            getSimulatedAlphaColor(Tile.TileColor.BLACK, lightRedFill),
+            getSimulatedAlphaColor(Tile.TileColor.BLACK, darkRedOuter)
     };
 
     static final Color[] selectedColorsLightTile = {
-            getSimulatedAlphaColor(Tile.TILE_TYPE.LIGHT, lightGreenFill),
-            getSimulatedAlphaColor(Tile.TILE_TYPE.LIGHT, darkGreenOuter)
+            getSimulatedAlphaColor(Tile.TileColor.WHITE, lightGreenFill),
+            getSimulatedAlphaColor(Tile.TileColor.WHITE, darkGreenOuter)
     };
 
     static final Color[] selectedColorsDarkTile = {
-            getSimulatedAlphaColor(Tile.TILE_TYPE.DARK, lightGreenFill),
-            getSimulatedAlphaColor(Tile.TILE_TYPE.DARK, darkGreenOuter)
+            getSimulatedAlphaColor(Tile.TileColor.BLACK, lightGreenFill),
+            getSimulatedAlphaColor(Tile.TileColor.BLACK, darkGreenOuter)
     };
 
     /**
      * Helper method to get the simulated alpha color.
      * It adds the colors of the tile and the desired color together based on a factor, in order to simulate alpha.
-     * @param tileType          Tile type, either LIGHT or DARK.
+     * @param tileType          Tile type, either WHITE or BLACK.
      * @param desiredColor      Desired color.
      * @return                  New simulated alpha color.
      */
-    private static Color getSimulatedAlphaColor(Tile.TILE_TYPE tileType, Color desiredColor) {
+    private static Color getSimulatedAlphaColor(Tile.TileColor tileType, Color desiredColor) {
         float factor = 160 / 255f;
-        Color tileColor = tileType == Tile.TILE_TYPE.LIGHT ? lightTileColor : darkTileColor;
+        Color tileColor = tileType == Tile.TileColor.WHITE ? lightTileColor : darkTileColor;
         int red = (int) (tileColor.getRed() * (1 - factor) + desiredColor.getRed() * factor);
         int green = (int) (tileColor.getGreen() * (1 - factor) + desiredColor.getGreen() * factor);
         int blue = (int) (tileColor.getBlue() * (1 - factor) + desiredColor.getBlue() * factor);

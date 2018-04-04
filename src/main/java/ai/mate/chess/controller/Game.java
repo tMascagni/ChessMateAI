@@ -9,10 +9,6 @@ import ai.mate.chess.ui.gui.promotion.PromotionView;
 import javax.swing.*;
 import java.util.Scanner;
 
-/**
- * Entry point of the program.
- * VERY IMPORTANT.
- */
 public final class Game {
 
     public static final int MAX_DEPTH = 4;

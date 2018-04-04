@@ -42,11 +42,11 @@ public class GUIUtils {
         }
     }
 
-    public String getTileIconPath(Tile.TILE_TYPE tileType) {
-        switch (tileType) {
-            case LIGHT:
+    public String getTileIconPath(Tile.TileColor tileColor) {
+        switch (tileColor) {
+            case WHITE:
                 return lightTileImagePath;
-            case DARK:
+            case BLACK:
                 return darkTileImagePath;
             default:
                 return lightTileImagePath;
@@ -56,15 +56,15 @@ public class GUIUtils {
     /**
      * Get highlighted image of tile to draw. Alters a provided image tile.
      *
-     * @param tileType  Type of tile.
+     * @param tileColor  Type of tile.
      * @param tileImage Image of tile to alter.
      * @param highlight Color to highlight tile.
      * @return Image of a highlighted tile.
      */
-    public BufferedImage getHighlighted(Tile.TILE_TYPE tileType, BufferedImage tileImage, Tile.TILE_HIGHLIGHT highlight) {
+    public BufferedImage getHighlighted(Tile.TileColor tileColor, BufferedImage tileImage, Tile.TileHighlight highlight) {
         Graphics2D g2 = tileImage.createGraphics();
         Rectangle2D rect = new Rectangle2D.Double(15, 0, tileImage.getWidth(), tileImage.getHeight());
-        Color[] highlightColors = getHighlightColors(tileType, highlight);
+        Color[] highlightColors = getHighlightColors(tileColor, highlight);
         g2.setColor(highlightColors[0]);
         g2.fill(rect);
         g2.setColor(highlightColors[1]);
@@ -112,22 +112,22 @@ public class GUIUtils {
     /**
      * Get array of highlight colors with simulated alpha.
      *
-     * @param tileType  Tile type, either LIGHT or DARK.
+     * @param tileColor  Tile type, either WHITE or BLACK.
      * @param highlight Highlight of the tile.
      * @return Array of colors with 2 colors, 0th index is inner fill color, 1st index is border color.
      */
-    private Color[] getHighlightColors(Tile.TILE_TYPE tileType, Tile.TILE_HIGHLIGHT highlight) {
+    private Color[] getHighlightColors(Tile.TileColor tileColor, Tile.TileHighlight highlight) {
         switch (highlight) {
             case BLUE:
-                return tileType == Tile.TILE_TYPE.LIGHT ? ColorConstants.normalColorsLightTile : ColorConstants.normalColorsDarkTile;
+                return tileColor == Tile.TileColor.WHITE ? ColorConstants.normalColorsLightTile : ColorConstants.normalColorsDarkTile;
             case YELLOW:
-                return tileType == Tile.TILE_TYPE.LIGHT ? ColorConstants.specialColorsLightTile : ColorConstants.specialColorsDarkTile;
+                return tileColor == Tile.TileColor.WHITE ? ColorConstants.specialColorsLightTile : ColorConstants.specialColorsDarkTile;
             case RED:
-                return tileType == Tile.TILE_TYPE.LIGHT ? ColorConstants.attackColorsLightTile : ColorConstants.attackColorsDarkTile;
+                return tileColor == Tile.TileColor.WHITE ? ColorConstants.attackColorsLightTile : ColorConstants.attackColorsDarkTile;
             case GREEN:
-                return tileType == Tile.TILE_TYPE.LIGHT ? ColorConstants.selectedColorsLightTile : ColorConstants.selectedColorsDarkTile;
+                return tileColor == Tile.TileColor.WHITE ? ColorConstants.selectedColorsLightTile : ColorConstants.selectedColorsDarkTile;
             case ORANGE:
-                return tileType == Tile.TILE_TYPE.LIGHT ? ColorConstants.inCheckColorsLightTile : ColorConstants.inCheckColorsDarkTile;
+                return tileColor == Tile.TileColor.WHITE ? ColorConstants.inCheckColorsLightTile : ColorConstants.inCheckColorsDarkTile;
             case NONE:
             default:
                 return new Color[]{new Color(0, 0, 0), new Color(0, 0, 0)};

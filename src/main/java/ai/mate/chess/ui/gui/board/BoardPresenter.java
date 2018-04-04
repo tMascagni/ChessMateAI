@@ -63,7 +63,7 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
         if (!tile.isEmpty() && isClickablePiece(tile)) {
             // It means they clicked a tile with a piece and it's not highlighted
             // Or they clicked the king, who is in check
-            boolean inCheck = tile.getHighlight() == Tile.TILE_HIGHLIGHT.ORANGE;
+            boolean inCheck = tile.getTileHighlight() == Tile.TileHighlight.ORANGE;
             gameController.unhighlightBoard();
             Player currentPlayer = gameController.getCurrentPlayer();
             Piece piece = tile.getPiece();
@@ -71,7 +71,7 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
             if (inCheck) {
                 if (piece.getPieceType() != KING) {
                     // If they clicked a piece thats not a king while in check, don't show the moves
-                    System.out.println("You can't updatePiece other pieces except your King while in check!");
+                    System.out.println("You can't updatePiece other pieceList except your King while in check!");
                     return;
                 } else if (piece.getPieceType() == KING && piece.getAvailableMoves(gameController.getBoard()).isEmpty()) {
                     handleGameOver(Piece.PlayerColor.BLACK);
@@ -100,7 +100,7 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
             move.handleMove(gameController.getBoard());
 
             // Check for pawn promotion
-            if (move.getType() == PAWN_PROMOTION) {
+            if (move.getMoveType() == PAWN_PROMOTION) {
                 Pawn pawn = (Pawn) gameController.getSelectedPiece();
                 if (pawn.promotePawn()) {
                     game.showPawnPromotionView();
@@ -122,7 +122,7 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
                 // If so, highlight the tile orange
                 // Orange is a special color, only used to signify in check
                 Tile kingTile = gameController.getTile(gameController.whiteKingPosition);
-                kingTile.setHighlight(Tile.TILE_HIGHLIGHT.ORANGE);
+                kingTile.setTileHighlight(Tile.TileHighlight.ORANGE);
             }
 
             view.updateBoard(gameController.getBoard());
@@ -134,8 +134,8 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
     }
 
     private boolean handleKingCaptureGameOver(Move move) {
-        if (move.getType() == ATTACK) {
-            if (gameController.getTile(move.getEnd()).getPiece().getPieceType() == KING) {
+        if (move.getMoveType() == ATTACK) {
+            if (gameController.getTile(move.getTo()).getPiece().getPieceType() == KING) {
                 return true;
             }
         }
@@ -150,7 +150,7 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
     }
 
     private boolean isClickablePiece(Tile tile) {
-        return !tile.isHighlighted() || tile.getHighlight() == Tile.TILE_HIGHLIGHT.ORANGE;
+        return !tile.isHighlighted() || tile.getTileHighlight() == Tile.TileHighlight.ORANGE;
     }
 
     private void handleAIMove() {
@@ -164,8 +164,8 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
             aiMove.handleMove(gameController.getBoard());
         }
 
-        if (aiMove.getType() == PAWN_PROMOTION) {
-            Piece pawnToPromote = gameController.getTile(aiMove.end).getPiece();
+        if (aiMove.getMoveType() == PAWN_PROMOTION) {
+            Piece pawnToPromote = gameController.getTile(aiMove.getFrom()).getPiece();
             Piece queen = new Queen(Piece.PlayerColor.BLACK, pawnToPromote.getPosition());
             queen.setPosition(pawnToPromote.getPosition());
             gameController.getTile(pawnToPromote.getPosition()).setPiece(queen);
@@ -176,17 +176,18 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
 
     private void showAvailableMoves(Piece piece) {
         for (Move move : piece.getAvailableMoves(gameController.getBoard())) {
-            Point movePoint = new Point(move.getEnd().x, move.getEnd().y);
+            Point movePoint = new Point(move.getTo().x, move.getTo().y);
             Tile startTile = gameController.getTile(piece.getPosition());
-            startTile.setHighlight(Tile.TILE_HIGHLIGHT.GREEN);
+            startTile.setTileHighlight(Tile.TileHighlight.GREEN);
             Tile target = gameController.getTile(movePoint);
-            target.setHighlight(move.getTileHighlight());
+            target.setTileHighlight(move.getTileHighlight());
             target.setMove(move);
             gameController.setTile(movePoint, target);
         }
     }
 
     public boolean isMove(Tile tile) {
-        return tile.getHighlight() != Tile.TILE_HIGHLIGHT.GREEN && tile.getHighlight() != Tile.TILE_HIGHLIGHT.ORANGE;
+        return tile.getTileHighlight() != Tile.TileHighlight.GREEN && tile.getTileHighlight() != Tile.TileHighlight.ORANGE;
     }
+
 }

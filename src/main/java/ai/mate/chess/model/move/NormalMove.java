@@ -6,36 +6,33 @@ import ai.mate.chess.model.piece.Piece;
 
 import java.awt.*;
 
-/**
- * Class which represents a updatePiece to updatePiece a piece to an empty tile
- */
-
 public class NormalMove extends Move {
 
-    public NormalMove(Point start, Point end) {
-        super(start, end, MoveType.NORMAL);
+    public NormalMove(Point from, Point to) {
+        super(from, to, MoveType.NORMAL);
     }
 
-    public NormalMove(Point start, Point end, MoveType type) {
-        super(start, end, type);
+    public NormalMove(Point from, Point to, MoveType moveType) {
+        super(from, to, moveType);
     }
 
     @Override
-    public Tile.TILE_HIGHLIGHT getTileHighlight() {
-        return Tile.TILE_HIGHLIGHT.BLUE;
+    public Tile.TileHighlight getTileHighlight() {
+        return Tile.TileHighlight.BLUE;
     }
 
     @Override
     public void undo(Board board) {
-        Tile to = board.getTile(end);
+        Tile to = board.getTile(getTo());
         Piece movedPiece = to.getPiece();
-        movedPiece.setPosition(start);
-        board.getTile(start).setPiece(movedPiece);
+        movedPiece.setPosition(getFrom());
+        board.getTile(getFrom()).setPiece(movedPiece);
         to.setPiece(null);
     }
 
     @Override
     public Move copy() {
-        return new NormalMove(new Point(this.start), new Point(this.end), this.getType());
+        return new NormalMove(new Point(getFrom()), new Point(getTo()), this.getMoveType());
     }
+
 }

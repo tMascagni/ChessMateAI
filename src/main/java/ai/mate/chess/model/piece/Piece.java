@@ -45,7 +45,7 @@ public abstract class Piece {
             GameController.getInstance().updateKingPosition(this);
 
         moveCount++;
-        position = move.getEnd();
+        position = move.getTo();
         MoveHistory.getInstance().addMove(move);
     }
 

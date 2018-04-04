@@ -28,7 +28,7 @@ public class TilePanel extends JPanel {
         try {
             GUIUtils utils = new GUIUtils();
             this.tile = tile;
-            String tileImageIconPath = utils.getTileIconPath(tile.getColor());
+            String tileImageIconPath = utils.getTileIconPath(tile.getTileColor());
             tileImage = ImageIO.read(new File("src/main/java/ai/mate/chess/ui/gui/img/" + tileImageIconPath));
             if (!tile.isEmpty()) {
                 Piece piece = tile.getPiece();
@@ -36,8 +36,8 @@ public class TilePanel extends JPanel {
                 pieceImage = ImageIO.read(new File("src/main/java/ai/mate/chess/ui/gui/img/" + pieceImageIconPath));
             }
 
-            if (tile.getHighlight() != Tile.TILE_HIGHLIGHT.NONE) {
-                tileImage = utils.getHighlighted(tile.getColor(), tileImage, tile.getHighlight());
+            if (tile.getTileHighlight() != Tile.TileHighlight.NONE) {
+                tileImage = utils.getHighlighted(tile.getTileColor(), tileImage, tile.getTileHighlight());
             }
         } catch (IOException ex) {
             ex.printStackTrace();

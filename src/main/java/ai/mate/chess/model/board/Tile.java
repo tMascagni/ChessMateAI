@@ -7,16 +7,19 @@ import java.awt.*;
 
 public final class Tile {
 
-    public Tile copy() {
-        return new Tile(this);
+    private final TileColor tileColor;
+    private TileHighlight tileHighlight;
+
+    private final Point position;
+    private Move move;
+    private Piece piece;
+
+    public enum TileColor {
+        WHITE,
+        BLACK,
     }
 
-    public enum TILE_TYPE {
-        LIGHT,
-        DARK,
-    }
-
-    public enum TILE_HIGHLIGHT {
+    public enum TileHighlight {
         NONE,
         BLUE,
         YELLOW,
@@ -25,89 +28,87 @@ public final class Tile {
         ORANGE
     }
 
-    private final Point position;
-    private TILE_TYPE color;
-    private TILE_HIGHLIGHT highlight;
-    private Move move;
-
-    private Piece piece;
-
     public Tile(Point position) {
-        this.piece = null;
+        this.tileColor = (position.x % 2 == 0 && position.y % 2 == 0
+                || position.x % 2 == 1 && position.y % 2 == 1) ? TileColor.WHITE : TileColor.BLACK;
+        this.tileHighlight = TileHighlight.NONE;
         this.position = position;
-        this.color = (position.x % 2 == 0 && position.y % 2 == 0
-                || position.x % 2 == 1 && position.y % 2 == 1) ? TILE_TYPE.LIGHT : TILE_TYPE.DARK;
-        this.highlight = TILE_HIGHLIGHT.NONE;
         this.move = null;
+        this.piece = null;
     }
 
     public Tile(Tile tile) {
-        if (!tile.isEmpty()) {
-            this.piece = tile.getPiece().copy();
-        }
-        if (tile.move != null) {
-            this.move = tile.move.copy();
-        }
-        this.color = tile.color;
+        this.tileColor = tile.tileColor;
+        this.tileHighlight = tile.tileHighlight;
         this.position = new Point(tile.position);
-        this.highlight = tile.highlight;
+
+        if (tile.move != null)
+            move = tile.move.copy();
+
+        if (!tile.isEmpty())
+            piece = tile.getPiece().copy();
     }
 
     public Tile(Piece piece) {
         this.piece = piece;
         this.position = piece.getPosition();
-        this.color = (position.x % 2 == 0 && position.y % 2 == 0
-                || position.x % 2 == 1 && position.y % 2 == 1) ? TILE_TYPE.LIGHT : TILE_TYPE.DARK;
-        this.highlight = TILE_HIGHLIGHT.NONE;
+        this.tileColor = (position.x % 2 == 0 && position.y % 2 == 0
+                || position.x % 2 == 1 && position.y % 2 == 1) ? TileColor.WHITE : TileColor.BLACK;
+        this.tileHighlight = TileHighlight.NONE;
     }
 
-    public TILE_TYPE getColor() {
-        return color;
+    public boolean isEmpty() {
+        return piece == null;
+    }
+
+    public boolean isHighlighted() {
+        return tileHighlight != TileHighlight.NONE;
+    }
+
+    public TileColor getTileColor() {
+        return tileColor;
+    }
+
+    public TileHighlight getTileHighlight() {
+        return tileHighlight;
     }
 
     public Point getPosition() {
         return position;
     }
 
-    public boolean isEmpty() {
-        return this.piece == null;
+    public Move getMove() {
+        return move;
     }
 
     public Piece getPiece() {
-        return this.piece;
+        return piece;
     }
 
-    public TILE_HIGHLIGHT getHighlight() {
-        return highlight;
-    }
-
-    public void setHighlight(TILE_HIGHLIGHT highlight) {
-        this.highlight = highlight;
-    }
-
-    public boolean isHighlighted() {
-        return this.highlight != TILE_HIGHLIGHT.NONE;
-    }
-
-    public void setPiece(Piece piece) {
-        this.piece = piece;
+    public void setTileHighlight(TileHighlight tileHighlight) {
+        this.tileHighlight = tileHighlight;
     }
 
     public void setMove(Move move) {
         this.move = move;
     }
 
-    public Move getMove() {
-        return move;
+    public void setPiece(Piece piece) {
+        this.piece = piece;
     }
 
     @Override
     public String toString() {
         String team = " ";
-        if (!isEmpty()) {
-            team = this.piece.getPlayerColor() == Piece.PlayerColor.BLACK ? "b" : "w";
-        }
-        return this.piece == null ? team + "NULL" : team + this.piece.getPieceType().toString();
+
+        if (!isEmpty())
+            team = piece.getPlayerColor() == Piece.PlayerColor.BLACK ? "b" : "w";
+
+        return piece == null ? team + "NULL" : team + piece.getPieceType().toString();
+    }
+
+    public Tile copy() {
+        return new Tile(this);
     }
 
 }

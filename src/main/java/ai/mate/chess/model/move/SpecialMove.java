@@ -6,13 +6,13 @@ import java.awt.*;
 
 public abstract class SpecialMove extends Move {
 
-    SpecialMove(Point start, Point end, MoveType type) {
-        super(start, end, type);
+    SpecialMove(Point from, Point to, MoveType moveType) {
+        super(from, to, moveType);
     }
 
     @Override
-    public Tile.TILE_HIGHLIGHT getTileHighlight() {
-        return Tile.TILE_HIGHLIGHT.YELLOW;
+    public Tile.TileHighlight getTileHighlight() {
+        return Tile.TileHighlight.YELLOW;
     }
 
 }

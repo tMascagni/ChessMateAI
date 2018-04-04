@@ -2,28 +2,38 @@ package ai.mate.chess.model.move;
 
 import java.util.Stack;
 
-/**
- * Singleton object which keeps track of the updatePiece history
- */
-
 public final class MoveHistory {
 
-    private static MoveHistory instance = null;
-    private Stack<Move> moveList = new Stack<>();
+    private final Stack<Move> moveStack = new Stack<>();
 
-    public static MoveHistory getInstance() {
-        if (instance == null) {
+    private final static MoveHistory instance;
+
+    static {
+        try {
             instance = new MoveHistory();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create Singleton MoveHistory instance!");
         }
+    }
 
+    private MoveHistory() {
+
+    }
+
+    public static synchronized MoveHistory getInstance() {
         return instance;
     }
 
     public void addMove(Move move) {
-        moveList.add(move);
+        moveStack.add(move);
     }
 
-    public Move popLastMove() {
-        return moveList.pop();
+    public Move popMove() {
+        return moveStack.pop();
     }
+
+    public int getHistorySize() {
+        return moveStack.size();
+    }
+
 }

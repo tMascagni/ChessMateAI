@@ -8,76 +8,59 @@ import java.awt.*;
 
 public abstract class Move {
 
-    public Point start;
-    public Point end;
-    private MoveType type;
+    private final Point from;
+    private final Point to;
+    private final MoveType moveType;
 
     public enum MoveType {
         NORMAL,
         NORMAL_DOUBLE,
         ATTACK,
-        ENPASSANT,
+        EN_PASSANT,
         CASTLE,
         PAWN_PROMOTION
     }
 
-    /**
-     * Move constructor
-     *
-     * @param start start position (where is the piece now)
-     * @param end   end position of updatePiece (where you want the piece to end up)
-     * @param type  type of updatePiece, attack, special, enpassant, etc
-     */
-    public Move(Point start, Point end, MoveType type) {
-        this.start = start;
-        this.end = end;
-        this.type = type;
+    public Move(Point from, Point to, MoveType moveType) {
+        this.from = from;
+        this.to = to;
+        this.moveType = moveType;
     }
 
-    public MoveType getType() {
-        return this.type;
+    public void handleMove(Board board) {
+        board.handleMove(this);
     }
 
-    public Point getEnd() {
-        return this.end;
+    public Point getFrom() {
+        return from;
     }
 
-    public Point getStart() {
-        return this.start;
+    public Point getTo() {
+        return to;
+    }
+
+    public MoveType getMoveType() {
+        return this.moveType;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Move) {
             Move move = (Move) obj;
-            return this.start == move.start && this.end == move.end && this.type == move.type;
+            return from == move.from && to == move.to && moveType == move.moveType;
         }
-
         return false;
     }
 
-    /**
-     * Method to handle a updatePiece
-     *
-     * @param board board to handle updatePiece on, change
-     */
-    public void handleMove(Board board) {
-        board.handleMove(this);
-    }
-
-    /**
-     * Gets the tile highlight for the GUI
-     *
-     * @return tile highlight
-     */
-    public abstract Tile.TILE_HIGHLIGHT getTileHighlight();
-
     @Override
     public String toString() {
-        return "S: " + start + "\t E: " + end;
+        return "From: (" + from.x + ", " + from.y + ") To: (" + to.x + ", " + to.y + ")";
     }
+
+    public abstract Tile.TileHighlight getTileHighlight();
 
     public abstract void undo(Board board);
 
     public abstract Move copy();
+
 }
