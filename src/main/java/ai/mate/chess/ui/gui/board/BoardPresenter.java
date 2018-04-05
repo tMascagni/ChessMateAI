@@ -71,7 +71,7 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
             if (inCheck) {
                 if (piece.getPieceType() != KING) {
                     // If they clicked a piece thats not a king while in check, don't show the moves
-                    System.out.println("You can't updatePiece other pieceList except your King while in check!");
+                    System.out.println("You can't move Piece other pieceList except your King while in check!");
                     return;
                 } else if (piece.getPieceType() == KING && piece.getAvailableMoves(gameController.getBoard()).isEmpty()) {
                     handleGameOver(Piece.PlayerColor.BLACK);
@@ -87,7 +87,7 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
 
             view.updateBoard(gameController.getBoard());
         } else if (tile.isHighlighted() && isMove(tile)) {
-            // It means they clicked a tile with a piece that is highlighted, i.e an attacking updatePiece.
+            // It means they clicked a tile with a piece that is highlighted, i.e an attacking move.
             // Or they clicked a tile without a piece that is highlighted
             Move move = tile.getMove();
 
@@ -108,6 +108,8 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
             }
 
             gameController.unhighlightBoard();
+
+
             handleAIMove();
 
             if (gameController.isGameOver()) {
@@ -118,7 +120,7 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
             gameController.nextTurn();
 
             // Check if the AI put the user in check.
-            if (gameController.inCheck(Piece.PlayerColor.WHITE)) {
+            if (gameController.isInCheck(Piece.PlayerColor.WHITE)) {
                 // If so, highlight the tile orange
                 // Orange is a special color, only used to signify in check
                 Tile kingTile = gameController.getTile(gameController.whiteKingPosition);

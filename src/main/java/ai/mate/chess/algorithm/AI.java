@@ -132,6 +132,7 @@ public final class AI {
                     int y = (int) ((piece.getPlayerColor() == Piece.PlayerColor.WHITE) ? (position.getY()) : (7 - position.getY()));
 
                     if (maximize) {
+                        // remmeber to get the current ply into the score as well
                         score += piece.getScore() + piece.getPositionTable()[y][x];
                     } else {
                         score -= piece.getScore() + piece.getPositionTable()[y][x];

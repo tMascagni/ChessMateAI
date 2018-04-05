@@ -99,12 +99,9 @@ public final class Tile {
 
     @Override
     public String toString() {
-        String team = " ";
-
-        if (!isEmpty())
-            team = piece.getPlayerColor() == Piece.PlayerColor.BLACK ? "b" : "w";
-
-        return piece == null ? team + "NULL" : team + piece.getPieceType().toString();
+        if (piece == null)
+            return "   ";
+        return piece.toString();
     }
 
     public Tile copy() {

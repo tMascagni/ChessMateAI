@@ -3,6 +3,7 @@ package ai.mate.chess.ui.tui;
 import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.piece.Piece;
 
+import java.awt.*;
 import java.util.Scanner;
 
 public final class Tui {
@@ -42,7 +43,7 @@ public final class Tui {
         return getNumericCharForPromotion("Selection");
     }
 
-    private char[] getBoardPair(String msg) {
+    public Point getBoardPosition(String msg) {
         char file = 'x';
         char rank = 'x';
         do {
@@ -70,7 +71,10 @@ public final class Tui {
              */
         } while (!isValidFile(file) || !isValidRank(rank));
 
-        return new char[]{file, rank};
+        int y = calculateColY(file);
+        int x = calculateRowX(rank);
+
+        return new Point(y, x);
     }
 
     public Piece.PlayerColor getPlayerColorInput() {
@@ -347,6 +351,33 @@ public final class Tui {
             }
         } while (!Character.isDigit(ch) || (Character.getNumericValue(ch) < 1 || Character.getNumericValue(ch) > 4));
         return ch;
+    }
+
+    private int calculateRowX(char rank) {
+        return Math.abs(Character.getNumericValue(rank) - 8);
+    }
+
+    private int calculateColY(char file) {
+        switch (file) {
+            case 'a':
+                return 0;
+            case 'b':
+                return 1;
+            case 'c':
+                return 2;
+            case 'd':
+                return 3;
+            case 'e':
+                return 4;
+            case 'f':
+                return 5;
+            case 'g':
+                return 6;
+            case 'h':
+                return 7;
+            default:
+                return -1;
+        }
     }
 
 }

@@ -5,6 +5,7 @@ import ai.mate.chess.model.board.Tile;
 import ai.mate.chess.model.move.Move;
 import ai.mate.chess.model.piece.Piece;
 import ai.mate.chess.model.player.Player;
+import ai.mate.chess.ui.tui.Tui;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -25,6 +26,16 @@ public final class GameController {
     private ArrayList<AttackMoveLog> deadPieces;
     private boolean gameOver;
     private Piece.PlayerColor winner;
+
+    private final Tui tui = Tui.getInstance();
+
+    static {
+        try {
+            instance = new GameController();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to instantiate Singleton GameController instance!");
+        }
+    }
 
     private GameController() {
         this.white = new Player(Piece.PlayerColor.WHITE);
@@ -51,12 +62,59 @@ public final class GameController {
         this.deadPieces = new ArrayList<>();
     }
 
-    public static GameController getInstance() {
-        if (instance == null) {
-            instance = new GameController();
+    public static synchronized GameController getInstance() {
+        return instance;
+    }
+
+    public void start() {
+        tui.printChoosePlayer();
+        Piece.PlayerColor playerColor = tui.getPlayerColorInput();
+
+        tui.printHumanPlayer(playerColor);
+        tui.printAIPlayer(getOpponentColor());
+
+
+        while (true) {
+            tui.printBoard(board);
+
+            /*
+             * Check whether the fromPosition is valid.
+             */
+            while (true) {
+                Point fromPos = tui.getBoardPosition("From");
+
+                // evaulate whether this is a correct from position or not.
+
+                if (!isValidFromPosition(fromPos))
+                    continue;
+
+                // Select the piece
+                Tile fromTile = board.getTile(fromPos);
+                setSelectedPiece(fromTile.getPiece());
+
+                // then get the to Position
+                Point toPos = tui.getBoardPosition("To");
+                Tile toTile = board.getTile(toPos);
+
+                // get 'to' move
+
+                Move toMove = toTile.getMove();
+
+                board.handleMove(toMove);
+
+/*
+                if (board.isValidFromPos(fromPos))
+                    break;
+
+                tui.printIllegalAction("Try again!");
+                System.out.println();
+  */
+            }
+
+            //        BoardPosition toPos = tui.getBoardPositionInput("To");
+            //      board.movePiece(fromPos, toPos);
         }
 
-        return instance;
     }
 
     public Player getCurrentPlayer() {
@@ -100,7 +158,7 @@ public final class GameController {
      * @param playerColor
      * @return
      */
-    public boolean inCheck(Piece.PlayerColor playerColor) {
+    public boolean isInCheck(Piece.PlayerColor playerColor) {
         Point kingPosition = playerColor == Piece.PlayerColor.WHITE ? whiteKingPosition : blackKingPosition;
         // If the tile of the players king is threatened, then we are in check.
         return board.tileIsThreatened(playerColor, board.getTile(kingPosition));
@@ -206,6 +264,10 @@ public final class GameController {
         return gameOver;
     }
 
+    public Piece.PlayerColor getOpponentColor() {
+        return getCurrentPlayer().getPlayerColor() == Piece.PlayerColor.WHITE ? Piece.PlayerColor.BLACK : Piece.PlayerColor.WHITE;
+    }
+
     /**
      * Ends the game, sets the winner
      *
@@ -249,4 +311,31 @@ public final class GameController {
             return false;
         }
     }
+
+    private boolean isValidFromPosition(Point fromPos) {
+        // 1. The tile has to have a piece.
+
+        Piece fromPosPiece = board.getTile(fromPos).getPiece();
+
+        if (fromPosPiece == null) {
+            System.out.println("DEBUG: The fromPosition has no piece.");
+            return false;
+        }
+
+        // 2. The piece has to be the same players color as the current player
+        if (getCurrentPlayer().getPlayerColor() != fromPosPiece.getPlayerColor()) {
+            System.out.println("DEBUG: You are not able to move the other players piece!");
+            return false;
+        }
+
+        // 3. The king of this player can not be in check
+        // Lav noget logik som gør at man kun kan flytte brikker der beskytter den der konge
+        if (isInCheck(currentPlayer.getPlayerColor())) {
+            System.out.println("DEBUG: You cant move this piece when your king is in check!");
+            return false;
+        }
+
+        return true;
+    }
+
 }
