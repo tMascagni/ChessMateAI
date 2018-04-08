@@ -1,5 +1,7 @@
 package ai.mate.chess.utils;
 
+import ai.mate.chess.model.piece.Piece;
+
 public final class ChessUtils {
 
     /* Black Pieces */
@@ -49,6 +51,10 @@ public final class ChessUtils {
 
     public static synchronized ChessUtils getInstance() {
         return instance;
+    }
+
+    public static Piece.PlayerColor changePlayer(Piece.PlayerColor playerColor) {
+        return playerColor == Piece.PlayerColor.WHITE ? Piece.PlayerColor.BLACK : Piece.PlayerColor.WHITE;
     }
 
 }

@@ -1,6 +1,6 @@
 package ai.mate.chess.ui.gui.board;
 
-import ai.mate.chess.algorithm.AI;
+import ai.mate.chess.algorithm.AlphaBetaPruning;
 import ai.mate.chess.controller.Game;
 import ai.mate.chess.controller.GameController;
 import ai.mate.chess.model.board.Tile;
@@ -17,16 +17,17 @@ import static ai.mate.chess.model.move.Move.MoveType.PAWN_PROMOTION;
 import static ai.mate.chess.model.piece.Piece.PieceType.KING;
 
 public class BoardPresenter implements BoardGUIContract.Presenter {
+
     private final BoardGUIContract.View view;
     private final GameController gameController;
     private final Game game;
-    private final AI ai;
+    private final AlphaBetaPruning alphaBetaPruning;
 
-    public BoardPresenter(BoardGUIContract.View view, GameController gameController, Game game, AI ai) {
+    public BoardPresenter(BoardGUIContract.View view, GameController gameController, Game game) {
         this.gameController = gameController;
         this.view = view;
         this.game = game;
-        this.ai = ai;
+        this.alphaBetaPruning = new AlphaBetaPruning(5, 30);
         view.setPresenter(this);
     }
 
@@ -156,7 +157,8 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
     }
 
     private void handleAIMove() {
-        Move aiMove = ai.bestMove(gameController.getBoard());
+        Move aiMove = alphaBetaPruning.run(gameController.getBoard(), Piece.PlayerColor.BLACK);
+
         if (handleKingCaptureGameOver(aiMove)) {
             // The AI has captured the king
             handleGameOver(Piece.PlayerColor.BLACK);

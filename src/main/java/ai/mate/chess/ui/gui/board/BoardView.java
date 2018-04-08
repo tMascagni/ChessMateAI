@@ -26,7 +26,7 @@ public class BoardView extends MouseAdapter implements BoardGUIContract.View  {
     private final GUIUtils utils;
 
     public BoardView() {
-        this.frame = new JFrame("Chess");
+        this.frame = new JFrame("ChessMateAI - v2.0");
         this.tilePanels = new JPanel(new GridLayout(8, 8));
 
         this.overlay = new JPanel() {
