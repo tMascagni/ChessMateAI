@@ -64,39 +64,40 @@ public final class AlphaBetaPruning {
         if (maximizer) {
             Move localBestMove = null;
             for (Move move : moves) {
-                Board copy = new Board(board);
-                move.handleMove(copy);
-                double score = alphaBetaPruning(copy, ChessUtils.changePlayer(playerColor), alpha, beta, currentPly);
-                move.undo(copy);
+                Board copyBoard = new Board(board);
+                move.handleMove(copyBoard);
+                double score = alphaBetaPruning(copyBoard, ChessUtils.changePlayer(playerColor), alpha, beta, currentPly);
+                move.undo(copyBoard);
 
                 if (score > alpha) {
                     alpha = score;
                     localBestMove = move;
                 }
 
-                if (beta <= alpha) {
+                if (beta <= alpha)
                     break;
-                }
             }
 
             if (localBestMove != null)
                 bestMove = localBestMove;
 
             return alpha;
+
         } else {
+
             for (Move move : moves) {
-                Board copy = new Board(board);
-                move.handleMove(copy);
-                double score = alphaBetaPruning(copy, ChessUtils.changePlayer(playerColor), alpha, beta, currentPly);
-                move.undo(copy);
+                Board copyBoard = new Board(board);
+                move.handleMove(copyBoard);
+                double score = alphaBetaPruning(copyBoard, ChessUtils.changePlayer(playerColor), alpha, beta, currentPly);
+                move.undo(copyBoard);
 
                 if (score < beta) {
                     beta = score;
                 }
 
-                if (beta <= alpha) {
+                if (beta <= alpha)
                     break;
-                }
+
             }
 
             return beta;
