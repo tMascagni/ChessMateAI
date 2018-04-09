@@ -62,7 +62,7 @@ public final class AlphaBetaPruning {
         List<Move> moves = getAllPossibleMoves(board, playerColor);
 
         if (maximizer) {
-            Move localBestMove = null;
+            Move localBestMoveMaximizer = null;
             for (Move move : moves) {
                 Board copyBoard = new Board(board);
                 move.handleMove(copyBoard);
@@ -71,20 +71,20 @@ public final class AlphaBetaPruning {
 
                 if (score > alpha) {
                     alpha = score;
-                    localBestMove = move;
+                    localBestMoveMaximizer = move;
                 }
 
                 if (beta <= alpha)
                     break;
             }
 
-            if (localBestMove != null)
-                bestMove = localBestMove;
+            if (localBestMoveMaximizer != null)
+                bestMove = localBestMoveMaximizer;
 
             return alpha;
 
         } else {
-
+            Move localBestMoveMinimizer = null;
             for (Move move : moves) {
                 Board copyBoard = new Board(board);
                 move.handleMove(copyBoard);
@@ -93,12 +93,18 @@ public final class AlphaBetaPruning {
 
                 if (score < beta) {
                     beta = score;
+                    localBestMoveMinimizer = move;
                 }
 
                 if (beta <= alpha)
                     break;
-
             }
+
+            /*
+            if (localBestMoveMinimizer != null) {
+                bestMove = localBestMoveMinimizer;
+            }
+            */
 
             return beta;
         }
@@ -132,7 +138,7 @@ public final class AlphaBetaPruning {
      * Evaluates the board
      *
      * @param maximizer whether to add or subtract from score
-     * @param board    board to evaluate
+     * @param board     board to evaluate
      * @return
      */
     private double score(boolean maximizer, Board board, int currentPly) {
