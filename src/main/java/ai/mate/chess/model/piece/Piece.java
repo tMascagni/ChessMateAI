@@ -106,19 +106,19 @@ public abstract class Piece {
     }
 
     public PlayerColor getPlayerColor() {
-        return this.playerColor;
+        return playerColor;
     }
 
     public PieceType getPieceType() {
-        return this.pieceType;
+        return pieceType;
     }
 
     public Point getPosition() {
-        return this.position;
+        return position;
     }
 
     public int getScore() {
-        return this.score;
+        return score;
     }
 
     public int getMoveCount() {

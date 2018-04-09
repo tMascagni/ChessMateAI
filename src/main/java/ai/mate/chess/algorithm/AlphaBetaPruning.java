@@ -14,13 +14,47 @@ import java.util.TimerTask;
 
 public final class AlphaBetaPruning {
 
+    /**
+     * This is the absolute max ply that the algorithm can achieve.
+     * It is set via the class constructor.
+     */
     private double maxPly;
+
+    /**
+     * This is the amount of seconds that the algorithm is allowed to run.
+     * If the algorithm exceeds this amount of seconds, the current best move
+     * is returned.
+     */
     private int timerSeconds;
+
+    /**
+     * The current best move of the algorithm.
+     */
     private Move bestMove;
-    private int counter = 0;
+
+    /**
+     * This is the elapsedSeconds variable used to keep
+     * track of the elapsed seconds of the current timer.
+     */
+    private int elapsedSeconds = 0;
+
+    /**
+     * This boolean variable will be set to true
+     * whenever the elapsedSecond reaches the timerSeconds value.
+     */
     private volatile boolean timeIsUp;
+
+    /**
+     * Object used for timer functionality.
+     */
     private Timer timer;
 
+    /**
+     * Constructor of the AlphaBetaPruning algorithm class.
+     *
+     * @param maxPly       The absolute maximum ply.
+     * @param timerSeconds Amount of seconds the algorithm is allowed to run.
+     */
     public AlphaBetaPruning(double maxPly, int timerSeconds) {
         this.maxPly = maxPly;
         this.timerSeconds = timerSeconds;
@@ -33,7 +67,7 @@ public final class AlphaBetaPruning {
      */
     public Move run(Board board, Piece.PlayerColor playerColor) {
         this.timeIsUp = false;
-        this.counter = 0;
+        this.elapsedSeconds = 0;
         timer = new Timer();
 
         startTimer(playerColor);
@@ -46,22 +80,27 @@ public final class AlphaBetaPruning {
     /**
      * Recursive alpha-beta pruning algorithm.
      *
-     * @param board       Board
-     * @param playerColor PlayerColor AI identifies with
-     * @param alpha       Alpha value (initially -infinity)
-     * @param beta        Beta value (initially +infinity)
-     * @param currentPly  Current ply (depth, initially 0)
+     * @param board       The current board (Current state)
+     * @param playerColor The current player
+     * @param alpha       Alpha value (Initially -infinity)
+     * @param beta        Beta value (Initially +infinity)
+     * @param currentPly  Current ply (Initially 0)
      * @return Alpha when maximizing, beta when minimizing
      */
     private double alphaBetaPruning(Board board, Piece.PlayerColor playerColor, double alpha, double beta, int currentPly) {
-        boolean maximizer = (playerColor == Piece.PlayerColor.BLACK);
+        boolean isMaximizer = playerColor == Piece.PlayerColor.BLACK;
 
+        /*
+         * Returns the score whether we've reached
+         * the maximum ply or if the time is up for the
+         * algorithm.
+         */
         if (currentPly++ == maxPly || timeIsUp)
-            return score(maximizer, board, currentPly);
+            return getScore(isMaximizer, board, currentPly);
 
         List<Move> moves = getAllPossibleMoves(board, playerColor);
 
-        if (maximizer) {
+        if (isMaximizer) {
             Move localBestMoveMaximizer = null;
             for (Move move : moves) {
                 Board copyBoard = new Board(board);
@@ -84,7 +123,6 @@ public final class AlphaBetaPruning {
             return alpha;
 
         } else {
-            Move localBestMoveMinimizer = null;
             for (Move move : moves) {
                 Board copyBoard = new Board(board);
                 move.handleMove(copyBoard);
@@ -93,18 +131,11 @@ public final class AlphaBetaPruning {
 
                 if (score < beta) {
                     beta = score;
-                    localBestMoveMinimizer = move;
                 }
 
                 if (beta <= alpha)
                     break;
             }
-
-            /*
-            if (localBestMoveMinimizer != null) {
-                bestMove = localBestMoveMinimizer;
-            }
-            */
 
             return beta;
         }
@@ -137,11 +168,11 @@ public final class AlphaBetaPruning {
     /**
      * Evaluates the board
      *
-     * @param maximizer whether to add or subtract from score
-     * @param board     board to evaluate
-     * @return
+     * @param isMaximizer whether to add or subtract from getScore
+     * @param board       board to evaluate
+     * @return Returns evaluated score
      */
-    private double score(boolean maximizer, Board board, int currentPly) {
+    private double getScore(boolean isMaximizer, Board board, int currentPly) {
         int score = 0;
 
         for (Tile[] tiles : board.getBoard()) {
@@ -152,10 +183,10 @@ public final class AlphaBetaPruning {
                     Piece piece = tile.getPiece();
                     Point position = piece.getPosition();
 
-                    int x = (int) piece.getPosition().getX();
-                    int y = (int) ((piece.getPlayerColor() == Piece.PlayerColor.WHITE) ? (position.getY()) : (7 - position.getY()));
+                    int x = piece.getPosition().x;
+                    int y = piece.getPlayerColor() == Piece.PlayerColor.WHITE ? position.x : 7 - position.y;
 
-                    if (maximizer)
+                    if (isMaximizer)
                         score += piece.getScore() + piece.getPositionTable()[y][x] + currentPly;
                     else
                         score -= piece.getScore() + piece.getPositionTable()[y][x] - currentPly;
@@ -171,10 +202,10 @@ public final class AlphaBetaPruning {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                counter++;
-                System.out.println("TIMER: " + counter);
+                elapsedSeconds++;
+                System.out.println("TIMER: " + elapsedSeconds);
 
-                if (counter == timerSeconds) {
+                if (elapsedSeconds == timerSeconds) {
                     System.out.println("TIMER: Time's up for " + playerColor + "!");
                     timeIsUp = true;
                 }

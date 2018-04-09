@@ -9,9 +9,6 @@ import javax.swing.*;
 
 public final class Game {
 
-    public static final int MAX_PLY = 4;
-    public static final int MIN_PLY = 1;
-
     GameController gameController;
     BoardPresenter boardPresenter;
     PromotionPresenter promotionPresenter;
