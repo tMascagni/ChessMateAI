@@ -11,6 +11,8 @@ import ai.mate.chess.model.piece.Queen;
 import ai.mate.chess.model.player.Player;
 
 import java.awt.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static ai.mate.chess.model.move.Move.MoveType.ATTACK;
 import static ai.mate.chess.model.move.Move.MoveType.PAWN_PROMOTION;
@@ -23,12 +25,27 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
     private final Game game;
     private final AlphaBetaPruning alphaBetaPruning;
 
-    public BoardPresenter(BoardGUIContract.View view, GameController gameController, Game game) {
+    private int elapsedSeconds;
+    private Timer timer;
+
+    private static final int MAX_TURN_SECONDS = 5;
+
+    public BoardPresenter(BoardGUIContract.View view, GameController gameController, Game game, Piece.PlayerColor humanPlayerColor) {
         this.gameController = gameController;
         this.view = view;
         this.game = game;
-        this.alphaBetaPruning = new AlphaBetaPruning(4, 30);
+        this.alphaBetaPruning = new AlphaBetaPruning(4, MAX_TURN_SECONDS);
         view.setPresenter(this);
+        timer = new Timer();
+
+        /*
+         * Let white make its first AI move
+         * if the human plays as black.
+         */
+        if (humanPlayerColor == Piece.PlayerColor.BLACK) {
+            handleAIMove(Piece.PlayerColor.WHITE);
+            view.updateBoard(gameController.getBoard());
+        }
     }
 
     @Override
@@ -57,11 +74,15 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
 
     @Override
     public void handleClickedTile(Tile tile) {
-        if (gameController.isGameOver()) {
+        if (gameController.isGameOver())
             return;
-        }
+
+        timer = new Timer();
+        elapsedSeconds = 0;
 
         if (!tile.isEmpty() && isClickablePiece(tile)) {
+            //startTimer(GameController.getInstance().getCurrentPlayer().getPlayerColor());
+
             // It means they clicked a tile with a piece and it's not highlighted
             // Or they clicked the king, who is in check
             boolean inCheck = tile.getTileHighlight() == Tile.TileHighlight.ORANGE;
@@ -69,13 +90,15 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
             Player currentPlayer = gameController.getCurrentPlayer();
             Piece piece = tile.getPiece();
 
+            //System.out.println("InCheck: " + tile + ": " + inCheck);
             if (inCheck) {
+                System.out.println(gameController.getCurrentPlayer().getPlayerColor() + " KING IS IN CHECK!");
                 if (piece.getPieceType() != KING) {
                     // If they clicked a piece thats not a king while in check, don't show the moves
-                    System.out.println("You can't move Piece other pieceList except your King while in check!");
+                    System.out.println("You can't move Piece other pieces except your King while in check!");
                     return;
                 } else if (piece.getPieceType() == KING && piece.getAvailableMoves(gameController.getBoard()).isEmpty()) {
-                    handleGameOver(Piece.PlayerColor.BLACK);
+                    handleGameOver(gameController.getOpponentColor());
                     return;
                 }
             }
@@ -93,12 +116,13 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
             Move move = tile.getMove();
 
             if (handleKingCaptureGameOver(move)) {
-                handleGameOver(Piece.PlayerColor.WHITE);
+                handleGameOver(gameController.getCurrentPlayer().getPlayerColor());
                 move.handleMove(gameController.getBoard());
                 return;
             }
 
             move.handleMove(gameController.getBoard());
+            timer.cancel();
 
             // Check for pawn promotion
             if (move.getMoveType() == PAWN_PROMOTION) {
@@ -110,7 +134,6 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
 
             gameController.unhighlightBoard();
 
-
             handleAIMove();
 
             if (gameController.isGameOver()) {
@@ -121,10 +144,10 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
             gameController.nextTurn();
 
             // Check if the AI put the user in check.
-            if (gameController.isInCheck(Piece.PlayerColor.WHITE)) {
+            if (gameController.isInCheck(gameController.getCurrentPlayer().getPlayerColor())) {
                 // If so, highlight the tile orange
                 // Orange is a special color, only used to signify in check
-                Tile kingTile = gameController.getTile(gameController.whiteKingPosition);
+                Tile kingTile = gameController.getTile(gameController.getKingPosition(gameController.getCurrentPlayer().getPlayerColor()));
                 kingTile.setTileHighlight(Tile.TileHighlight.ORANGE);
             }
 
@@ -157,11 +180,11 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
     }
 
     private void handleAIMove() {
-        Move aiMove = alphaBetaPruning.run(gameController.getBoard(), Piece.PlayerColor.BLACK);
+        Move aiMove = alphaBetaPruning.run(gameController.getBoard(), gameController.getOpponentColor());
 
         if (handleKingCaptureGameOver(aiMove)) {
             // The AI has captured the king
-            handleGameOver(Piece.PlayerColor.BLACK);
+            handleGameOver(gameController.getOpponentColor());
             aiMove.handleMove(gameController.getBoard());
             return;
         } else {
@@ -170,7 +193,29 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
 
         if (aiMove.getMoveType() == PAWN_PROMOTION) {
             Piece pawnToPromote = gameController.getTile(aiMove.getFrom()).getPiece();
-            Piece queen = new Queen(Piece.PlayerColor.BLACK, pawnToPromote.getPosition());
+            Piece queen = new Queen(gameController.getOpponentColor(), pawnToPromote.getPosition());
+            queen.setPosition(pawnToPromote.getPosition());
+            gameController.getTile(pawnToPromote.getPosition()).setPiece(queen);
+        }
+
+        gameController.nextTurn();
+    }
+
+    private void handleAIMove(Piece.PlayerColor playerColor) {
+        Move aiMove = alphaBetaPruning.run(gameController.getBoard(), playerColor);
+
+        if (handleKingCaptureGameOver(aiMove)) {
+            // The AI has captured the king
+            handleGameOver(playerColor);
+            aiMove.handleMove(gameController.getBoard());
+            return;
+        } else {
+            aiMove.handleMove(gameController.getBoard());
+        }
+
+        if (aiMove.getMoveType() == PAWN_PROMOTION) {
+            Piece pawnToPromote = gameController.getTile(aiMove.getFrom()).getPiece();
+            Piece queen = new Queen(playerColor, pawnToPromote.getPosition());
             queen.setPosition(pawnToPromote.getPosition());
             gameController.getTile(pawnToPromote.getPosition()).setPiece(queen);
         }
@@ -192,6 +237,23 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
 
     public boolean isMove(Tile tile) {
         return tile.getTileHighlight() != Tile.TileHighlight.GREEN && tile.getTileHighlight() != Tile.TileHighlight.ORANGE;
+    }
+
+    private void startTimer(Piece.PlayerColor playerColor) {
+        System.out.println("TIMER: New timer for " + playerColor + "!");
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                elapsedSeconds++;
+                System.out.println("TIMER: " + elapsedSeconds);
+
+                if (elapsedSeconds == MAX_TURN_SECONDS) {
+                    System.out.println("TIMER: Time's up for " + playerColor + "!");
+                    System.out.println("You lost!");
+                    timer.cancel();
+                }
+            }
+        }, 0, 1000);
     }
 
 }

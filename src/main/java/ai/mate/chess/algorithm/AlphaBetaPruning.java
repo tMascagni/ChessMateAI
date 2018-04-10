@@ -67,6 +67,7 @@ public final class AlphaBetaPruning {
      */
     public Move run(Board board, Piece.PlayerColor playerColor) {
         this.timeIsUp = false;
+        this.bestMove = null;
         this.elapsedSeconds = 0;
         timer = new Timer();
 
@@ -100,6 +101,7 @@ public final class AlphaBetaPruning {
 
         List<Move> moves = getAllPossibleMoves(board, playerColor);
 
+        // BLACK
         if (isMaximizer) {
             Move localBestMoveMaximizer = null;
             for (Move move : moves) {
@@ -123,6 +125,8 @@ public final class AlphaBetaPruning {
             return alpha;
 
         } else {
+            // WHITE
+            Move localBestMoveMinimizer = null;
             for (Move move : moves) {
                 Board copyBoard = new Board(board);
                 move.handleMove(copyBoard);
@@ -131,11 +135,15 @@ public final class AlphaBetaPruning {
 
                 if (score < beta) {
                     beta = score;
+                    localBestMoveMinimizer = move;
                 }
 
                 if (beta <= alpha)
                     break;
             }
+
+            if (localBestMoveMinimizer != null)
+                bestMove = localBestMoveMinimizer;
 
             return beta;
         }
@@ -150,18 +158,13 @@ public final class AlphaBetaPruning {
      */
     private List<Move> getAllPossibleMoves(Board board, Piece.PlayerColor playerColor) {
         List<Move> results = new ArrayList<>();
-
-        for (Tile[] tiles : board.getBoard()) {
-            for (Tile tile : tiles) {
+        for (Tile[] tiles : board.getBoard())
+            for (Tile tile : tiles)
                 if (!tile.isEmpty()) {
                     Piece piece = tile.getPiece();
-                    if (piece.getPlayerColor() == playerColor) {
+                    if (piece.getPlayerColor() == playerColor)
                         results.addAll(piece.getAvailableMoves(board));
-                    }
                 }
-            }
-        }
-
         return results;
     }
 
@@ -187,9 +190,9 @@ public final class AlphaBetaPruning {
                     int y = piece.getPlayerColor() == Piece.PlayerColor.WHITE ? position.x : 7 - position.y;
 
                     if (isMaximizer)
-                        score += piece.getScore() + piece.getPositionTable()[y][x] + currentPly;
+                        score += (piece.getScore() + piece.getPositionTable()[y][x] + currentPly);
                     else
-                        score -= piece.getScore() + piece.getPositionTable()[y][x] - currentPly;
+                        score -= (piece.getScore() + piece.getPositionTable()[y][x] + currentPly);
                 }
             }
         }
@@ -198,7 +201,7 @@ public final class AlphaBetaPruning {
     }
 
     private void startTimer(Piece.PlayerColor playerColor) {
-        System.out.println("TIMER: New timer for " + playerColor + "!");
+        System.out.println("TIMER: New timer for ChessMateAI playing as " + playerColor + "!");
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -206,7 +209,7 @@ public final class AlphaBetaPruning {
                 System.out.println("TIMER: " + elapsedSeconds);
 
                 if (elapsedSeconds == timerSeconds) {
-                    System.out.println("TIMER: Time's up for " + playerColor + "!");
+                    System.out.println("TIMER: Time's up for ChessMateAI, " + playerColor + "!");
                     timeIsUp = true;
                 }
             }

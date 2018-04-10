@@ -40,7 +40,7 @@ public final class GameController {
     private GameController() {
         this.white = new Player(Piece.PlayerColor.WHITE);
         this.black = new Player(Piece.PlayerColor.BLACK);
-        this.currentPlayer = white;
+        this.currentPlayer = null;
         this.board = new Board(white, black);
         this.blackKingPosition = new Point(4, 0);
         this.whiteKingPosition = new Point(4, 7);
@@ -53,7 +53,7 @@ public final class GameController {
     private GameController(Board board) {
         this.white = new Player(Piece.PlayerColor.WHITE);
         this.black = new Player(Piece.PlayerColor.BLACK);
-        this.currentPlayer = white;
+        this.currentPlayer = null;
         this.board = board;
         findAndUpdateKingPosition(this.board);
         this.selectedPiece = null;
@@ -115,6 +115,13 @@ public final class GameController {
             //      board.movePiece(fromPos, toPos);
         }
 
+    }
+
+    public void setCurrentPlayer(Piece.PlayerColor playerColor) {
+        if (playerColor == Piece.PlayerColor.WHITE)
+            this.currentPlayer = white;
+        else
+            this.currentPlayer = black;
     }
 
     public Player getCurrentPlayer() {
@@ -268,6 +275,10 @@ public final class GameController {
         return getCurrentPlayer().getPlayerColor() == Piece.PlayerColor.WHITE ? Piece.PlayerColor.BLACK : Piece.PlayerColor.WHITE;
     }
 
+    public Player getOpponentPlayer() {
+        return getCurrentPlayer().getPlayerColor() == Piece.PlayerColor.WHITE ? black : white;
+    }
+
     /**
      * Ends the game, sets the winner
      *
@@ -336,6 +347,14 @@ public final class GameController {
         }
 
         return true;
+    }
+
+    public Point getKingPosition(Piece.PlayerColor playerColor) {
+        if (playerColor == Piece.PlayerColor.WHITE) {
+            return whiteKingPosition;
+        } else {
+            return blackKingPosition;
+        }
     }
 
 }

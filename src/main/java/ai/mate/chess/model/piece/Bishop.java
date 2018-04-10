@@ -20,7 +20,7 @@ public final class Bishop extends Piece {
                 {1, -1},  // Bottom right
                 {-1, 1}   // Upper left
         };
-
+        
         return getMovesInLine(board, directionOffsets);
     }
 
