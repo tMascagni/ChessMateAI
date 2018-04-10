@@ -28,7 +28,7 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
     private int elapsedSeconds;
     private Timer timer;
 
-    private static final int MAX_TURN_SECONDS = 5;
+    private static final int MAX_TURN_SECONDS = 10;
 
     public BoardPresenter(BoardGUIContract.View view, GameController gameController, Game game, Piece.PlayerColor humanPlayerColor) {
         this.gameController = gameController;
@@ -81,8 +81,7 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
         elapsedSeconds = 0;
 
         if (!tile.isEmpty() && isClickablePiece(tile)) {
-            //startTimer(GameController.getInstance().getCurrentPlayer().getPlayerColor());
-
+            startTimer(gameController.getCurrentPlayer().getPlayerColor());
             // It means they clicked a tile with a piece and it's not highlighted
             // Or they clicked the king, who is in check
             boolean inCheck = tile.getTileHighlight() == Tile.TileHighlight.ORANGE;
@@ -122,7 +121,6 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
             }
 
             move.handleMove(gameController.getBoard());
-            timer.cancel();
 
             // Check for pawn promotion
             if (move.getMoveType() == PAWN_PROMOTION) {
@@ -143,6 +141,10 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
 
             gameController.nextTurn();
 
+            /*
+            *
+            *  THIS IS NOT QUITE WORKING.
+             */
             // Check if the AI put the user in check.
             if (gameController.isInCheck(gameController.getCurrentPlayer().getPlayerColor())) {
                 // If so, highlight the tile orange
@@ -240,17 +242,18 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
     }
 
     private void startTimer(Piece.PlayerColor playerColor) {
-        System.out.println("TIMER: New timer for " + playerColor + "!");
+        System.out.println("HUMAN TIMER: New timer for " + playerColor + "!");
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 elapsedSeconds++;
-                System.out.println("TIMER: " + elapsedSeconds);
+                System.out.println("HUMAN TIMER: " + elapsedSeconds);
 
                 if (elapsedSeconds == MAX_TURN_SECONDS) {
-                    System.out.println("TIMER: Time's up for " + playerColor + "!");
+                    System.out.println("HUMAN TIMER: Time's up for " + playerColor + "!");
                     System.out.println("You lost!");
-                    timer.cancel();
+                    handleGameOver(GameController.getInstance().getOpponentColor());
+                    this.cancel();
                 }
             }
         }, 0, 1000);

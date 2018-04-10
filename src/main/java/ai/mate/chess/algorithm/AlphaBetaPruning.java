@@ -201,15 +201,15 @@ public final class AlphaBetaPruning {
     }
 
     private void startTimer(Piece.PlayerColor playerColor) {
-        System.out.println("TIMER: New timer for ChessMateAI playing as " + playerColor + "!");
+        System.out.println("AI TIMER: New timer for ChessMateAI playing as " + playerColor + "!");
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 elapsedSeconds++;
-                System.out.println("TIMER: " + elapsedSeconds);
+                System.out.println("AI TIMER: " + elapsedSeconds);
 
                 if (elapsedSeconds == timerSeconds) {
-                    System.out.println("TIMER: Time's up for ChessMateAI, " + playerColor + "!");
+                    System.out.println("AI TIMER: Time's up for ChessMateAI, " + playerColor + "!");
                     timeIsUp = true;
                 }
             }

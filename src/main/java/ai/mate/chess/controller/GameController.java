@@ -293,7 +293,7 @@ public final class GameController {
      * Prints the winner to the console
      */
     public void printWinner() {
-        System.out.println("The winner is TEAM " + winner);
+        System.out.println("The winner is " + winner + "! Congratulations!");
     }
 
     private class AttackMoveLog {
