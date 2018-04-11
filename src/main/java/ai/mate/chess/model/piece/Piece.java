@@ -206,4 +206,36 @@ public abstract class Piece {
 
     public abstract Piece copy();
 
+
+    protected List<Move> cleanAvailableMoves(List<Move> availableMoves, Board board) {
+        /*
+         * Iterate through all available moves,
+         * check every single on of them,
+         * if after they've been handled,
+         * if our (same playerColor)'s King
+         * is in check.
+         *
+         * If the king is in check after the move, then
+         * we know that it is not a legal move.
+         */
+        List<Move> cleanMoves = new ArrayList<>();
+
+        for (Move move : availableMoves) {
+
+            board.handleMove(move);
+            // move has now been done on the board
+
+            // check if our King is in check
+            boolean isInCheck = GameController.getInstance().isInCheck(getPlayerColor());
+
+            if (!isInCheck)
+                cleanMoves.add(move);
+
+            // we undo the move on the board.
+            move.undo(board);
+        }
+
+        return cleanMoves;
+    }
+
 }

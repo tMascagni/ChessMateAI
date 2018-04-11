@@ -20,7 +20,7 @@ public final class King extends Piece {
 
     @Override
     public List<Move> getAvailableMoves(Board board) {
-        List<Move> moves = new ArrayList<>();
+        List<Move> availableMoves = new ArrayList<>();
 
         // Regular & attacking moves
         for (int i = -1; i <= 1; i++) {
@@ -30,10 +30,10 @@ public final class King extends Piece {
                     if (board.isValidPosition(possiblePos)) {
                         Tile possibleTile = board.getTile(possiblePos);
                         if (possibleTile.isEmpty()) {
-                            moves.add(createNormalMove(possiblePos));
+                            availableMoves.add(createNormalMove(possiblePos));
                         } else {
                             if (!isSameTeam(possibleTile.getPiece()))
-                                moves.add(createAttackMove(possiblePos));
+                                availableMoves.add(createAttackMove(possiblePos));
                         }
                     }
                 }
@@ -58,12 +58,13 @@ public final class King extends Piece {
                     if (!potentialRook.isEmpty() && potentialRook.getPiece().getPieceType() == PieceType.ROOK) {
                         Piece rook = potentialRook.getPiece();
                         if (rook.getMoveCount() == 0)
-                            moves.add(createCastleMove(new Point(x + (2 * direction), y)));
+                            availableMoves.add(createCastleMove(new Point(x + (2 * direction), y)));
                     }
                 }
             }
         }
-        return moves;
+
+        return availableMoves;
     }
 
     @Override

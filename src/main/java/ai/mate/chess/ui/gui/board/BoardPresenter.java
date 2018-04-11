@@ -81,7 +81,7 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
         elapsedSeconds = 0;
 
         if (!tile.isEmpty() && isClickablePiece(tile)) {
-            startTimer(gameController.getCurrentPlayer().getPlayerColor());
+            //startTimer(gameController.getCurrentPlayer().getPlayerColor());
             // It means they clicked a tile with a piece and it's not highlighted
             // Or they clicked the king, who is in check
             boolean inCheck = tile.getTileHighlight() == Tile.TileHighlight.ORANGE;
