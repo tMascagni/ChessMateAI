@@ -21,7 +21,10 @@ public final class Rook extends Piece {
                 {-1, 0}  // Right
         };
 
-        return getMovesInLine(board, directionOffsets);
+        /* Get all the available moves */
+        List<Move> availableMoves = getMovesInLine(board, directionOffsets);
+
+        return availableMoves;
     }
 
     @Override

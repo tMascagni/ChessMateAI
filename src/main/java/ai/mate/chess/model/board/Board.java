@@ -46,6 +46,31 @@ public final class Board {
                 {new Tile(new Pawn(Piece.PlayerColor.WHITE, new Point(0, 6))), new Tile(new Pawn(Piece.PlayerColor.WHITE, new Point(1, 6))), new Tile(new Pawn(Piece.PlayerColor.WHITE, new Point(2, 6))), new Tile(new Pawn(Piece.PlayerColor.WHITE, new Point(3, 6))), new Tile(new Pawn(Piece.PlayerColor.WHITE, new Point(4, 6))), new Tile(new Pawn(Piece.PlayerColor.WHITE, new Point(5, 6))), new Tile(new Pawn(Piece.PlayerColor.WHITE, new Point(6, 6))), new Tile(new Pawn(Piece.PlayerColor.WHITE, new Point(7, 6)))},
                 {new Tile(new Rook(Piece.PlayerColor.WHITE, new Point(0, 7))), new Tile(new Knight(Piece.PlayerColor.WHITE, new Point(1, 7))), new Tile(new Bishop(Piece.PlayerColor.WHITE, new Point(2, 7))), new Tile(new Queen(Piece.PlayerColor.WHITE, new Point(3, 7))), new Tile(new King(Piece.PlayerColor.WHITE, new Point(4, 7))), new Tile(new Bishop(Piece.PlayerColor.WHITE, new Point(5, 7))), new Tile(new Knight(Piece.PlayerColor.WHITE, new Point(6, 7))), new Tile(new Rook(Piece.PlayerColor.WHITE, new Point(7, 7)))},
         };
+
+/*
+        for (int i = 0; i < 8; i += 7) {
+            Piece.PlayerColor playerColor = i == 0 ? Piece.PlayerColor.BLACK : Piece.PlayerColor.WHITE;
+            board[i][0] = new Tile(new Rook(playerColor, new Point(0, i)));
+            board[i][1] = new Tile(new Knight(playerColor, new Point(1, i)));
+            board[i][2] = new Tile(new Bishop(playerColor, new Point(2, i)));
+            board[i][3] = new Tile(new Queen(playerColor, new Point(3, i)));
+            board[i][4] = new Tile(new King(playerColor, new Point(4, i)));
+            board[i][5] = new Tile(new Bishop(playerColor, new Point(5, i)));
+            board[i][6] = new Tile(new Knight(playerColor, new Point(6, i)));
+            board[i][7] = new Tile(new Rook(playerColor, new Point(7, i)));
+        }
+
+        for (int i = 2; i < 6; i++) {
+            for (int j = 0; j < 8; j++) {
+                board[i][j] = new Tile(new Point(j, i));
+            }
+        }
+
+        for (int k = 0; k < 8; k++) {
+            board[1][k] = new Tile(new Pawn(Piece.PlayerColor.BLACK, new Point(k, 1)));
+            board[6][k] = new Tile(new Pawn(Piece.PlayerColor.WHITE, new Point(k, 6)));
+        }
+        */
     }
 
     private void initPlayerPieces(Player white, Player black) {

@@ -24,17 +24,20 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
     private final GameController gameController;
     private final Game game;
     private final AlphaBetaPruning alphaBetaPruning;
+    private final Piece.PlayerColor humanPlayerColor;
 
     private int elapsedSeconds;
     private Timer timer;
+    private boolean isTimerOn = false;
 
-    private static final int MAX_TURN_SECONDS = 10;
+    private static final int MAX_TURN_SECONDS = 30;
 
     public BoardPresenter(BoardGUIContract.View view, GameController gameController, Game game, Piece.PlayerColor humanPlayerColor) {
         this.gameController = gameController;
         this.view = view;
         this.game = game;
         this.alphaBetaPruning = new AlphaBetaPruning(4, MAX_TURN_SECONDS);
+        this.humanPlayerColor = humanPlayerColor;
         view.setPresenter(this);
         timer = new Timer();
 
@@ -77,11 +80,13 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
         if (gameController.isGameOver())
             return;
 
-        timer = new Timer();
-        elapsedSeconds = 0;
-
         if (!tile.isEmpty() && isClickablePiece(tile)) {
-            startTimer(gameController.getCurrentPlayer().getPlayerColor());
+
+            if (gameController.getCurrentPlayer().getPlayerColor() == humanPlayerColor) {
+                startTimer(gameController.getCurrentPlayer().getPlayerColor());
+                isTimerOn = true;
+            }
+
             // It means they clicked a tile with a piece and it's not highlighted
             // Or they clicked the king, who is in check
             boolean inCheck = tile.getTileHighlight() == Tile.TileHighlight.ORANGE;
@@ -110,6 +115,10 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
 
             view.updateBoard(gameController.getBoard());
         } else if (tile.isHighlighted() && isMove(tile)) {
+            timer.cancel();
+            timer.purge();
+            isTimerOn = false;
+            timer = new Timer();
             // It means they clicked a tile with a piece that is highlighted, i.e an attacking move.
             // Or they clicked a tile without a piece that is highlighted
             Move move = tile.getMove();
@@ -131,6 +140,7 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
             }
 
             gameController.unhighlightBoard();
+            view.updateBoard(gameController.getBoard());
 
             handleAIMove();
 
@@ -142,8 +152,8 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
             gameController.nextTurn();
 
             /*
-            *
-            *  THIS IS NOT QUITE WORKING.
+             *
+             *  THIS IS NOT QUITE WORKING.
              */
             // Check if the AI put the user in check.
             if (gameController.isInCheck(gameController.getCurrentPlayer().getPlayerColor())) {
@@ -242,7 +252,13 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
     }
 
     private void startTimer(Piece.PlayerColor playerColor) {
-        System.out.println("HUMAN TIMER: New timer for " + playerColor + "!");
+        if (isTimerOn)
+            return;
+
+        System.out.println("HUMAN TIMER: New timer for HumanPlayer playing as " + playerColor + "!");
+
+        elapsedSeconds = 0;
+
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
