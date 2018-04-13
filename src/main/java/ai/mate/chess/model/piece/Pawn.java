@@ -14,6 +14,9 @@ public final class Pawn extends Piece {
     private Point startPosition;
     private int direction;
 
+    int[] pawnRow = new int[] {0,0,-1,0,2,14,30,0};
+    int[] pawnLine = new int[] {-2,0,3,4,5,1,-2,-2};
+
     public Pawn(PlayerColor playerColor, Point position) {
         super(playerColor, position);
         this.startPosition = new Point(position);
@@ -96,8 +99,19 @@ public final class Pawn extends Piece {
     }
 
     @Override
-    public int getScore() {
-        return ChessUtils.PAWN_SCORE;
+    public double getScore(Board board) {
+        int row;
+        int line;
+        if(getPlayerColor() == PlayerColor.WHITE){
+            row = 7-getPosition().y;
+            line = 7-getPosition().x;
+
+        } else {
+            row = getPosition().y;
+            line = getPosition().x;
+        }
+        return ChessUtils.PAWN_SCORE + pawnRow[row] + pawnLine[line] * row / 2;
+        //TODO mangler "dobbeltbonde" (-8)
     }
 
     @Override

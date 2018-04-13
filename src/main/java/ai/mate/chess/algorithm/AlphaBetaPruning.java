@@ -6,7 +6,6 @@ import ai.mate.chess.model.move.Move;
 import ai.mate.chess.model.piece.Piece;
 import ai.mate.chess.utils.ChessUtils;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -183,16 +182,24 @@ public final class AlphaBetaPruning {
             for (Tile tile : tiles) {
 
                 if (!tile.isEmpty()) {
-                    Piece piece = tile.getPiece();
-                    Point position = piece.getPosition();
 
-                    int x = piece.getPosition().x;
-                    int y = piece.getPlayerColor() == Piece.PlayerColor.WHITE ? position.x : 7 - position.y;
+                    if(tile.getPiece().getPlayerColor() == Piece.PlayerColor.WHITE){
+                        score += tile.getPiece().getScore(board);
+                    } else {
+                        score -= tile.getPiece().getScore(board);
+                    }
 
-                    if (isMaximizer)
-                        score += (piece.getScore() + piece.getPositionTable()[y][x] + currentPly);
-                    else
-                        score -= (piece.getScore() + piece.getPositionTable()[y][x] + currentPly);
+
+//                    Piece piece = tile.getPiece();
+//                    Point position = piece.getPosition();
+//
+//                    int x = piece.getPosition().x;
+//                    int y = piece.getPlayerColor() == Piece.PlayerColor.WHITE ? position.x : 7 - position.y;
+//
+//                    if (isMaximizer)
+//                        score += (piece.getScore() + piece.getPositionTable()[y][x] + currentPly);
+//                    else
+//                        score -= (piece.getScore() + piece.getPositionTable()[y][x] + currentPly);
                 }
             }
         }

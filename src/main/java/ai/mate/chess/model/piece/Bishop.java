@@ -48,8 +48,8 @@ public final class Bishop extends Piece {
     }
 
     @Override
-    public int getScore() {
-        return ChessUtils.BISHOP_SCORE;
+    public double getScore(Board board) {
+        return ChessUtils.BISHOP_SCORE + 2.0 * getAvailableMoves(board).size();
     }
 
     @Override

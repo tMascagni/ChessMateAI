@@ -88,8 +88,10 @@ public final class King extends Piece {
     }
 
     @Override
-    public int getScore() {
+    public double getScore(Board board) {
         return ChessUtils.KING_SCORE;
+        //TODO 10000 - 100 * antal træk til mat?
+        //TODO mangler "kort rokade" (+16)
     }
 
     @Override

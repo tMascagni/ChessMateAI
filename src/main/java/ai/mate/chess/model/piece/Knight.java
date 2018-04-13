@@ -66,8 +66,9 @@ public final class Knight extends Piece {
     }
 
     @Override
-    public int getScore() {
+    public double getScore(Board board) {
         return ChessUtils.KNIGHT_SCORE;
+        //TODO 300 + 3.0 * (4 - afstand til centrum?)
     }
 
     @Override

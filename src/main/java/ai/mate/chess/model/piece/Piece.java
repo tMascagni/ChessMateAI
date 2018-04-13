@@ -118,8 +118,9 @@ public abstract class Piece {
     /**
      * Returns the piece evaluation score, by the Kaare Danielsen model.
      * @return
+     * @param board
      */
-    public abstract int getScore();
+    public abstract double getScore(Board board);
 
     public int getMoveCount() {
         return moveCount;

@@ -48,8 +48,8 @@ public final class Rook extends Piece {
     }
 
     @Override
-    public int getScore() {
-        return ChessUtils.ROOK_SCORE;
+    public double getScore(Board board) {
+        return ChessUtils.ROOK_SCORE + 1.5 * getAvailableMoves(board).size();
     }
 
     @Override

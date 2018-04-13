@@ -52,9 +52,8 @@ public final class Queen extends Piece {
     }
 
     @Override
-    public int getScore() {
-        return ChessUtils.QUEEN_SCORE;
-        //return 900 + 1.0 * getAvailableMoves().size();
+    public double getScore(Board board) {
+        return ChessUtils.QUEEN_SCORE + 1.0 * getAvailableMoves(board).size();
     }
 
     @Override
