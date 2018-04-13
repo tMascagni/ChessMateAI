@@ -89,6 +89,10 @@ public final class AlphaBetaPruning {
      * @return Alpha when maximizing, beta when minimizing
      */
     private double alphaBetaPruning(Board board, Piece.PlayerColor playerColor, double alpha, double beta, int currentPly) {
+        /*
+         * BLACK: Maximizer
+         * WHITE: Minimizer
+         */
         boolean isMaximizer = playerColor == Piece.PlayerColor.BLACK;
 
         /*
@@ -99,22 +103,46 @@ public final class AlphaBetaPruning {
         if (currentPly++ == maxPly || timeIsUp)
             return getScore(isMaximizer, board, currentPly);
 
+        /*
+         * Get all the possible moves for the player.
+         */
         List<Move> moves = getAllPossibleMoves(board, playerColor);
 
-        // BLACK
+        /*
+         * Handle AI move for BLACK.
+         */
         if (isMaximizer) {
+            // Save the current best move for the maximizer
             Move localBestMoveMaximizer = null;
+
+            /*
+             * Go through all moves and recursively
+             * do alpha-beta pruning on those,
+             * returning the score of each
+             * after maxPly has been reached.
+             *
+             * Score: alpha for black (max), beta for white (min).
+             */
             for (Move move : moves) {
+                // Create deep copy of the board
                 Board copyBoard = new Board(board);
+
+                // Do the move on the copied board
                 move.handleMove(copyBoard);
+
+                // Now recursively do alpha-beta pruning on the copyBoard with the new move
                 double score = alphaBetaPruning(copyBoard, ChessUtils.changePlayer(playerColor), alpha, beta, currentPly);
+
+                // Undo it on current board
                 move.undo(copyBoard);
 
+                // Check if the score is greater than alpha, if yes, we've got a new best move.
                 if (score > alpha) {
                     alpha = score;
                     localBestMoveMaximizer = move;
                 }
 
+                // If beta is less than or equal to alpha, we've got a cut off.
                 if (beta <= alpha)
                     break;
             }
@@ -179,7 +207,6 @@ public final class AlphaBetaPruning {
         int score = 0;
 
         for (Tile[] tiles : board.getBoard()) {
-
             for (Tile tile : tiles) {
 
                 if (!tile.isEmpty()) {
