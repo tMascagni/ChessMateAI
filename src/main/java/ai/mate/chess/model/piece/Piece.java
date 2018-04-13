@@ -18,7 +18,6 @@ public abstract class Piece {
     private Point position;
 
     private final String name;
-    private final int score;
     private int moveCount;
     private int attackCount;
 
@@ -35,7 +34,6 @@ public abstract class Piece {
         this.pieceType = initPieceType();
         this.position = position;
         this.name = initName();
-        this.score = initScore();
         this.moveCount = 0;
         this.attackCount = 0;
     }
@@ -117,9 +115,11 @@ public abstract class Piece {
         return position;
     }
 
-    public int getScore() {
-        return score;
-    }
+    /**
+     * Returns the piece evaluation score, by the Kaare Danielsen model.
+     * @return
+     */
+    public abstract int getScore();
 
     public int getMoveCount() {
         return moveCount;
@@ -182,25 +182,6 @@ public abstract class Piece {
                 return playerColor == PlayerColor.WHITE ? ChessUtils.WHITE_ROOK : ChessUtils.BLACK_ROOK;
             default:
                 return ChessUtils.ERROR_NAME;
-        }
-    }
-
-    private int initScore() {
-        switch (pieceType) {
-            case BISHOP:
-                return ChessUtils.BISHOP_SCORE;
-            case KING:
-                return ChessUtils.KING_SCORE;
-            case KNIGHT:
-                return ChessUtils.KNIGHT_SCORE;
-            case PAWN:
-                return ChessUtils.PAWN_SCORE;
-            case QUEEN:
-                return ChessUtils.QUEEN_SCORE;
-            case ROOK:
-                return ChessUtils.ROOK_SCORE;
-            default:
-                return ChessUtils.DEFAULT_SCORE;
         }
     }
 

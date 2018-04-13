@@ -2,6 +2,7 @@ package ai.mate.chess.model.piece;
 
 import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.move.Move;
+import ai.mate.chess.utils.ChessUtils;
 
 import java.awt.*;
 import java.util.List;
@@ -44,6 +45,11 @@ public final class Bishop extends Piece {
     @Override
     public boolean[] getPositionThreats() {
         return new boolean[]{true, false, true, false, false, true, false, true};
+    }
+
+    @Override
+    public int getScore() {
+        return ChessUtils.BISHOP_SCORE;
     }
 
     @Override

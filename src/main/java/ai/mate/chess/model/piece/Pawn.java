@@ -3,6 +3,7 @@ package ai.mate.chess.model.piece;
 import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.board.Tile;
 import ai.mate.chess.model.move.*;
+import ai.mate.chess.utils.ChessUtils;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -92,6 +93,11 @@ public final class Pawn extends Piece {
     public boolean[] getPositionThreats() {
         boolean diagonal = getPlayerColor() == PlayerColor.WHITE;
         return new boolean[]{!diagonal, false, !diagonal, false, false, diagonal, false, diagonal};
+    }
+
+    @Override
+    public int getScore() {
+        return ChessUtils.PAWN_SCORE;
     }
 
     @Override

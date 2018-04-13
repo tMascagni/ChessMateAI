@@ -4,6 +4,7 @@ import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.board.Tile;
 import ai.mate.chess.model.move.CastleMove;
 import ai.mate.chess.model.move.Move;
+import ai.mate.chess.utils.ChessUtils;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -84,6 +85,11 @@ public final class King extends Piece {
     @Override
     public boolean[] getPositionThreats() {
         return new boolean[]{true, true, true, true, true, true, true, true};
+    }
+
+    @Override
+    public int getScore() {
+        return ChessUtils.KING_SCORE;
     }
 
     @Override

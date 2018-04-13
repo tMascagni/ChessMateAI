@@ -3,6 +3,7 @@ package ai.mate.chess.model.piece;
 import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.board.Tile;
 import ai.mate.chess.model.move.Move;
+import ai.mate.chess.utils.ChessUtils;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -62,6 +63,11 @@ public final class Knight extends Piece {
     @Override
     public boolean[] getPositionThreats() {
         return new boolean[0];
+    }
+
+    @Override
+    public int getScore() {
+        return ChessUtils.KNIGHT_SCORE;
     }
 
     @Override
