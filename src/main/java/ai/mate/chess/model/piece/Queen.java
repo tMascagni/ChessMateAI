@@ -15,6 +15,8 @@ public final class Queen extends Piece {
 
     @Override
     public List<Move> getAvailableMoves(Board board) {
+        threatenedPieces.clear();
+
         int[][] directionOffsets = {
                 {0, 1},   // Up
                 {0, -1},  // Down
@@ -30,20 +32,6 @@ public final class Queen extends Piece {
         List<Move> availableMoves = getMovesInLine(board, directionOffsets);
 
         return availableMoves;
-    }
-
-    @Override
-    public int[][] getPositionTable() {
-        return new int[][]{
-                {-20, -10, -10, -5, -5, -10, -10, -20},
-                {-10, 0, 0, 0, 0, 0, 0, -10},
-                {-10, 0, 5, 5, 5, 5, 0, -10},
-                {-5, 0, 5, 5, 5, 5, 0, -5},
-                {0, 0, 5, 5, 5, 5, 0, -5},
-                {-10, 5, 5, 5, 5, 5, 0, -10},
-                {-10, 0, 5, 0, 0, 0, 0, -10},
-                {-20, -10, -10, -5, -5, -10, -10, -20}
-        };
     }
 
     @Override

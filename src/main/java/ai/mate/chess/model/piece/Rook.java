@@ -15,6 +15,8 @@ public final class Rook extends Piece {
 
     @Override
     public List<Move> getAvailableMoves(Board board) {
+        threatenedPieces.clear();
+
         int[][] directionOffsets = {
                 {0, 1},  // Up
                 {0, -1}, // Down
@@ -26,20 +28,6 @@ public final class Rook extends Piece {
         List<Move> availableMoves = getMovesInLine(board, directionOffsets);
 
         return availableMoves;
-    }
-
-    @Override
-    public int[][] getPositionTable() {
-        return new int[][]{
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {5, 10, 10, 10, 10, 10, 10, 5},
-                {-5, 0, 0, 0, 0, 0, 0, -5},
-                {-5, 0, 0, 0, 0, 0, 0, -5},
-                {-5, 0, 0, 0, 0, 0, 0, -5},
-                {-5, 0, 0, 0, 0, 0, 0, -5},
-                {-5, 0, 0, 0, 0, 0, 0, -5},
-                {0, 0, 0, 5, 5, 0, 0, 0}
-        };
     }
 
     @Override

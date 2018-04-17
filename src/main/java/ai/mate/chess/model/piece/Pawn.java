@@ -25,6 +25,8 @@ public final class Pawn extends Piece {
 
     @Override
     public List<Move> getAvailableMoves(Board board) {
+        threatenedPieces.clear();
+
         List<Move> moves = new ArrayList<>();
         Point currentPos = getPosition();
         Point singleMove = new Point(currentPos.x, currentPos.y + getNormalized(1));
@@ -48,8 +50,10 @@ public final class Pawn extends Piece {
                 // Attack moves
                 Tile diagonalTile = board.getTile(diagPos);
                 if (!diagonalTile.isEmpty()) {
-                    if (!isSameTeam(diagonalTile.getPiece()))
+                    if (!isSameTeam(diagonalTile.getPiece())) {
                         moves.add(createAttackMove(diagonalTile.getPosition()));
+                        threatenedPieces.add(board.getTile(diagonalTile.getPosition()).getPiece());
+                    }
                 } else {
                     // En passant moves
                     if (currentPos.y == startPosition.y + getNormalized(3)) {
@@ -76,20 +80,6 @@ public final class Pawn extends Piece {
         }
 
         return moves;
-    }
-
-    @Override
-    public int[][] getPositionTable() {
-        return new int[][]{
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {50, 50, 50, 50, 50, 50, 50, 50},
-                {10, 10, 20, 30, 30, 20, 10, 10},
-                {5, 5, 10, 25, 25, 10, 5, 5},
-                {0, 0, 0, 20, 20, 0, 0, 0},
-                {5, -5, -10, 0, 0, -10, -5, 5},
-                {5, 10, 10, -20, -20, 10, 10, 5},
-                {0, 0, 0, 0, 0, 0, 0, 0}
-        };
     }
 
     @Override

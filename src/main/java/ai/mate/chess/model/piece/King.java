@@ -21,6 +21,8 @@ public final class King extends Piece {
 
     @Override
     public List<Move> getAvailableMoves(Board board) {
+        threatenedPieces.clear();
+
         List<Move> availableMoves = new ArrayList<>();
 
         // Regular & attacking moves
@@ -33,8 +35,10 @@ public final class King extends Piece {
                         if (possibleTile.isEmpty()) {
                             availableMoves.add(createNormalMove(possiblePos));
                         } else {
-                            if (!isSameTeam(possibleTile.getPiece()))
+                            if (!isSameTeam(possibleTile.getPiece())) {
                                 availableMoves.add(createAttackMove(possiblePos));
+                                threatenedPieces.add(board.getTile(possiblePos).getPiece());
+                            }
                         }
                     }
                 }
@@ -42,7 +46,7 @@ public final class King extends Piece {
         }
 
         // Castling
-        if (this.getPosition() == this.startPosition && getMoveCount() == 0) {
+        if (this.getPosition() == startPosition && getMoveCount() == 0) {
             int x = this.getPosition().x;
             int y = this.getPosition().y;
 
@@ -66,20 +70,6 @@ public final class King extends Piece {
         }
 
         return availableMoves;
-    }
-
-    @Override
-    public int[][] getPositionTable() {
-        return new int[][]{
-                {-30, -40, -40, -50, -50, -40, -40, -30},
-                {-30, -40, -40, -50, -50, -40, -40, -30},
-                {-30, -40, -40, -50, -50, -40, -40, -30},
-                {-30, -40, -40, -50, -50, -40, -40, -30},
-                {-20, -30, -30, -40, -40, -30, -30, -20},
-                {-10, -20, -20, -20, -20, -20, -20, -10},
-                {20, 20, 0, 0, 0, 0, 20, 20},
-                {20, 30, 10, 0, 0, 10, 30, 20}
-        };
     }
 
     @Override

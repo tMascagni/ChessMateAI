@@ -183,7 +183,7 @@ public final class AlphaBetaPruning {
 
                 if (!tile.isEmpty()) {
 
-                    if(tile.getPiece().getPlayerColor() == Piece.PlayerColor.WHITE){
+                    if (isMaximizer) {
                         score += tile.getPiece().getScore(board);
                     } else {
                         score -= tile.getPiece().getScore(board);

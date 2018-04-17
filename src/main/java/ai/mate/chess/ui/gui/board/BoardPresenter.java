@@ -5,9 +5,7 @@ import ai.mate.chess.controller.Game;
 import ai.mate.chess.controller.GameController;
 import ai.mate.chess.model.board.Tile;
 import ai.mate.chess.model.move.Move;
-import ai.mate.chess.model.piece.Pawn;
-import ai.mate.chess.model.piece.Piece;
-import ai.mate.chess.model.piece.Queen;
+import ai.mate.chess.model.piece.*;
 import ai.mate.chess.model.player.Player;
 
 import java.awt.*;
@@ -93,6 +91,13 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
             gameController.unhighlightBoard();
             Player currentPlayer = gameController.getCurrentPlayer();
             Piece piece = tile.getPiece();
+
+            // TESTING
+            if (piece.getPlayerColor() == Piece.PlayerColor.WHITE && piece instanceof Rook) {
+
+                System.out.println(piece.getThreatenedPieces());
+
+            }
 
             //System.out.println("InCheck: " + tile + ": " + inCheck);
             if (inCheck) {

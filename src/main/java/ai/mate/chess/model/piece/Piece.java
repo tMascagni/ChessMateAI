@@ -3,7 +3,10 @@ package ai.mate.chess.model.piece;
 import ai.mate.chess.controller.GameController;
 import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.board.Tile;
-import ai.mate.chess.model.move.*;
+import ai.mate.chess.model.move.AttackMove;
+import ai.mate.chess.model.move.Move;
+import ai.mate.chess.model.move.MoveHistory;
+import ai.mate.chess.model.move.NormalMove;
 import ai.mate.chess.utils.ChessUtils;
 
 import java.awt.*;
@@ -20,6 +23,8 @@ public abstract class Piece {
     private final String name;
     private int moveCount;
     private int attackCount;
+
+    protected List<Piece> threatenedPieces = new ArrayList<>();
 
     public enum PlayerColor {
         WHITE, BLACK
@@ -55,6 +60,8 @@ public abstract class Piece {
      * @return
      */
     public List<Move> getMovesInLine(Board board, int[][] directionOffsets) {
+        threatenedPieces.clear();
+
         List<Move> movesInLine = new ArrayList<>();
 
         for (int[] offset : directionOffsets) {
@@ -68,8 +75,12 @@ public abstract class Piece {
                     if (possibleTile.isEmpty()) {
                         movesInLine.add(createNormalMove(possiblePos));
                     } else {
-                        if (!isSameTeam(possibleTile.getPiece()))
-                            movesInLine.add(createAttackMove(possiblePos));
+                        if (!isSameTeam(possibleTile.getPiece())) {
+                            // ATTACK MOVE HERE
+                            threatenedPieces.add(board.getTile(possiblePos).getPiece());
+                            Move attMove = createAttackMove(possiblePos);
+                            movesInLine.add(attMove);
+                        }
                         break;
                     }
                 } else {
@@ -83,8 +94,6 @@ public abstract class Piece {
 
     public abstract List<Move> getAvailableMoves(Board board);
 
-    public abstract int[][] getPositionTable();
-
     public abstract boolean[] getPositionThreats();
 
     public boolean isSameTeam(Piece piece) {
@@ -92,15 +101,15 @@ public abstract class Piece {
     }
 
     public Move createAttackMove(Point end) {
-        return new AttackMove(this.position, end);
+        return new AttackMove(position, end);
     }
 
     public Move createNormalMove(Point end) {
-        return new NormalMove(this.position, end);
+        return new NormalMove(position, end);
     }
 
     public Move createNormalMove(Point end, Move.MoveType moveType) {
-        return new NormalMove(this.position, end, moveType);
+        return new NormalMove(position, end, moveType);
     }
 
     public PlayerColor getPlayerColor() {
@@ -117,8 +126,9 @@ public abstract class Piece {
 
     /**
      * Returns the piece evaluation score, by the Kaare Danielsen model.
-     * @return
+     *
      * @param board
+     * @return
      */
     public abstract double getScore(Board board);
 
@@ -219,6 +229,10 @@ public abstract class Piece {
         }
 
         return cleanMoves;
+    }
+
+    public List<Piece> getThreatenedPieces() {
+        return threatenedPieces;
     }
 
 }

@@ -17,6 +17,8 @@ public final class Knight extends Piece {
 
     @Override
     public List<Move> getAvailableMoves(Board board) {
+        threatenedPieces.clear();
+
         List<Move> availableMoves = new ArrayList<>();
 
         Point[] possibleMoves = {
@@ -33,28 +35,16 @@ public final class Knight extends Piece {
         for (Point possibleMove : possibleMoves) {
             if (board.isValidPosition(possibleMove)) {
                 Tile possibleTile = board.getTile(possibleMove);
-                if (possibleTile.isEmpty())
+                if (possibleTile.isEmpty()) {
                     availableMoves.add(createNormalMove(possibleMove));
-                else if (!isSameTeam(possibleTile.getPiece()))
+                } else if (!isSameTeam(possibleTile.getPiece())) {
                     availableMoves.add(createAttackMove(possibleMove));
+                    threatenedPieces.add(possibleTile.getPiece());
+                }
             }
         }
 
         return availableMoves;
-    }
-
-    @Override
-    public int[][] getPositionTable() {
-        return new int[][]{
-                {-50, -40, -30, -30, -30, -30, -40, -50},
-                {-40, -20, 0, 0, 0, 0, -20, -40},
-                {-30, 0, 10, 15, 15, 10, 0, -30},
-                {-30, 5, 15, 20, 20, 15, 5, -30},
-                {-30, 0, 15, 20, 20, 15, 0, -30},
-                {-30, 5, 10, 15, 15, 10, 5, -30},
-                {-40, -20, 0, 5, 5, 0, -20, -40},
-                {-50, -40, -30, -30, -30, -30, -40, -50}
-        };
     }
 
     /*
