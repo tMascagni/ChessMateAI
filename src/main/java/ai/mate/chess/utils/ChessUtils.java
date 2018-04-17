@@ -34,6 +34,10 @@ public final class ChessUtils {
     public static final int KNIGHT_SCORE = 300;
     public static final int KING_SCORE = 10000;
 
+    public static final int THREATENED_BY_NO_MINORS = 2;
+    public static final int THREATENED_BY_ONE_MINOR = -10;
+    public static final int THREATENED_BY_SEVERAL_MINORS = -50;
+
     private static ChessUtils instance;
 
     static {
