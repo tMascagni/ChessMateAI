@@ -124,7 +124,7 @@ public final class Board {
     public Tile getTile(int x, int y) {
         return board[y][x];
     }
-
+/*
     @Override
     public String toString() {
         return "\n┌───────────────────────────────────────────────────────────────┐    ┌────────────────────────────────────────────────────────────┐\n" +
@@ -151,7 +151,7 @@ public final class Board {
                 "│          A     B     C     D     E     F     G     H          │    │ Black Pieces: " + black.getPieceCount() + "                                           │\n" +
                 "└───────────────────────────────────────────────────────────────┘    └────────────────────────────────────────────────────────────┘\n";
     }
-
+*/
     public void clearTile(Point start) {
         getTile(start).setPiece(null);
     }

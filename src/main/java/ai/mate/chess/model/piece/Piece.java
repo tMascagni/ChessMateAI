@@ -201,11 +201,10 @@ public abstract class Piece {
          * we know that it is not a legal move.
          */
         List<Move> cleanMoves = new ArrayList<>();
-        Board copyBoard = new Board(board);
 
         for (Move move : availableMoves) {
 
-            copyBoard.handleMove(move);
+            board.handleMove(move);
             // move has now been done on the board
 
             // check if our King is in check
@@ -215,7 +214,7 @@ public abstract class Piece {
                 cleanMoves.add(move);
 
             // we undo the move on the board.
-            move.undo(copyBoard);
+            move.undo(board);
         }
 
         return cleanMoves;
