@@ -5,6 +5,7 @@ import ai.mate.chess.controller.Game;
 import ai.mate.chess.controller.GameController;
 import ai.mate.chess.model.board.Tile;
 import ai.mate.chess.model.move.Move;
+import ai.mate.chess.model.piece.King;
 import ai.mate.chess.model.piece.Pawn;
 import ai.mate.chess.model.piece.Piece;
 import ai.mate.chess.model.piece.Queen;
@@ -137,6 +138,21 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
                 if (pawn.promotePawn()) {
                     game.showPawnPromotionView();
                 }
+            }
+
+            if (gameController.getSelectedPiece().getPieceType() != KING && gameController.getBoard().tileAtPointIsThreatened(
+                    gameController.getCurrentPlayer().getPlayerColor(),
+                    (gameController.getCurrentPlayer().getPlayerColor() == Piece.PlayerColor.WHITE) ? gameController.whiteKingPosition : gameController.blackKingPosition)) {
+                move.undo(gameController.getBoard());
+                System.out.println("Move not allowed! This will put your King in check!");
+                //TODO Could this be an infinite loop for the AI???
+                return;
+            } else if (gameController.getSelectedPiece().getPieceType() == KING &&
+                    gameController.getBoard().tileAtPointIsThreatened(gameController.getCurrentPlayer().getPlayerColor(), move.getTo())) {
+                move.undo(gameController.getBoard());
+                System.out.println("You're not allowed to put your King in check!");
+                //TODO Same
+                return;
             }
 
             gameController.unhighlightBoard();
