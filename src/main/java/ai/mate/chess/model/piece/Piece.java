@@ -26,6 +26,18 @@ public abstract class Piece {
 
     protected List<Piece> threatenedPieces = new ArrayList<>();
 
+    public boolean threatensHigherRank(Board board) {
+        List<Move> moves = getAvailableMoves(board);
+        for (Move move : moves) {
+            if(move instanceof AttackMove && board.getTile(move.getTo()).getPiece().getRank() > this.getRank()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public abstract int getRank();
+
     public enum PlayerColor {
         WHITE, BLACK
     }

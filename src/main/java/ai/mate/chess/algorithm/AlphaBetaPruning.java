@@ -96,7 +96,7 @@ public final class AlphaBetaPruning {
          * algorithm.
          */
         if (currentPly++ == maxPly || timeIsUp)
-            return getScore(AIColor, board, currentPly);
+            return getScore(playerToMove, AIColor, board, currentPly);
 
         List<Move> moves = getAllPossibleMoves(board, playerToMove);
 
@@ -174,8 +174,10 @@ public final class AlphaBetaPruning {
      * @param board     board to evaluate
      * @return Returns evaluated score
      */
-    private double getScore(Piece.PlayerColor AIColor, Board board, int currentPly) {
+    private double getScore(Piece.PlayerColor playerToMove, Piece.PlayerColor AIColor, Board board, int currentPly) {
         int score = 0;
+        int threatCount = 0;
+        int threatScore = 0;
         for (Tile[] tiles : board.getBoard()) {
             for (Tile tile : tiles) {
                 if (!tile.isEmpty()) {
@@ -184,8 +186,23 @@ public final class AlphaBetaPruning {
                     } else {
                         score -= tile.getPiece().getScore(board);
                     }
+                    if(tile.getPiece().getPlayerColor() != playerToMove && tile.getPiece().threatensHigherRank(board)) {
+                        threatCount++;
+                    }
                 }
             }
+        }
+        if (threatCount == 0) {
+            threatScore = ChessUtils.THREATENED_BY_NO_MINORS;
+        } else if (threatCount == 1) {
+            threatScore = ChessUtils.THREATENED_BY_ONE_MINOR;
+        } else {
+            threatScore = ChessUtils.THREATENED_BY_SEVERAL_MINORS;
+        }
+        if (AIColor == playerToMove) {
+            score += threatScore;
+        } else {
+            score -= threatScore;
         }
         return score;
     }
