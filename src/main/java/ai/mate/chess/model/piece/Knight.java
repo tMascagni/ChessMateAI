@@ -11,6 +11,11 @@ import java.util.List;
 
 public final class Knight extends Piece {
 
+    @Override
+    public int getRank() {
+        return ChessUtils.KNIGHT_SCORE;
+    }
+
     public Knight(PlayerColor playerColor, Point position) {
         super(playerColor, position);
     }

@@ -14,6 +14,11 @@ public final class King extends Piece {
 
     private Point startPosition;
 
+    @Override
+    public int getRank() {
+        return ChessUtils.KING_SCORE;
+    }
+
     public King(PlayerColor playerColor, Point position) {
         super(playerColor, position);
         this.startPosition = position;

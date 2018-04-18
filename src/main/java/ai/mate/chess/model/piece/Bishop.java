@@ -9,6 +9,11 @@ import java.util.List;
 
 public final class Bishop extends Piece {
 
+    @Override
+    public int getRank() {
+        return ChessUtils.BISHOP_SCORE;
+    }
+
     public Bishop(PlayerColor playerColor, Point position) {
         super(playerColor, position);
     }

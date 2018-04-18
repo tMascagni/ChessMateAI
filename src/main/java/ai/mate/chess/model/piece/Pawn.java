@@ -17,6 +17,11 @@ public final class Pawn extends Piece {
     int[] pawnRow = new int[] {0,0,-1,0,2,14,30,0};
     int[] pawnLine = new int[] {-2,0,3,4,5,1,-2,-2};
 
+    @Override
+    public int getRank() {
+        return ChessUtils.PAWN_SCORE;
+    }
+
     public Pawn(PlayerColor playerColor, Point position) {
         super(playerColor, position);
         this.startPosition = new Point(position);
