@@ -27,12 +27,16 @@ public final class ChessUtils {
     public static final String ERROR_NAME = "ERROR";
 
     /* Piece scores */
+    public static final int PAWN_SCORE = 100;
+    public static final int KNIGHT_SCORE = 300;
     public static final int BISHOP_SCORE = 300;
     public static final int ROOK_SCORE = 500;
     public static final int QUEEN_SCORE = 900;
-    public static final int PAWN_SCORE = 100;
-    public static final int KNIGHT_SCORE = 300;
     public static final int KING_SCORE = 10000;
+
+    public static final int THREATENED_BY_NO_MINORS = 2;
+    public static final int THREATENED_BY_ONE_MINOR = -10;
+    public static final int THREATENED_BY_SEVERAL_MINORS = -50;
 
     private static ChessUtils instance;
 

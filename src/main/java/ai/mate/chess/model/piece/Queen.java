@@ -9,6 +9,11 @@ import java.util.List;
 
 public final class Queen extends Piece {
 
+    @Override
+    public int getRank() {
+        return ChessUtils.QUEEN_SCORE;
+    }
+
     public Queen(PlayerColor playerColor, Point position) {
         super(playerColor, position);
     }

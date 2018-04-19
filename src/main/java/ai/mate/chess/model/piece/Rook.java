@@ -9,6 +9,11 @@ import java.util.List;
 
 public final class Rook extends Piece {
 
+    @Override
+    public int getRank() {
+        return ChessUtils.ROOK_SCORE;
+    }
+
     public Rook(PlayerColor playerColor, Point position) {
         super(playerColor, position);
     }

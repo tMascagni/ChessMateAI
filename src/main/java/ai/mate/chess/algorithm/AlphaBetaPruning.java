@@ -64,14 +64,14 @@ public final class AlphaBetaPruning {
      * This is the starting point of the algorithm, of which
      * will return the best move.
      */
-    public Move run(Board board, Piece.PlayerColor playerColor) {
+    public Move run(Board board, Piece.PlayerColor AIColor) {
         this.timeIsUp = false;
         this.bestMove = null;
         this.elapsedSeconds = 0;
         timer = new Timer();
 
-        startTimer(playerColor);
-        alphaBetaPruning(board, playerColor, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
+        startTimer(AIColor);
+        alphaBetaPruning(board, AIColor, AIColor, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 
         timer.cancel();
         return bestMove;
@@ -81,14 +81,14 @@ public final class AlphaBetaPruning {
      * Recursive alpha-beta pruning algorithm.
      *
      * @param board       The current board (Current state)
-     * @param playerColor The current player
+     * @param playerToMove The current player
      * @param alpha       Alpha value (Initially -infinity)
      * @param beta        Beta value (Initially +infinity)
      * @param currentPly  Current ply (Initially 0)
      * @return Alpha when maximizing, beta when minimizing
      */
-    private double alphaBetaPruning(Board board, Piece.PlayerColor playerColor, double alpha, double beta, int currentPly) {
-        boolean isMaximizer = playerColor == Piece.PlayerColor.BLACK;
+    private double alphaBetaPruning(Board board, Piece.PlayerColor playerToMove, Piece.PlayerColor AIColor, double alpha, double beta, int currentPly) {
+        boolean isMaximizer = playerToMove == AIColor;
 
         /*
          * Returns the score whether we've reached
@@ -96,9 +96,9 @@ public final class AlphaBetaPruning {
          * algorithm.
          */
         if (currentPly++ == maxPly || timeIsUp)
-            return getScore(isMaximizer, board, currentPly);
+            return getScore(playerToMove, AIColor, board, currentPly);
 
-        List<Move> moves = getAllPossibleMoves(board, playerColor);
+        List<Move> moves = getAllPossibleMoves(board, playerToMove);
 
         // BLACK
         if (isMaximizer) {
@@ -106,7 +106,7 @@ public final class AlphaBetaPruning {
             for (Move move : moves) {
                 Board copyBoard = new Board(board);
                 move.handleMove(copyBoard);
-                double score = alphaBetaPruning(copyBoard, ChessUtils.changePlayer(playerColor), alpha, beta, currentPly);
+                double score = alphaBetaPruning(copyBoard, ChessUtils.changePlayer(playerToMove), AIColor, alpha, beta, currentPly);
                 move.undo(copyBoard);
 
                 if (score > alpha) {
@@ -129,7 +129,7 @@ public final class AlphaBetaPruning {
             for (Move move : moves) {
                 Board copyBoard = new Board(board);
                 move.handleMove(copyBoard);
-                double score = alphaBetaPruning(copyBoard, ChessUtils.changePlayer(playerColor), alpha, beta, currentPly);
+                double score = alphaBetaPruning(copyBoard, ChessUtils.changePlayer(playerToMove), AIColor, alpha, beta, currentPly);
                 move.undo(copyBoard);
 
                 if (score < beta) {
@@ -170,40 +170,40 @@ public final class AlphaBetaPruning {
     /**
      * Evaluates the board
      *
-     * @param isMaximizer whether to add or subtract from getScore
-     * @param board       board to evaluate
+     * @param AIColor   whether to add or subtract from getScore
+     * @param board     board to evaluate
      * @return Returns evaluated score
      */
-    private double getScore(boolean isMaximizer, Board board, int currentPly) {
+    private double getScore(Piece.PlayerColor playerToMove, Piece.PlayerColor AIColor, Board board, int currentPly) {
         int score = 0;
-
+        int threatCount = 0;
+        int threatScore = 0;
         for (Tile[] tiles : board.getBoard()) {
-
             for (Tile tile : tiles) {
-
                 if (!tile.isEmpty()) {
-
-                    if (isMaximizer) {
+                    if (tile.getPiece().getPlayerColor() == AIColor) {
                         score += tile.getPiece().getScore(board);
                     } else {
                         score -= tile.getPiece().getScore(board);
                     }
-
-
-//                    Piece piece = tile.getPiece();
-//                    Point position = piece.getPosition();
-//
-//                    int x = piece.getPosition().x;
-//                    int y = piece.getPlayerColor() == Piece.PlayerColor.WHITE ? position.x : 7 - position.y;
-//
-//                    if (isMaximizer)
-//                        score += (piece.getScore() + piece.getPositionTable()[y][x] + currentPly);
-//                    else
-//                        score -= (piece.getScore() + piece.getPositionTable()[y][x] + currentPly);
+                    if(tile.getPiece().getPlayerColor() != playerToMove && tile.getPiece().threatensHigherRank(board)) {
+                        threatCount++;
+                    }
                 }
             }
         }
-
+        if (threatCount == 0) {
+            threatScore = ChessUtils.THREATENED_BY_NO_MINORS;
+        } else if (threatCount == 1) {
+            threatScore = ChessUtils.THREATENED_BY_ONE_MINOR;
+        } else {
+            threatScore = ChessUtils.THREATENED_BY_SEVERAL_MINORS;
+        }
+        if (AIColor == playerToMove) {
+            score += threatScore;
+        } else {
+            score -= threatScore;
+        }
         return score;
     }
 
