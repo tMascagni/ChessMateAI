@@ -32,7 +32,7 @@ public final class Rook extends Piece {
         /* Get all the available moves */
         List<Move> availableMoves = getMovesInLine(board, directionOffsets);
 
-        return availableMoves;
+        return cleanAvailableMoves(availableMoves, board);
     }
 
     @Override
