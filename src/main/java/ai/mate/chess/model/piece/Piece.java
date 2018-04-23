@@ -223,21 +223,15 @@ public abstract class Piece {
          * we know that it is not a legal move.
          */
         List<Move> cleanMoves = new ArrayList<>();
-        Board copyBoard = new Board(board);
 
         for (Move move : availableMoves) {
-
-            copyBoard.handleMove(move);
+            Board copyBoard = new Board(board);
             // move has now been done on the board
-
+            copyBoard.handleMove(move);
             // check if our King is in check
             boolean isInCheck = GameController.getInstance().isInCheck(getPlayerColor());
-
-            if (!isInCheck)
-                cleanMoves.add(move);
-
+            if (!isInCheck) cleanMoves.add(move);
             // we undo the move on the board.
-            move.undo(copyBoard);
         }
 
         return cleanMoves;
