@@ -6,6 +6,7 @@ import ai.mate.chess.model.move.Move;
 import ai.mate.chess.model.piece.Piece;
 import ai.mate.chess.utils.ChessUtils;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -82,6 +83,20 @@ public final class AlphaBetaPruning {
         return bestMove;
     }
 
+    private Point findKingPosition(Piece.PlayerColor playerColor, Board board) {
+        for (Tile[] tiles : board.getBoard()) {
+            for (Tile tile : tiles) {
+                if (!tile.isEmpty()) {
+                    Piece piece = tile.getPiece();
+                    if (piece.getPieceType() == Piece.PieceType.KING && piece.getPlayerColor() == playerColor) {
+                        return piece.getPosition();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * Recursive alpha-beta pruning algorithm.
      *
@@ -111,6 +126,7 @@ public final class AlphaBetaPruning {
             for (Move move : moves) {
                 Board copyBoard = new Board(board);
                 move.handleMove(copyBoard);
+                if (copyBoard.tileAtPointIsThreatened(playerToMove, findKingPosition(playerToMove, copyBoard))) break;
                 double score = alphaBetaPruning(copyBoard, ChessUtils.changePlayer(playerToMove), AIColor, alpha, beta, currentPly);
                 move.undo(copyBoard);
 
@@ -134,6 +150,7 @@ public final class AlphaBetaPruning {
             for (Move move : moves) {
                 Board copyBoard = new Board(board);
                 move.handleMove(copyBoard);
+                if (copyBoard.tileAtPointIsThreatened(playerToMove, findKingPosition(playerToMove, copyBoard))) break;
                 double score = alphaBetaPruning(copyBoard, ChessUtils.changePlayer(playerToMove), AIColor, alpha, beta, currentPly);
                 move.undo(copyBoard);
 
