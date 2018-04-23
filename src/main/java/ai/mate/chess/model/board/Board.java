@@ -108,6 +108,8 @@ public final class Board {
     }
 
     public boolean tileAtPointIsThreatened(Piece.PlayerColor goodPlayerColor, Point tilePos) {
+        if (tilePos == null) return false;
+
         int threatenedRow = tilePos.x;
         int threatenedCol = tilePos.y;
 
