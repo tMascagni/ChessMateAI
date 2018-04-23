@@ -84,7 +84,7 @@ public final class Pawn extends Piece {
                 moves.set(i, new PawnPromotionMove(currentPos, move.getTo()));
         }
 
-        return cleanAvailableMoves(moves, board);
+        return moves;
     }
 
     @Override

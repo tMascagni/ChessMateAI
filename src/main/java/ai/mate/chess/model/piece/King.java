@@ -74,7 +74,7 @@ public final class King extends Piece {
             }
         }
 
-        return cleanAvailableMoves(availableMoves, board);
+        return availableMoves;
     }
 
     @Override
