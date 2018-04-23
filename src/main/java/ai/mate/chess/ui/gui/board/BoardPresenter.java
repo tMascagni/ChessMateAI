@@ -187,6 +187,8 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
     }
 
     private void handleGameOver(Piece.PlayerColor winner) {
+        timer.cancel();
+        timer.purge();
         gameController.endGame(winner);
         gameController.printWinner();
         view.showOverlay();

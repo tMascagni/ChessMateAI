@@ -19,11 +19,11 @@ public final class CastleMove extends SpecialMove {
         Point rookFinalPosition;
 
         if (target.getPosition().x > getFrom().x) {
-            // Rook on the right side
+            /* Right side */
             rook = board.getTile(7, target.getPosition().y).getPiece();
             rookFinalPosition = new Point(target.getPosition().x - 1, target.getPosition().y);
         } else {
-            // Rook on the left side
+            /* Left side */
             rook = board.getTile(0, target.getPosition().y).getPiece();
             rookFinalPosition = new Point(target.getPosition().x + 1, target.getPosition().y);
         }
@@ -33,7 +33,7 @@ public final class CastleMove extends SpecialMove {
         board.clearTile(rook.getPosition());
         rook.setPosition(rookFinalPosition);
 
-        // Clear positions
+        /* Clear */
         board.clearTile(getFrom());
         board.clearTile(target.getPosition());
         board.clearTile(rookFinalPosition);
@@ -46,6 +46,7 @@ public final class CastleMove extends SpecialMove {
     public void undo(Board board) {
         // Find the king, then updatePiece him to the start
         Piece king = board.getTile(getTo()).getPiece();
+
         // Find the rook, then updatePiece him either to the left end or the right end
         Piece rook;
 

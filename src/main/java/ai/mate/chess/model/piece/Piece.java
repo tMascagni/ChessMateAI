@@ -29,7 +29,7 @@ public abstract class Piece {
     public boolean threatensHigherRank(Board board) {
         List<Move> moves = getAvailableMoves(board);
         for (Move move : moves) {
-            if(move instanceof AttackMove && board.getTile(move.getTo()).getPiece().getRank() > this.getRank()) {
+            if (move instanceof AttackMove && board.getTile(move.getTo()).getPiece().getRank() > getRank()) {
                 return true;
             }
         }

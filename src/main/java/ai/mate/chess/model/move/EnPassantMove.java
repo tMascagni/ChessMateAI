@@ -29,13 +29,11 @@ public final class EnPassantMove extends AttackMove {
 
     @Override
     public void undo(Board board) {
-        // 1. Move the pawn that killed the other pawn to the start.
         Piece attacker = board.getTile(getTo()).getPiece();
         board.clearTile(getTo());
         attacker.setPosition(getFrom());
         board.getTile(getFrom()).setPiece(attacker);
 
-        // 2. Move the attacked pawn back.
         Piece attacked = GameController.getInstance().getDeadPieceFromMove(this);
         int direction = board.getTile(getFrom()).getPiece().getPlayerColor() == Piece.PlayerColor.WHITE ? 1 : -1;
         attacked.setPosition(new Point(getTo().x, getTo().y + direction));

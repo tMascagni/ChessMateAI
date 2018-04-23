@@ -1,6 +1,5 @@
 package ai.mate.chess.model.board;
 
-import ai.mate.chess.controller.GameController;
 import ai.mate.chess.model.move.Move;
 import ai.mate.chess.model.piece.*;
 import ai.mate.chess.model.player.Player;
@@ -46,31 +45,6 @@ public final class Board {
                 {new Tile(new Pawn(Piece.PlayerColor.WHITE, new Point(0, 6))), new Tile(new Pawn(Piece.PlayerColor.WHITE, new Point(1, 6))), new Tile(new Pawn(Piece.PlayerColor.WHITE, new Point(2, 6))), new Tile(new Pawn(Piece.PlayerColor.WHITE, new Point(3, 6))), new Tile(new Pawn(Piece.PlayerColor.WHITE, new Point(4, 6))), new Tile(new Pawn(Piece.PlayerColor.WHITE, new Point(5, 6))), new Tile(new Pawn(Piece.PlayerColor.WHITE, new Point(6, 6))), new Tile(new Pawn(Piece.PlayerColor.WHITE, new Point(7, 6)))},
                 {new Tile(new Rook(Piece.PlayerColor.WHITE, new Point(0, 7))), new Tile(new Knight(Piece.PlayerColor.WHITE, new Point(1, 7))), new Tile(new Bishop(Piece.PlayerColor.WHITE, new Point(2, 7))), new Tile(new Queen(Piece.PlayerColor.WHITE, new Point(3, 7))), new Tile(new King(Piece.PlayerColor.WHITE, new Point(4, 7))), new Tile(new Bishop(Piece.PlayerColor.WHITE, new Point(5, 7))), new Tile(new Knight(Piece.PlayerColor.WHITE, new Point(6, 7))), new Tile(new Rook(Piece.PlayerColor.WHITE, new Point(7, 7)))},
         };
-
-/*
-        for (int i = 0; i < 8; i += 7) {
-            Piece.PlayerColor playerColor = i == 0 ? Piece.PlayerColor.BLACK : Piece.PlayerColor.WHITE;
-            board[i][0] = new Tile(new Rook(playerColor, new Point(0, i)));
-            board[i][1] = new Tile(new Knight(playerColor, new Point(1, i)));
-            board[i][2] = new Tile(new Bishop(playerColor, new Point(2, i)));
-            board[i][3] = new Tile(new Queen(playerColor, new Point(3, i)));
-            board[i][4] = new Tile(new King(playerColor, new Point(4, i)));
-            board[i][5] = new Tile(new Bishop(playerColor, new Point(5, i)));
-            board[i][6] = new Tile(new Knight(playerColor, new Point(6, i)));
-            board[i][7] = new Tile(new Rook(playerColor, new Point(7, i)));
-        }
-
-        for (int i = 2; i < 6; i++) {
-            for (int j = 0; j < 8; j++) {
-                board[i][j] = new Tile(new Point(j, i));
-            }
-        }
-
-        for (int k = 0; k < 8; k++) {
-            board[1][k] = new Tile(new Pawn(Piece.PlayerColor.BLACK, new Point(k, 1)));
-            board[6][k] = new Tile(new Pawn(Piece.PlayerColor.WHITE, new Point(k, 6)));
-        }
-        */
     }
 
     private void initPlayerPieces(Player white, Player black) {
@@ -125,33 +99,6 @@ public final class Board {
         return board[y][x];
     }
 
-    @Override
-    public String toString() {
-        return "\n┌───────────────────────────────────────────────────────────────┐    ┌────────────────────────────────────────────────────────────┐\n" +
-                "│          A     B     C     D     E     F     G     H          │    │ Player: " + GameController.getInstance().getCurrentPlayer().getPlayerColor() + "            White Loss:    Black Loss:        │\n" +
-                "│                                                               │    │                                                            │\n" +
-                "│       ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐       │    │ Move:                                                      │\n" +
-                "│   8   │ " + board[0][0] + " │ " + board[0][1] + " │ " + board[0][2] + " │ " + board[0][3] + " │ " + board[0][4] + " │ " + board[0][5] + " │ " + board[0][6] + " │ " + board[0][7] + " │   8   │    │                                                            │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ Latest Move:                                               │\n" +
-                "│   7   │ " + board[1][0] + " │ " + board[1][1] + " │ " + board[1][2] + " │ " + board[1][3] + " │ " + board[1][4] + " │ " + board[1][5] + " │ " + board[1][6] + " │ " + board[1][7] + " │   7   │    │                                                            │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                                                            │\n" +
-                "│   6   │ " + board[2][0] + " │ " + board[2][1] + " │ " + board[2][2] + " │ " + board[2][3] + " │ " + board[2][4] + " │ " + board[2][5] + " │ " + board[2][6] + " │ " + board[2][7] + " │   6   │    │ Possible Moves:                                            │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                                                            │\n" +
-                "│   5   │ " + board[3][0] + " │ " + board[3][1] + " │ " + board[3][2] + " │ " + board[3][3] + " │ " + board[3][4] + " │ " + board[3][5] + " │ " + board[3][6] + " │ " + board[3][7] + " │   5   │    │                                                            │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                                                            │\n" +
-                "│   4   │ " + board[4][0] + " │ " + board[4][1] + " │ " + board[4][2] + " │ " + board[4][3] + " │ " + board[4][4] + " │ " + board[4][5] + " │ " + board[4][6] + " │ " + board[4][7] + " │   4   │    │                                                            │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │                                                            │\n" +
-                "│   3   │ " + board[5][0] + " │ " + board[5][1] + " │ " + board[5][2] + " │ " + board[5][3] + " │ " + board[5][4] + " │ " + board[5][5] + " │ " + board[5][6] + " │ " + board[5][7] + " │   3   │    │                                                            │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ White Clock:                                               │\n" +
-                "│   2   │ " + board[6][0] + " │ " + board[6][1] + " │ " + board[6][2] + " │ " + board[6][3] + " │ " + board[6][4] + " │ " + board[6][5] + " │ " + board[6][6] + " │ " + board[6][7] + " │   2   │    │                                                            │\n" +
-                "│       ├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤       │    │ Black Clock:                                               │\n" +
-                "│   1   │ " + board[7][0] + " │ " + board[7][1] + " │ " + board[7][2] + " │ " + board[7][3] + " │ " + board[7][4] + " │ " + board[7][5] + " │ " + board[7][6] + " │ " + board[7][7] + " │   1   │    │                                                            │\n" +
-                "│       └─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘       │    │ White Pieces: " + white.getPieceCount() + "                                           │\n" +
-                "│                                                               │    │                                                            │\n" +
-                "│          A     B     C     D     E     F     G     H          │    │ Black Pieces: " + black.getPieceCount() + "                                           │\n" +
-                "└───────────────────────────────────────────────────────────────┘    └────────────────────────────────────────────────────────────┘\n";
-    }
-
     public void clearTile(Point start) {
         getTile(start).setPiece(null);
     }
@@ -170,8 +117,6 @@ public final class Board {
         for (int direction = 0; direction < 8; direction++) {
             int row = threatenedRow;
             int col = threatenedCol;
-
-
             int rowIncrement = rowDirections[direction];
             int colIncrement = colDirections[direction];
 
@@ -181,6 +126,7 @@ public final class Board {
 
                 if (isOutOfBounds(row, col)) {
                     break;
+
                 } else {
                     Tile t = getTile(row, col);
                     if (!t.isEmpty()) {
@@ -193,26 +139,25 @@ public final class Board {
                                     if (move.getMoveType() == Move.MoveType.ATTACK) {
                                         Piece potentialKing = getTile(move.getTo()).getPiece();
                                         if (potentialKing.getPieceType() == KING && potentialKing.getPlayerColor() == goodPlayerColor) {
-                                            System.out.println("Knight can attack your king!");
+                                            System.out.println("Knight is able to attack " + goodPlayerColor + "'s KING!");
                                             return true;
                                         }
                                     }
                                 }
                             } else if (step > 0 && (piece.getPieceType() != PAWN && piece.getPieceType() != KING)) {
-                                if (piece.getPositionThreats()[direction]) return true;
+                                if (piece.getPositionThreats()[direction])
+                                    return true;
                             } else {
-                                if (step == 0) {
-                                    if (piece.getPositionThreats()[direction]) return true;
-                                }
+                                if (step == 0)
+                                    if (piece.getPositionThreats()[direction])
+                                        return true;
                             }
                         }
-
                         break;
                     }
                 }
             }
         }
-
         return false;
     }
 

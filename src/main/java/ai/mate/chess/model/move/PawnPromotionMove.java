@@ -20,18 +20,18 @@ public final class PawnPromotionMove extends NormalMove {
 
     @Override
     public void undo(Board board) {
-        Tile starting = board.getTile(getFrom());
-        Tile ending = board.getTile(getTo());
+        Tile from = board.getTile(getFrom());
+        Tile to = board.getTile(getTo());
 
         // Get the promoted piece
-        Piece promoted = ending.getPiece();
+        Piece promoted = to.getPiece();
 
-        // Clear the ending tile
-        ending.setPiece(null);
+        // Clear the to tile
+        to.setPiece(null);
 
         // Set starting to the pawn
         Pawn pawn = new Pawn(promoted.getPlayerColor(), promoted.getPosition());
-        starting.setPiece(pawn);
+        from.setPiece(pawn);
     }
 
     @Override
