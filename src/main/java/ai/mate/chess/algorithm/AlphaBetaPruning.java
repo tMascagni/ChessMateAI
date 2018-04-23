@@ -48,6 +48,8 @@ public final class AlphaBetaPruning {
      */
     private Timer timer;
 
+    private int staticEvalCount = 0;
+
     /**
      * Constructor of the AlphaBetaPruning algorithm class.
      *
@@ -68,23 +70,26 @@ public final class AlphaBetaPruning {
         this.timeIsUp = false;
         this.bestMove = null;
         this.elapsedSeconds = 0;
+        this.staticEvalCount = 0;
         timer = new Timer();
 
         startTimer(AIColor);
         alphaBetaPruning(board, AIColor, AIColor, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 
         timer.cancel();
+        System.out.println("AI PLAYER: Best move found!");
+        System.out.println("AI PLAYER: " + staticEvalCount + " static evaluations at maxPly " + maxPly + " was made.");
         return bestMove;
     }
 
     /**
      * Recursive alpha-beta pruning algorithm.
      *
-     * @param board       The current board (Current state)
+     * @param board        The current board (Current state)
      * @param playerToMove The current player
-     * @param alpha       Alpha value (Initially -infinity)
-     * @param beta        Beta value (Initially +infinity)
-     * @param currentPly  Current ply (Initially 0)
+     * @param alpha        Alpha value (Initially -infinity)
+     * @param beta         Beta value (Initially +infinity)
+     * @param currentPly   Current ply (Initially 0)
      * @return Alpha when maximizing, beta when minimizing
      */
     private double alphaBetaPruning(Board board, Piece.PlayerColor playerToMove, Piece.PlayerColor AIColor, double alpha, double beta, int currentPly) {
@@ -148,13 +153,6 @@ public final class AlphaBetaPruning {
         }
     }
 
-    /**
-     * Gets all possible moves that can be made on the board for a playerColor
-     *
-     * @param board       board to make moves
-     * @param playerColor playerColor to get moves for
-     * @return List of available moves
-     */
     private List<Move> getAllPossibleMoves(Board board, Piece.PlayerColor playerColor) {
         List<Move> results = new ArrayList<>();
         for (Tile[] tiles : board.getBoard())
@@ -167,31 +165,30 @@ public final class AlphaBetaPruning {
         return results;
     }
 
-    /**
-     * Evaluates the board
-     *
-     * @param AIColor   whether to add or subtract from getScore
-     * @param board     board to evaluate
-     * @return Returns evaluated score
-     */
     private double getScore(Piece.PlayerColor playerToMove, Piece.PlayerColor AIColor, Board board, int currentPly) {
+        /*
+         * A static evaluation has been made, so increase the count.
+         */
+        staticEvalCount++;
+
         int score = 0;
         int threatCount = 0;
         int threatScore = 0;
+
         for (Tile[] tiles : board.getBoard()) {
             for (Tile tile : tiles) {
                 if (!tile.isEmpty()) {
-                    if (tile.getPiece().getPlayerColor() == AIColor) {
+                    if (tile.getPiece().getPlayerColor() == AIColor)
                         score += tile.getPiece().getScore(board);
-                    } else {
+                    else
                         score -= tile.getPiece().getScore(board);
-                    }
-                    if(tile.getPiece().getPlayerColor() != playerToMove && tile.getPiece().threatensHigherRank(board)) {
+
+                    if (tile.getPiece().getPlayerColor() != playerToMove && tile.getPiece().threatensHigherRank(board))
                         threatCount++;
-                    }
                 }
             }
         }
+
         if (threatCount == 0) {
             threatScore = ChessUtils.THREATENED_BY_NO_MINORS;
         } else if (threatCount == 1) {
@@ -199,11 +196,13 @@ public final class AlphaBetaPruning {
         } else {
             threatScore = ChessUtils.THREATENED_BY_SEVERAL_MINORS;
         }
+
         if (AIColor == playerToMove) {
             score += threatScore;
         } else {
             score -= threatScore;
         }
+
         return score;
     }
 
