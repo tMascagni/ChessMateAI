@@ -36,7 +36,7 @@ public final class Queen extends Piece {
         /* Get all the available moves */
         List<Move> availableMoves = getMovesInLine(board, directionOffsets);
 
-        return cleanAvailableMoves(availableMoves, board);
+        return availableMoves;
     }
 
     @Override

@@ -41,12 +41,14 @@ public final class AlphaBetaPruning {
      * This boolean variable will be set to true
      * whenever the elapsedSecond reaches the timerSeconds value.
      */
-    private volatile boolean timeIsUp;
+    private volatile boolean timeIsUp = false;
 
     /**
      * Object used for timer functionality.
      */
     private Timer timer;
+
+    private int targetPly = 1;
 
     private int staticEvalCount = 0;
 
@@ -59,7 +61,6 @@ public final class AlphaBetaPruning {
     public AlphaBetaPruning(double maxPly, int timerSeconds) {
         this.maxPly = maxPly;
         this.timerSeconds = timerSeconds;
-        this.timeIsUp = false;
     }
 
     /**
@@ -69,12 +70,18 @@ public final class AlphaBetaPruning {
     public Move run(Board board, Piece.PlayerColor AIColor) {
         this.timeIsUp = false;
         this.bestMove = null;
+
         this.elapsedSeconds = 0;
         this.staticEvalCount = 0;
         timer = new Timer();
 
         startTimer(AIColor);
+
+        //for (int i = 1; i <= maxPly; i++) {
+        //    targetPly = i;
+        //    System.out.println("i: " + i + " Static eval: " + staticEvalCount);
         alphaBetaPruning(board, AIColor, AIColor, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
+        //}
 
         timer.cancel();
         System.out.println("AI PLAYER: Best move found!");
@@ -105,7 +112,6 @@ public final class AlphaBetaPruning {
 
         List<Move> moves = getAllPossibleMoves(board, playerToMove);
 
-        // BLACK
         if (isMaximizer) {
             Move localBestMoveMaximizer = null;
             for (Move move : moves) {
@@ -119,6 +125,7 @@ public final class AlphaBetaPruning {
                     localBestMoveMaximizer = move;
                 }
 
+                // Cut off
                 if (beta <= alpha)
                     break;
             }
@@ -129,7 +136,6 @@ public final class AlphaBetaPruning {
             return alpha;
 
         } else {
-            // WHITE
             Move localBestMoveMinimizer = null;
             for (Move move : moves) {
                 Board copyBoard = new Board(board);
@@ -142,6 +148,7 @@ public final class AlphaBetaPruning {
                     localBestMoveMinimizer = move;
                 }
 
+                // Cut off
                 if (beta <= alpha)
                     break;
             }

@@ -49,7 +49,7 @@ public final class Knight extends Piece {
             }
         }
 
-        return cleanAvailableMoves(availableMoves, board);
+        return availableMoves;
     }
 
     /*
