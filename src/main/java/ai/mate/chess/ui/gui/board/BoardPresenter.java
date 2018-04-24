@@ -53,7 +53,7 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
          */
         if (humanPlayerColor == Piece.PlayerColor.BLACK) {
             handleAIMove(Piece.PlayerColor.WHITE);
-            view.updateBoard(gameController.getBoard());
+            this.view.updateBoard(gameController.getBoard());
         }
     }
 
@@ -95,13 +95,6 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
             Player currentPlayer = gameController.getCurrentPlayer();
             Piece piece = tile.getPiece();
 
-            // TESTING
-            if (piece.getPlayerColor() == Piece.PlayerColor.WHITE && piece instanceof Rook) {
-
-                System.out.println(piece.getThreatenedPieces());
-
-            }
-
             //System.out.println("InCheck: " + tile + ": " + inCheck);
             if (inCheck) {
                 System.out.println(gameController.getCurrentPlayer().getPlayerColor() + " KING IS IN CHECK!");
@@ -141,6 +134,8 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
 
             move.handleMove(gameController.getBoard());
 
+            view.updateBoard(gameController.getBoard());
+
             // Check for pawn promotion
             if (move.getMoveType() == PAWN_PROMOTION) {
                 Pawn pawn = (Pawn) gameController.getSelectedPiece();
@@ -150,9 +145,10 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
             }
 
             gameController.unhighlightBoard();
-            view.updateBoard(gameController.getBoard());
+            //view.updateBoard(gameController.getBoard());
 
             handleAIMove();
+            view.updateBoard(gameController.getBoard());
 
             if (gameController.isGameOver()) {
                 // Check if the AI ended the game already
@@ -185,7 +181,7 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
             gameController.unhighlightBoard();
             view.updateBoard(gameController.getBoard());
         }
-
+        //view.updateBoard(gameController.getBoard());
     }
 
     private boolean handleKingCaptureGameOver(Move move) {

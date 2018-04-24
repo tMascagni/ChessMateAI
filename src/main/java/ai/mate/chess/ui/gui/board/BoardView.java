@@ -68,11 +68,17 @@ public class BoardView extends MouseAdapter implements BoardGUIContract.View  {
 
     @Override
     public void updateBoard(Board newBoard) {
-        frame.getContentPane().removeAll();
-        tilePanels = new JPanel(new GridLayout(8, 8));
-        setBoard(newBoard);
-        frame.getContentPane().add(tilePanels);
-        frame.pack();
+        SwingUtilities.invokeLater(() -> {
+            frame.getContentPane().removeAll();
+            tilePanels = new JPanel(new GridLayout(8, 8));
+            setBoard(newBoard);
+            frame.getContentPane().add(tilePanels);
+            frame.pack();
+            frame.invalidate();
+            frame.validate();
+            frame.revalidate();
+            frame.repaint();
+        });
     }
 
     @Override
