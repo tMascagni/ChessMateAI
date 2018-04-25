@@ -43,6 +43,8 @@ public final class AlphaBetaPruning {
      */
     private volatile boolean timeIsUp = false;
 
+    private boolean IS_AI_TIMER_ENABLED = true;
+
     /**
      * Object used for timer functionality.
      */
@@ -68,14 +70,18 @@ public final class AlphaBetaPruning {
      * will return the best move.
      */
     public Move run(Board board, Piece.PlayerColor AIColor) {
-        this.timeIsUp = false;
+        if (IS_AI_TIMER_ENABLED)
+            this.timeIsUp = false;
+
         this.bestMove = null;
 
         this.elapsedSeconds = 0;
         this.staticEvalCount = 0;
-        timer = new Timer();
 
-        startTimer(AIColor);
+        if (IS_AI_TIMER_ENABLED) {
+            timer = new Timer();
+            startTimer(AIColor);
+        }
 
         //for (int i = 1; i <= maxPly; i++) {
         //    targetPly = i;
@@ -83,7 +89,10 @@ public final class AlphaBetaPruning {
         alphaBetaPruning(board, AIColor, AIColor, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
         //}
 
-        timer.cancel();
+        if (IS_AI_TIMER_ENABLED) {
+            timer.cancel();
+        }
+
         System.out.println("AI PLAYER: Best move found!");
         System.out.println("AI PLAYER: " + staticEvalCount + " static evaluations at maxPly " + maxPly + " was made.");
         return bestMove;
