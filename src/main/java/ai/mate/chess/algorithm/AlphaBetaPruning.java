@@ -192,13 +192,14 @@ public final class AlphaBetaPruning {
         for (Tile[] tiles : board.getBoard()) {
             for (Tile tile : tiles) {
                 if (!tile.isEmpty()) {
-                    if (tile.getPiece().getPlayerColor() == AIColor)
+                    if (tile.getPiece().getPlayerColor() == AIColor) {
                         score += tile.getPiece().getScore(board);
-                    else
+                    } else {
                         score -= tile.getPiece().getScore(board);
-
-                    if (tile.getPiece().getPlayerColor() == playerToMove && tile.getPiece().threatensHigherRank(board))
+                    }
+                    if (tile.getPiece().getPlayerColor() == playerToMove && tile.getPiece().threatensHigherRank(board)) {
                         threatCount++;
+                    }
                 }
             }
         }
