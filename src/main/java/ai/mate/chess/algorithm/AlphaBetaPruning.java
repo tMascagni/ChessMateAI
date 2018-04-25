@@ -198,8 +198,8 @@ public final class AlphaBetaPruning {
                         score += tile.getPiece().getScore(board);
                     else
                         score -= tile.getPiece().getScore(board);
-
-                    if (tile.getPiece().getPlayerColor() != playerToMove && tile.getPiece().threatensHigherRank(board))
+                    }
+                    if(tile.getPiece().getPlayerColor() == playerToMove && tile.getPiece().threatensHigherRank(board)) {
                         threatCount++;
                 }
             }
@@ -212,8 +212,7 @@ public final class AlphaBetaPruning {
         } else {
             threatScore = ChessUtils.THREATENED_BY_SEVERAL_MINORS;
         }
-
-        if (AIColor == playerToMove) {
+        if (AIColor != playerToMove) {
             score += threatScore;
         } else {
             score -= threatScore;
