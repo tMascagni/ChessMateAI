@@ -50,8 +50,6 @@ public final class AlphaBetaPruning {
      */
     private Timer timer;
 
-    private int targetPly = 1;
-
     private int staticEvalCount = 0;
 
     /**
@@ -198,8 +196,8 @@ public final class AlphaBetaPruning {
                         score += tile.getPiece().getScore(board);
                     else
                         score -= tile.getPiece().getScore(board);
-                    }
-                    if(tile.getPiece().getPlayerColor() == playerToMove && tile.getPiece().threatensHigherRank(board)) {
+
+                    if (tile.getPiece().getPlayerColor() == playerToMove && tile.getPiece().threatensHigherRank(board))
                         threatCount++;
                 }
             }
