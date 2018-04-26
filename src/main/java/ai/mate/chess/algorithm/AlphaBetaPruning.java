@@ -93,11 +93,10 @@ public final class AlphaBetaPruning {
             startTimer(AIColor);
         }
 
-        //for (int i = 1; i <= maxPly; i++) {
-        //    targetPly = i;
-        //    System.out.println("i: " + i + " Static eval: " + staticEvalCount);
-        alphaBetaPruning(board, AIColor, AIColor, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
-        //}
+        for (int i = 1; i <= maxPly; i++) {
+            alphaBetaPruning(board, AIColor, AIColor, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0, i);
+            System.out.println("i: " + i + " Static eval: " + staticEvalCount);
+        }
 
         if (IS_AI_TIMER_ENABLED) {
             timer.cancel();
@@ -124,7 +123,7 @@ public final class AlphaBetaPruning {
      * @param currentPly   Current ply (Initially 0)
      * @return Alpha when maximizing, beta when minimizing
      */
-    private double alphaBetaPruning(Board board, Piece.PlayerColor playerToMove, Piece.PlayerColor AIColor, double alpha, double beta, int currentPly) {
+    private double alphaBetaPruning(Board board, Piece.PlayerColor playerToMove, Piece.PlayerColor AIColor, double alpha, double beta, int currentPly, int targetPly) {
         boolean isMaximizer = playerToMove == AIColor;
 
         /*
@@ -132,7 +131,7 @@ public final class AlphaBetaPruning {
          * the maximum ply or if the time is up for the
          * algorithm.
          */
-        if (currentPly++ == maxPly || timeIsUp)
+        if (currentPly++ == targetPly || timeIsUp)
             return getScore(playerToMove, AIColor, board, currentPly);
 
         switch (currentPly) {
@@ -160,7 +159,7 @@ public final class AlphaBetaPruning {
             for (Move move : moves) {
                 Board copyBoard = new Board(board);
                 move.handleMove(copyBoard);
-                double score = alphaBetaPruning(copyBoard, ChessUtils.changePlayer(playerToMove), AIColor, alpha, beta, currentPly);
+                double score = alphaBetaPruning(copyBoard, ChessUtils.changePlayer(playerToMove), AIColor, alpha, beta, currentPly, targetPly);
                 move.undo(copyBoard);
 
                 if (score > alpha) {
@@ -183,7 +182,7 @@ public final class AlphaBetaPruning {
             for (Move move : moves) {
                 Board copyBoard = new Board(board);
                 move.handleMove(copyBoard);
-                double score = alphaBetaPruning(copyBoard, ChessUtils.changePlayer(playerToMove), AIColor, alpha, beta, currentPly);
+                double score = alphaBetaPruning(copyBoard, ChessUtils.changePlayer(playerToMove), AIColor, alpha, beta, currentPly, targetPly);
                 move.undo(copyBoard);
 
                 if (score < beta) {
