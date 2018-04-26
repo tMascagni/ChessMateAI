@@ -79,6 +79,12 @@ public final class AlphaBetaPruning {
 
         this.bestMove = null;
 
+        this.moveCountPly0 = 0;
+        this.moveCountPly1 = 0;
+        this.moveCountPly2 = 0;
+        this.moveCountPly3 = 0;
+        this.moveCountPly4 = 0;
+
         this.elapsedSeconds = 0;
         this.staticEvalCount = 0;
 
