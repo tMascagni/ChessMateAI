@@ -95,7 +95,7 @@ public final class AlphaBetaPruning {
 
         for (int i = 1; i <= maxPly; i++) {
             alphaBetaPruning(board, AIColor, AIColor, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0, i);
-            System.out.println("i: " + i + " Static eval: " + staticEvalCount);
+            System.out.println("Static evaluations at " + i + " ply: " + staticEvalCount);
         }
 
         if (IS_AI_TIMER_ENABLED) {
