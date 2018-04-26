@@ -42,7 +42,7 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
         this.gameController = gameController;
         this.view = view;
         this.game = game;
-        this.alphaBetaPruning = new AlphaBetaPruning(4, MAX_TURN_SECONDS);
+        this.alphaBetaPruning = new AlphaBetaPruning(10, MAX_TURN_SECONDS);
         this.humanPlayerColor = humanPlayerColor;
         view.setPresenter(this);
         timer = new Timer();
