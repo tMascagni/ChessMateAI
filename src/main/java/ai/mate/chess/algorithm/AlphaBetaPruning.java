@@ -45,6 +45,8 @@ public final class AlphaBetaPruning {
 
     private boolean IS_AI_TIMER_ENABLED = true;
 
+    private int sumMoves = 0;
+
     /**
      * Object used for timer functionality.
      */
@@ -71,6 +73,7 @@ public final class AlphaBetaPruning {
         if (IS_AI_TIMER_ENABLED)
             this.timeIsUp = false;
 
+        this.sumMoves = 0;
         this.bestMove = null;
 
         this.elapsedSeconds = 0;
@@ -118,6 +121,10 @@ public final class AlphaBetaPruning {
             return getScore(playerToMove, AIColor, board, currentPly);
 
         List<Move> moves = getAllPossibleMoves(board, playerToMove);
+
+        // print moves for this current ply
+        sumMoves += getPossibleMoveCount(board, AIColor);
+        System.out.println("AI: Move Count: " + sumMoves + ", Ply: " + currentPly);
 
         if (isMaximizer) {
             Move localBestMoveMaximizer = null;
@@ -234,6 +241,18 @@ public final class AlphaBetaPruning {
                 }
             }
         }, 0, 1000);
+    }
+
+    private int getPossibleMoveCount(Board board, Piece.PlayerColor playerColor) {
+        int sumMoves = 0;
+        for (Tile[] tiles : board.getBoard())
+            for (Tile tile : tiles)
+                if (!tile.isEmpty()) {
+                    Piece piece = tile.getPiece();
+                    if (piece.getPlayerColor() == playerColor)
+                        sumMoves += piece.getAvailableMoves(board).size();
+                }
+        return sumMoves;
     }
 
 }

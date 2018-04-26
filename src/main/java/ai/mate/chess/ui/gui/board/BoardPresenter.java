@@ -3,12 +3,12 @@ package ai.mate.chess.ui.gui.board;
 import ai.mate.chess.algorithm.AlphaBetaPruning;
 import ai.mate.chess.controller.Game;
 import ai.mate.chess.controller.GameController;
+import ai.mate.chess.model.board.Board;
 import ai.mate.chess.model.board.Tile;
 import ai.mate.chess.model.move.Move;
 import ai.mate.chess.model.piece.Pawn;
 import ai.mate.chess.model.piece.Piece;
 import ai.mate.chess.model.piece.Queen;
-import ai.mate.chess.model.piece.Rook;
 import ai.mate.chess.model.player.Player;
 
 import java.awt.*;
