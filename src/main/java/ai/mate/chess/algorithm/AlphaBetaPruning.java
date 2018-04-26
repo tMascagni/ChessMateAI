@@ -175,7 +175,7 @@ public final class AlphaBetaPruning {
 
         long nodes = 0;
 
-        if(depth == 0) {
+        if(depth == 0 || timeIsUp) {
             return 1;
         }
 
