@@ -62,8 +62,18 @@ public final class Knight extends Piece {
 
     @Override
     public double getScore(Board board) {
-        return ChessUtils.KNIGHT_SCORE;
-        //TODO 300 + 3.0 * (4 - afstand til centrum?)
+        Point position = this.getPosition();
+        double distanceToCenter;
+        if(position.getX() > 3 && position.getY() > 3) {
+            distanceToCenter = position.distance(4,4);
+        } else if(position.getX() > 3) {
+            distanceToCenter = position.distance(4,3);
+        } else if(position.getY() > 3) {
+            distanceToCenter = position.distance(3,4);
+        } else {
+            distanceToCenter = position.distance(3,3);
+        }
+        return ChessUtils.KNIGHT_SCORE + 3.0 * (4 - distanceToCenter);
     }
 
     @Override
