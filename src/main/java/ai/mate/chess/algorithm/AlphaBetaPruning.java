@@ -45,12 +45,6 @@ public final class AlphaBetaPruning {
 
     private boolean IS_AI_TIMER_ENABLED = true;
 
-    private int moveCountPly0 = 1;
-    private int moveCountPly1;
-    private int moveCountPly2;
-    private int moveCountPly3;
-    private int moveCountPly4;
-
     /**
      * Object used for timer functionality.
      */
@@ -79,12 +73,6 @@ public final class AlphaBetaPruning {
 
         this.bestMove = null;
 
-        this.moveCountPly0 = 0;
-        this.moveCountPly1 = 0;
-        this.moveCountPly2 = 0;
-        this.moveCountPly3 = 0;
-        this.moveCountPly4 = 0;
-
         this.elapsedSeconds = 0;
         this.staticEvalCount = 0;
 
@@ -101,12 +89,6 @@ public final class AlphaBetaPruning {
         if (IS_AI_TIMER_ENABLED) {
             timer.cancel();
         }
-
-        System.out.println("AI PLAYER: Ply 0 Move Count: " + moveCountPly0);
-        System.out.println("AI PLAYER: Ply 1 Move Count: " + moveCountPly1);
-        System.out.println("AI PLAYER: Ply 2 Move Count: " + moveCountPly2);
-        System.out.println("AI PLAYER: Ply 3 Move Count: " + moveCountPly3);
-        System.out.println("AI PLAYER: Ply 4 Move Count: " + moveCountPly4);
 
         System.out.println("AI PLAYER: Best move found!");
         System.out.println("AI PLAYER: " + staticEvalCount + " static evaluations at maxPly " + maxPly + " was made.");
@@ -133,24 +115,6 @@ public final class AlphaBetaPruning {
          */
         if (currentPly++ == targetPly || timeIsUp)
             return getScore(playerToMove, AIColor, board, currentPly);
-
-        switch (currentPly) {
-            case 0:
-                moveCountPly0 += getPossibleMoveCount(board, AIColor);
-                break;
-            case 1:
-                moveCountPly1 += getPossibleMoveCount(board, AIColor);
-                break;
-            case 2:
-                moveCountPly2 += getPossibleMoveCount(board, AIColor);
-                break;
-            case 3:
-                moveCountPly3 += getPossibleMoveCount(board, AIColor);
-                break;
-            case 4:
-                moveCountPly4 += getPossibleMoveCount(board, AIColor);
-                break;
-        }
 
         List<Move> moves = getAllPossibleMoves(board, playerToMove);
 
