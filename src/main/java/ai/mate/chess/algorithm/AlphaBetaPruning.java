@@ -83,7 +83,12 @@ public final class AlphaBetaPruning {
 
         for (int i = 1; i <= maxPly; i++) {
             alphaBetaPruning(board, AIColor, AIColor, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0, i);
-            System.out.println("Static evaluations at " + i + " ply: " + staticEvalCount);
+            if(!timeIsUp) {
+                System.out.println("Static evaluations at " + i + " ply: " + staticEvalCount);
+                if (i < 5) {
+                    System.out.println("Node count at " + i + " ply: " + Perft(board, AIColor, i));
+                }
+            }
         }
 
         if (IS_AI_TIMER_ENABLED) {
@@ -166,6 +171,24 @@ public final class AlphaBetaPruning {
         }
     }
 
+    private long Perft(Board board, Piece.PlayerColor playerToMove, int depth) {
+
+        long nodes = 0;
+
+        if(depth == 0 || timeIsUp) {
+            return 1;
+        }
+
+        List<Move> moves = getAllPossibleMoves(board, playerToMove);
+        for (Move move : moves) {
+            Board copyBoard = new Board(board);
+            move.handleMove(copyBoard);
+            nodes += Perft(copyBoard, ChessUtils.changePlayer(playerToMove), depth - 1);
+            move.undo(copyBoard);
+        }
+        return nodes;
+    }
+
     private List<Move> getAllPossibleMoves(Board board, Piece.PlayerColor playerColor) {
         List<Move> results = new ArrayList<>();
         for (Tile[] tiles : board.getBoard())
@@ -234,17 +257,4 @@ public final class AlphaBetaPruning {
             }
         }, 0, 1000);
     }
-
-    private int getPossibleMoveCount(Board board, Piece.PlayerColor playerColor) {
-        int sumMoves = 0;
-        for (Tile[] tiles : board.getBoard())
-            for (Tile tile : tiles)
-                if (!tile.isEmpty()) {
-                    Piece piece = tile.getPiece();
-                    if (piece.getPlayerColor() == playerColor)
-                        sumMoves += piece.getAvailableMoves(board).size();
-                }
-        return sumMoves;
-    }
-
 }
