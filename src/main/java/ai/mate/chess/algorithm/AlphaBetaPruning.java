@@ -45,7 +45,11 @@ public final class AlphaBetaPruning {
 
     private boolean IS_AI_TIMER_ENABLED = true;
 
-    private int sumMoves = 0;
+    private int moveCountPly0 = 1;
+    private int moveCountPly1;
+    private int moveCountPly2;
+    private int moveCountPly3;
+    private int moveCountPly4;
 
     /**
      * Object used for timer functionality.
@@ -73,7 +77,6 @@ public final class AlphaBetaPruning {
         if (IS_AI_TIMER_ENABLED)
             this.timeIsUp = false;
 
-        this.sumMoves = 0;
         this.bestMove = null;
 
         this.elapsedSeconds = 0;
@@ -93,6 +96,12 @@ public final class AlphaBetaPruning {
         if (IS_AI_TIMER_ENABLED) {
             timer.cancel();
         }
+
+        System.out.println("AI PLAYER: Ply 0 Move Count: " + moveCountPly0);
+        System.out.println("AI PLAYER: Ply 1 Move Count: " + moveCountPly1);
+        System.out.println("AI PLAYER: Ply 2 Move Count: " + moveCountPly2);
+        System.out.println("AI PLAYER: Ply 3 Move Count: " + moveCountPly3);
+        System.out.println("AI PLAYER: Ply 4 Move Count: " + moveCountPly4);
 
         System.out.println("AI PLAYER: Best move found!");
         System.out.println("AI PLAYER: " + staticEvalCount + " static evaluations at maxPly " + maxPly + " was made.");
@@ -120,11 +129,25 @@ public final class AlphaBetaPruning {
         if (currentPly++ == maxPly || timeIsUp)
             return getScore(playerToMove, AIColor, board, currentPly);
 
-        List<Move> moves = getAllPossibleMoves(board, playerToMove);
+        switch (currentPly) {
+            case 0:
+                moveCountPly0 += getPossibleMoveCount(board, AIColor);
+                break;
+            case 1:
+                moveCountPly1 += getPossibleMoveCount(board, AIColor);
+                break;
+            case 2:
+                moveCountPly2 += getPossibleMoveCount(board, AIColor);
+                break;
+            case 3:
+                moveCountPly3 += getPossibleMoveCount(board, AIColor);
+                break;
+            case 4:
+                moveCountPly4 += getPossibleMoveCount(board, AIColor);
+                break;
+        }
 
-        // print moves for this current ply
-        sumMoves += getPossibleMoveCount(board, AIColor);
-        System.out.println("AI: Move Count: " + sumMoves + ", Ply: " + currentPly);
+        List<Move> moves = getAllPossibleMoves(board, playerToMove);
 
         if (isMaximizer) {
             Move localBestMoveMaximizer = null;
