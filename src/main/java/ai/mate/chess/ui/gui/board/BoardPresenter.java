@@ -36,7 +36,7 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
      */
     private final boolean IS_TIMER_ENABLED = true;
 
-    private static final int MAX_TURN_SECONDS = 30;
+    private static final int MAX_TURN_SECONDS = 15;
 
     public BoardPresenter(BoardGUIContract.View view, GameController gameController, Game game, Piece.PlayerColor humanPlayerColor) {
         this.gameController = gameController;

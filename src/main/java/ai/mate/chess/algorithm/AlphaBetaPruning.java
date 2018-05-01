@@ -95,7 +95,7 @@ public final class AlphaBetaPruning {
             timer.cancel();
         }
 
-        System.out.println("AI PLAYER: Best move found!");
+        System.out.println("AI PLAYER: Best move found!" + bestMove.toString());
         System.out.println("AI PLAYER: " + staticEvalCount + " static evaluations at maxPly " + maxPly + " was made.");
         return bestMove;
     }
