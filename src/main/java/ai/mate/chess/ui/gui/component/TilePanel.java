@@ -9,7 +9,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -28,12 +27,12 @@ public class TilePanel extends JPanel {
         try {
             GUIUtils utils = new GUIUtils();
             this.tile = tile;
-            String tileImageIconPath = utils.getTileIconPath(tile.getTileColor());
-            tileImage = ImageIO.read(new File("src/main/java/ai/mate/chess/ui/gui/img/" + tileImageIconPath));
+            String tileImageIconPath = "/" + utils.getTileIconPath(tile.getTileColor());
+            tileImage = ImageIO.read(this.getClass().getResource(tileImageIconPath));
             if (!tile.isEmpty()) {
                 Piece piece = tile.getPiece();
-                String pieceImageIconPath = utils.getPieceIcon(piece.getPlayerColor(), piece.getPieceType());
-                pieceImage = ImageIO.read(new File("src/main/java/ai/mate/chess/ui/gui/img/" + pieceImageIconPath));
+                String pieceImageIconPath = "/" + utils.getPieceIcon(piece.getPlayerColor(), piece.getPieceType());
+                pieceImage = ImageIO.read(this.getClass().getResource(pieceImageIconPath));
             }
 
             if (tile.getTileHighlight() != Tile.TileHighlight.NONE) {
