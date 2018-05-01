@@ -248,7 +248,7 @@ public final class AlphaBetaPruning {
             @Override
             public void run() {
                 elapsedSeconds++;
-                System.out.println("AI TIMER: " + elapsedSeconds);
+               // System.out.println("AI TIMER: " + elapsedSeconds);
 
                 if (elapsedSeconds == timerSeconds) {
                     System.out.println("AI TIMER: Time's up for ChessMateAI, " + playerColor + "!");

@@ -34,7 +34,7 @@ public class BoardPresenter implements BoardGUIContract.Presenter {
     /*
      * Is the human playing on time or not?
      */
-    private final boolean IS_TIMER_ENABLED = true;
+    private final boolean IS_TIMER_ENABLED = false;
 
     private static final int MAX_TURN_SECONDS = 15;
 
